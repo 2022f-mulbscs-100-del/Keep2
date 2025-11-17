@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useNote } from "../../Context/noteContext";
+import { useTheme } from "../../zustand/ThemeSwitcherStore";
 
 interface NoteType {
   _id: number;
@@ -9,6 +11,9 @@ interface NoteType {
 
 export default function NoteModal() {
   const [showModal, setShowModal] = useState(true);
+const {fetchApiData} = useNote();
+const {theme}= useTheme();
+
   const [value, setValue] = useState<NoteType>({
     _id: 0,
     title: "",
@@ -48,11 +53,11 @@ fetchNote();
     }
   };
 
+
 const handleChange = async (
   e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
 ) => {
   const { name, value: fieldValue } = e.target;
-
 
 
   const updatedNote = {
@@ -68,7 +73,7 @@ setValue(updatedNote);
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updatedNote),
     });
-
+    fetchApiData();
     const data = await response.json();
     console.log("Note updated:", data);
   } catch (error) {
@@ -76,15 +81,14 @@ setValue(updatedNote);
   }
 };
 
-
   return (
     <div
-      className="fixed top-0 left-0 w-full h-full flex justify-center items-center z-100"
+      className="fixed bg-black/60 top-0 left-0 w-full h-full flex justify-center items-center z-100"
       onClick={handleOverlayClick} 
     >
       <div
         ref={ref}
-        className="bg-[#121212] border-[#5F6368] border rounded-[8px] w-[90%] md:w-[60%] lg:w-[40%] h-[500px] p-4  text-white relative"
+        className={` border-[#5F6368] border rounded-[8px] w-[90%] md:w-[60%] lg:w-[40%] h-[500px] p-4  ${theme !== "dark" ? "text-black bg-white" : "text-white bg-[#121212]"} relative`}
       >
         <div className="flex justify-between items-center">
           <input 

@@ -24,7 +24,8 @@ const {pathname: path} = useLocation();
                 <div className=' items-center gap-30 w-[130px]'>
                     <div className='flex items-center gap-4'>
                         <RxHamburgerMenu className='cursor-pointer' onClick={() => { setIsOpen(!isOpen) }} />
-                        <h1>{path === '/' ? `Keeper` : path.slice(1, 2).toUpperCase() + path.slice(2)}</h1>
+                          
+                        <h1>{(path === '/'|| path.slice(0,6) === '/notes' ? `Zeeper` : path.slice(1, 2).toUpperCase() + path.slice(2))}</h1>
                     </div>
 
                 </div>

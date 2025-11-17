@@ -12,12 +12,14 @@ function ThemeSwitcherButton() {
     <>
     <div className="cursor-pointer"
     onClick={
-       ()=>{ setClick(!click)
-        setTheme(click ? "dark" : "light")
+       ()=>{ 
+        const newClick = !click;
+        setClick(newClick)
+        setTheme(newClick ? "dark" : "light")
        }
     }
     >
-{click ? <MdOutlineLightMode /> : <CiDark/>}
+  {click ?   <CiDark/> : <MdOutlineLightMode/> }
   
     </div>
     

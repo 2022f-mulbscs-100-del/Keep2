@@ -4,6 +4,7 @@ import Masonry from "react-masonry-css";
 import NoteInput from "../../component/NoteMakingInputField/NoteInput";
 import Note from "../../component/Note/Note";
 import { useEffect, useState } from "react";
+import { useNote } from "../../Context/noteContext";
 
 
 
@@ -24,23 +25,7 @@ interface NoteType {
 export default function Home() {
 
   // const { StoreNoteChange } = useNote();
-  const [items, setItems] = useState<NoteType[]>([]);
-  useEffect(() => {
-    const fetchApiData = async () => {
-      fetch("http://localhost:2404/api/notes", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }).then((res) => {
-        return res.json();
-      }).then((data) => {
-        setItems(data);
-        console.log(data);
-      })
-    }
-    fetchApiData()
-  }, [])
+const {items} = useNote();
 
   return (
     <>
