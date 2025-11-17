@@ -34,6 +34,8 @@ type noteContextprops = {
 setNoteChange: React.Dispatch<React.SetStateAction<Note>>;
     Ispinned: boolean;
     setIspinned: React.Dispatch<React.SetStateAction<boolean>>;
+    fetchApiData: () => Promise<void>;
+    items: NoteType[];
 }
 
 type NoteType = {

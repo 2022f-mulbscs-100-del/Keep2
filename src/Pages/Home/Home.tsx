@@ -3,7 +3,6 @@ import Masonry from "react-masonry-css";
 // import { useNote } from "../../Context/noteContext";
 import NoteInput from "../../component/NoteMakingInputField/NoteInput";
 import Note from "../../component/Note/Note";
-import { useEffect, useState } from "react";
 import { useNote } from "../../Context/noteContext";
 
 
@@ -41,7 +40,7 @@ const {items} = useNote();
           columnClassName="my-masonry-grid_column"
         >
           {items.length > 0 && (
-            items.map((item, index) => {
+            items.map((item:NoteType, index: number) => {
 
               return (
                 <Note
