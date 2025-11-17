@@ -1,5 +1,8 @@
 name: Testing Setup
 on:
+    push:
+        branches:
+            - dev
     pull_request:
         types: [opened,reopened]
         branches:
