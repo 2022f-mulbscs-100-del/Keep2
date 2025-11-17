@@ -8,16 +8,17 @@ import IconStyling from "../IconStyling";
 import { useNote } from "../../Context/noteContext";
 import IconsArray, { DeleteIconsArray } from '../../../public/Data.js'
 import { useLocation } from "react-router-dom";
-
+import axios from "axios";
 type ActionIconsProps = {
     IsHover: boolean,
     id: number
 }
 
 const ActionIcons = ({ IsHover, id }: ActionIconsProps) => {
+    const {fetchApiData} = useNote();
 
     // LOCAL STATES
-    const [SnackBaropen, setSnackBarOpen] = useState(false); // state for snackbar visibility 
+    const [SnackBaropen, setSnackBarOpen] = useState(false); 
 
     // GLOBAL STATES 
     const { StoreNoteChange, setStoreNoteChange, deletedNotes, remainderNote, setremainderNote, setDeletedNotes, archievedNote, setArchieveNote } = useNote();
@@ -25,7 +26,8 @@ const ActionIcons = ({ IsHover, id }: ActionIconsProps) => {
     console.log(SnackBaropen)
     // deleting note and sending it to bin by saving it into deleteNotes state array
     const deleteNote = (id: number) => {
-
+        axios.delete(`http://localhost:2404/api/notes/${id}`);
+        fetchApiData();
         const pushDeleteNote = StoreNoteChange.find((item) => item.id === id);
         const pushAarchieveDeleteNote = archievedNote.find((item) => item.id === id);
         const pushRemainderDeleteNote = remainderNote.find((item) => item.id === id);

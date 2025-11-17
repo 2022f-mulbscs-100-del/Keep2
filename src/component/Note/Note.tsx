@@ -26,7 +26,6 @@ const Note = ({ title, description, NotePinned, id }: NoteProps) => {
     const NoteRef = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
 
-    //detecting click to close input
     useEffect(() => {
         const HandleHover = (e: MouseEvent) => {
             if (
@@ -52,7 +51,7 @@ const Note = ({ title, description, NotePinned, id }: NoteProps) => {
 
     return (
         <>
-            <div  ref={NoteRef} className={`relative w-[250px] h-min-[100px]     border rounded-[8px] border-[#5F6368] break-words cursor-pointer `}>
+            <div  ref={NoteRef} className={`relative w-[250px] h-min-[100px]   shadow-lg   border rounded-[8px] border-[#5F6368] break-words cursor-pointer `}>
 
                 {/* Select Icon for selecting the note */}
                 <SelectIcon

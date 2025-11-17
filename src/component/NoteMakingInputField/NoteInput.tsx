@@ -1,4 +1,3 @@
-'use client'
 import React, { useEffect, useRef, useState } from 'react'
 import { TiPinOutline } from "react-icons/ti";
 import { TiPin } from "react-icons/ti";
@@ -10,6 +9,7 @@ import { InputList } from './InputList';
 import IconsArray from '../../../public/Data';
 import { useLocation } from 'react-router-dom';
 import { useNote } from '../../Context/noteContext';
+import axios from 'axios';
 
 
 export const NoteInput = () => {
@@ -23,24 +23,28 @@ export const NoteInput = () => {
 
     const [listClick, setListClick] = useState(false);
     const [listItemIsCliced, setlistItemIsCliced] = useState(true);
+    const {fetchApiData} = useNote();
 
-    // useEffect to handle click outside the input field
-    // This effect will close the input field when clicking outside of it
-    // and also save the current note if there is any change.
-    // It also resets the note change state when the input is closed.
-    // This is useful for preventing accidental loss of data when clicking outside the input field.
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
             if (
-                inputRef.current && // Check if the ref exists
-                !inputRef.current.contains(e.target as Node) // Check if click is outside the ref
+                inputRef.current && 
+                !inputRef.current.contains(e.target as Node)
             ) {
                 if (InputClick && (NoteChange.note || NoteChange.description)) { setStoreNoteChange(prev => [...prev, NoteChange]); }
                 setInputClick(false);
                 setLocalIsPinned(false);
                 setListClick(false);
-                // resting the setNote change
-
+                if(NoteChange.note ==="" && NoteChange.description ==="") return;
+                const sendNotwe= {
+                    title: NoteChange.note,
+                    description: NoteChange.description,
+                    id: NoteChange.id,
+                    pinned: NoteChange.pinned,
+                    catgeory: NoteChange.catgeory
+                }
+                axios.post('http://localhost:2404/api/addnotes', sendNotwe);
+                fetchApiData();
                 setNoteChange({
                     note: "",
                     description: "",

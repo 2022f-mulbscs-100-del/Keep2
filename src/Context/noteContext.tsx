@@ -1,5 +1,5 @@
 
-import React, { useContext, useState ,createContext } from "react";
+import React, { useContext, useState ,createContext, useEffect } from "react";
 
  type Note={
         note:string,
@@ -34,6 +34,15 @@ type noteContextprops = {
 setNoteChange: React.Dispatch<React.SetStateAction<Note>>;
     Ispinned: boolean;
     setIspinned: React.Dispatch<React.SetStateAction<boolean>>;
+    fetchApiData: () => Promise<void>;
+    items: NoteType[];
+}
+
+type NoteType = {
+  _id: number;
+  title: string;
+  description: string;
+  pinned: boolean;
 }
 
 const noteContext = createContext<noteContextprops | undefined>(undefined);
@@ -62,9 +71,27 @@ const[deletedNotes, setDeletedNotes] =useState<Note[]>([])
         catgeory:""
     });
     const [Ispinned, setIspinned] = useState<boolean>(false);
-    
+    const [items, setItems] = useState<NoteType[]>([]);
+
+ const fetchApiData = async () => {
+          fetch("http://localhost:2404/api/notes", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }).then((res) => {
+            return res.json();
+          }).then((data) => {
+            setItems(data);
+            console.log(data);
+          })
+        }
+     useEffect(() => {
+       
+        fetchApiData()
+      }, [])
     return (
-        <noteContext.Provider value={{storeListData,setStoreListData,listData,setlistData ,deletedNotes,setDeletedNotes, setremainderNote,remainderNote, NoteChange, setNoteChange, StoreNoteChange, setStoreNoteChange, Ispinned, setIspinned, archievedNote , setArchieveNote}}>
+        <noteContext.Provider value={{storeListData,setStoreListData,listData,setlistData ,deletedNotes,setDeletedNotes, setremainderNote,remainderNote, NoteChange, setNoteChange, StoreNoteChange, setStoreNoteChange, Ispinned, setIspinned, archievedNote , setArchieveNote,items,fetchApiData}}>
             {children}
         </noteContext.Provider>
     )
