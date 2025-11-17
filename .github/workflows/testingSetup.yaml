@@ -1,0 +1,45 @@
+name: Testing Setup
+on:
+    pull_request:
+        types: [opened,reopened]
+        branches:
+            - dev
+
+jobs:
+    setup-testing-environment:
+        runs-on: ubuntu-latest
+        steps:
+            - name: checkout repository
+              uses: actions/checkout@v5
+
+            - name: setup node
+              uses: actions/setup-node@v6
+              with:
+                node-version: '20'
+            - name: install dependencies
+              run: npm i
+
+            - name: build project
+              run: npm run build
+            
+            - name: upload artifcats
+              uses: actions/upload-artifact@v4
+              with:
+                name: build
+                path: ./dist
+
+    deploy:
+        needs: setup-testing-environment
+        runs-on: ubuntu-latest
+        steps:
+
+            - name: downloading artifact
+              uses: actions/download-artifact@v5
+              with: 
+                name: build
+                
+            - name: show artifact
+              run: ls -la
+            
+            - name: final deploy
+              run: echo "deploydd!!!!"
