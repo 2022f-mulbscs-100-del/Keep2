@@ -15,7 +15,7 @@ const breakpointColumnsObj = {
 };
 
 interface NoteType {
-  _id: number;
+  id: number;
   title: string;
   description: string;
   pinned: boolean;
@@ -45,7 +45,7 @@ const {items} = useNote();
               return (
                 <Note
                   key={index}
-                  id={item?._id}
+                  id={item?.id}
                   title={item?.title}
                   description={item?.description}
                   NotePinned={item?.pinned}

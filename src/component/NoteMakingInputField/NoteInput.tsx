@@ -24,6 +24,7 @@ export const NoteInput = () => {
     const [listClick, setListClick] = useState(false);
     const [listItemIsCliced, setlistItemIsCliced] = useState(true);
     const {fetchApiData} = useNote();
+    const [dataSubmit, setDataSubmit] = useState(false);
 
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
@@ -43,8 +44,15 @@ export const NoteInput = () => {
                     pinned: NoteChange.pinned,
                     catgeory: NoteChange.catgeory
                 }
-                axios.post('http://localhost:2404/api/addnotes', sendNotwe);
-                fetchApiData();
+                axios.post('http://localhost:2404/api/addnotes', sendNotwe)
+                .then(() => {
+                    fetchApiData();
+                })
+                .catch(error => {
+                    console.error('Error adding note:', error);
+                })
+                ;
+                setDataSubmit(false);
                 setNoteChange({
                     note: "",
                     description: "",
@@ -67,7 +75,7 @@ export const NoteInput = () => {
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [NoteChange]);
+    }, [NoteChange,dataSubmit]);
 
     //   useEffect(() => {
     //   setNoteChange(prev => ({
@@ -256,7 +264,10 @@ export const NoteInput = () => {
                                     catgeory: ""
                                 })
                             }}>
-                                <p className='cursor-pointer hover:bg-[#56585b1f] px-5 py-2'>close</p>
+                                <p className='cursor-pointer hover:bg-[#56585b1f] px-5 py-2'
+                                onClick={()=>{setDataSubmit(true)}}
+                                >
+                                    close</p>
                             </div>
 
                         </div>

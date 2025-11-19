@@ -4,7 +4,7 @@ import { useNote } from "../../Context/noteContext";
 import { useTheme } from "../../zustand/ThemeSwitcherStore";
 
 interface NoteType {
-  _id: number;
+  id: number;
   title: string;
   description: string;
 }
@@ -15,12 +15,19 @@ const {fetchApiData} = useNote();
 const {theme}= useTheme();
 
   const [value, setValue] = useState<NoteType>({
-    _id: 0,
+    id: 0,
     title: "",
     description: "",
   });
   const ref = useRef<HTMLDivElement>(null);
 const navigate = useNavigate();
+const textAreaRef = useRef<HTMLTextAreaElement> (null);
+
+  useEffect(() => {
+    if (textAreaRef.current) {
+      textAreaRef.current.focus();
+    }
+  }, []);
 
 const {id} = useParams();
   useEffect(() => { 

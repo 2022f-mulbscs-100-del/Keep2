@@ -14,7 +14,7 @@ type ActionIconsProps = {
     id: number
 }
 
-const ActionIcons = ({ IsHover, id }: ActionIconsProps) => {
+const ActionIcons = ({ IsHover, id }: ActionIconsProps) => { 
     const {fetchApiData} = useNote();
 
     // LOCAL STATES
@@ -26,8 +26,13 @@ const ActionIcons = ({ IsHover, id }: ActionIconsProps) => {
     console.log(SnackBaropen)
     // deleting note and sending it to bin by saving it into deleteNotes state array
     const deleteNote = (id: number) => {
-        axios.delete(`http://localhost:2404/api/notes/${id}`);
-        fetchApiData();
+        axios.delete(`http://localhost:2404/api/notes/${id}`)
+        .then(() => {
+            fetchApiData();
+        })
+        .catch((error) => {
+          console.error("Error deleting note:", error);
+        });
         const pushDeleteNote = StoreNoteChange.find((item) => item.id === id);
         const pushAarchieveDeleteNote = archievedNote.find((item) => item.id === id);
         const pushRemainderDeleteNote = remainderNote.find((item) => item.id === id);
