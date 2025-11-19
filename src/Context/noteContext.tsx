@@ -39,7 +39,7 @@ setNoteChange: React.Dispatch<React.SetStateAction<Note>>;
 }
 
 type NoteType = {
-  _id: number;
+  id: number;
   title: string;
   description: string;
   pinned: boolean;
