@@ -21,6 +21,13 @@ const {theme}= useTheme();
   });
   const ref = useRef<HTMLDivElement>(null);
 const navigate = useNavigate();
+const textAreaRef = useRef<HTMLTextAreaElement> (null);
+
+  useEffect(() => {
+    if (textAreaRef.current) {
+      textAreaRef.current.focus();
+    }
+  }, []);
 
 const {id} = useParams();
   useEffect(() => { 
