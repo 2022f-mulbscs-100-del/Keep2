@@ -15,7 +15,8 @@ type NoteProps = {
 };
 const Note = ({title, description, NotePinned, id}: NoteProps) => {
   // LOCAL STATES
-  const [setLocalIsPinned] = useState(false);
+  //eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_,setLocalIsPinned] = useState(false);
   const [IsHover, setIsHover] = useState<boolean>(false);
   const NoteRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
