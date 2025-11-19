@@ -1,8 +1,6 @@
 @import "tailwindcss";
 
-
-
-@theme  {
+@theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
@@ -10,42 +8,34 @@
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
 
-  
-  --text-heading: 3rem;     /* 48px */
-  --text-subheading: 2rem;  /* 32px */
+  --text-heading: 3rem; /* 48px */
+  --text-subheading: 2rem; /* 32px */
   --text-subheading2: 1.5rem; /* 24px */
-  --text-body: 1rem;        /* 16px */
-  --color-headingColor:#080b10;
+  --text-body: 1rem; /* 16px */
+  --color-headingColor: #080b10;
 
   --breakpoint-xsm: 320px;
-  --breakpoint-sm:480px;
+  --breakpoint-sm: 480px;
   --breakpoint-md: 768px;
   --breakpoint-lg: 1024px;
   --breakpoint-xl: 1280px;
-
 }
-
-
-
 
 /* Light Theme */
 :root {
-/* VARAIBLES */
+  /* VARAIBLES */
   --background: white;
   --foreground: #1f2937ca;
 }
 
-
-
 /* Dark Theme */
 .dark {
   /* VARAIBLES */
-  --background: #121212; 
-  --foreground: #E0E0E0; 
+  --background: #121212;
+  --foreground: #e0e0e0;
 }
 
-
-html{
+html {
   background-color: var(--background);
   color: var(--foreground);
 }
@@ -54,16 +44,20 @@ html{
   display: flex;
   margin-left: 2px;
   width: auto;
-padding-top: 20px;
+  padding-top: 20px;
+  width: fit-content;
+  gap: 30px;
+  display: flex;
+  /* margin:0 auto */
+  margin-left: 44px;
 }
 .my-masonry-grid_column {
   margin: 2px;
-
 }
 .my-masonry-grid_column > div {
   margin-bottom: 16px;
 }
 
-.customScrollBar{
+.customScrollBar {
   scrollbar-width: none;
 }
