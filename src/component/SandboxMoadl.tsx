@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PiCodesandboxLogo } from "react-icons/pi";
 import { useNote } from "../Context/noteContext";
 
@@ -9,6 +9,7 @@ interface SandboxMoadlProps {
 function SandboxMoadl({ onclose }: SandboxMoadlProps) {
   const [numNotes, setNumNotes] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
+  const clickRef = useRef<HTMLDivElement>(null);
   const { fetchApiData } = useNote();
 
   const generateData = () => {
@@ -51,10 +52,27 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
       setNumNotes(value);
     }
   };
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (clickRef.current && !clickRef.current.contains(e.target as Node)) {
+        onclose();
+      }
+    };
+
+    document.addEventListener("click", handleClick);
+
+    return () => {
+      document.removeEventListener("click", handleClick);
+    };
+  }, []);
   return (
     <>
-      <div className="fixed top-0 left-0 inset-0 bg-black/10 flex justify-center items-center z-200">
-        <div className="bg-black p-4 rounded-lg  flex flex-col">
+      <div className="fixed top-0 left-0 inset-0 bg-black/10 flex justify-center items-center z-150">
+        <div
+          ref={clickRef}
+          className="bg-black p-4 rounded-lg  flex flex-col z-200"
+        >
           <div
             className="cursor-pointer text-white text-xl font-bold p-2 flex justify-between items-center"
             onClick={onclose}
