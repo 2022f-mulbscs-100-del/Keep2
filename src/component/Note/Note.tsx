@@ -6,6 +6,7 @@ import NoteDescription from "./NoteDescription";
 import ActionIcons from "./ActionIcons";
 import NoteTitle from "./NoteTitle";
 import { useNavigate } from "react-router-dom";
+import { TiPin, TiPinOutline } from "react-icons/ti";
 
 type NoteProps = {
   id: number;
@@ -47,18 +48,35 @@ const Note = ({ title, description, NotePinned, id }: NoteProps) => {
         className={`relative w-[280px] h-min-[100px]   shadow-lg   border rounded-[8px] border-[#5F6368] break-words cursor-pointer `}
       >
         {/* Select Icon for selecting the note */}
+
         <SelectIcon IsHover={IsHover} />
+        <div className="flex justify-end mr-2 ">
+          {NotePinned ? (
+            <div className="rounded-full  items-center  cursor-pointer w-[25px] h-[25px] p-2  hover:bg-[#52535596] ">
+              <TiPin
+                className=" "
+                onClick={() => {
+                  setLocalIsPinned(false);
+                }}
+              />
+            </div>
+          ) : (
+            <div className="rounded-full items-center cursor-pointer w-[25px] h-[25px] p-2  hover:bg-[#52535596] ">
+              <TiPinOutline
+                className="cursor-pointer mr-8"
+                onClick={() => {
+                  setLocalIsPinned(true);
+                }}
+              />
+            </div>
+          )}
+        </div>
 
         {/* title and description of the note */}
         <div className="p-4" onClick={HandleClick}>
           {/* title of the note */}
 
-          <NoteTitle
-            title={title}
-            IsHover={IsHover}
-            NotePinned={NotePinned}
-            setLocalIsPinned={setLocalIsPinned}
-          />
+          <NoteTitle title={title} IsHover={IsHover} />
 
           {/* description of the note */}
           <NoteDescription

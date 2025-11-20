@@ -52,7 +52,6 @@ jobs:
           from: GitHub Actions <${{ secrets.EMAIL_USERNAME}}>
           body: |
             The CI build has failed.
-
             Repo: ${{ github.repository }}
             Branch: ${{ github.head_ref || github.ref_name }}
             Triggered by: ${{ github.actor }}

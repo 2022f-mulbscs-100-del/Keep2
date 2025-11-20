@@ -6,126 +6,108 @@ import IconStyling from "../IconStyling";
 import { CiViewList } from "react-icons/ci";
 import { InputList } from "./InputList";
 import IconsArray from "../../../public/Data";
-import { useLocation } from "react-router-dom";
 import { useNote } from "../../Context/noteContext";
 import axios from "axios";
 
 export const NoteInput = () => {
-  const { pathname } = useLocation();
+  interface NoteType {
+    id: number;
+    title: string;
+    description: string;
+    pinned: boolean;
+    catgeory: string;
+  }
 
-  const {
-    setlistData,
-    archievedNote,
-    deletedNotes,
-    NoteChange,
-    setNoteChange,
-    StoreNoteChange,
-    setStoreNoteChange,
-    Ispinned,
-    setIspinned,
-  } = useNote();
+  const [NotesData, setNotesData] = useState<NoteType>({
+    id: 0,
+    title: "",
+    description: "",
+    pinned: false,
+    catgeory: "",
+  });
+
+  const inputRef = useRef<HTMLDivElement>(null);
   const [LocalIsPinned, setLocalIsPinned] = useState(false);
   const [InputClick, setInputClick] = useState(false);
-  const inputRef = useRef<HTMLDivElement>(null);
-
   const [listClick, setListClick] = useState(false);
   const [listItemIsCliced, setlistItemIsCliced] = useState(true);
+  const [listArray, setListArray] = useState<number[]>([0]);
   const { fetchApiData } = useNote();
-  const [dataSubmit, setDataSubmit] = useState(false);
+
+  const HandleNoteData = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    if (e.target.name === "title" || e.target.name === "description") {
+      setNotesData({
+        ...NotesData,
+        [e.target.name]: e.target.value,
+        pinned: LocalIsPinned,
+      });
+    }
+  };
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (inputRef.current && !inputRef.current.contains(e.target as Node)) {
-        if (InputClick && (NoteChange.note || NoteChange.description)) {
-          setStoreNoteChange((prev) => [...prev, NoteChange]);
-        }
+        const stableData = { ...NotesData };
+        apiCall(stableData);
         setInputClick(false);
         setLocalIsPinned(false);
-        setListClick(false);
-        if (NoteChange.note === "" && NoteChange.description === "") return;
-        const sendNotwe = {
-          title: NoteChange.note,
-          description: NoteChange.description,
-          id: NoteChange.id,
-          pinned: NoteChange.pinned,
-          catgeory: NoteChange.catgeory,
-        };
-        axios
-          .post("http://localhost:2404/api/addnotes", sendNotwe)
-          .then(() => {
-            fetchApiData();
-          })
-          .catch((error) => {
-            console.error("Error adding note:", error);
-          });
-        setDataSubmit(false);
-        setNoteChange({
-          note: "",
+        setNotesData({
+          title: "",
           description: "",
           id: Date.now(),
           pinned: false,
           catgeory: "",
         });
-        setlistData({
-          id: Date.now(),
-          data: "",
-          pinned: false,
-          catgeory: "",
-        });
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [NoteChange, dataSubmit]);
+  });
 
-  //   useEffect(() => {
-  //   setNoteChange(prev => ({
-  //     ...prev,
-  //     pinned: Ispinned,
-  //   }));
+  const apiCall = (NotesData: NoteType) => {
+    if (NotesData.title.trim() === "" && NotesData.description.trim() === "")
+      return;
+    const sendNotwe = {
+      title: NotesData.title,
+      description: NotesData.description,
+      id: NotesData.id,
+      pinned: NotesData.pinned,
+      catgeory: NotesData.catgeory,
+    };
+    console.log(sendNotwe);
+    try {
+      axios
+        .post("http://localhost:2404/api/addnotes", sendNotwe)
+        .then(() => {
+          fetchApiData();
+        })
+        .catch((error) => {
+          console.error("Error adding note:", error);
+        });
 
-  // }, [Ispinned]);
-
-  const HandleNoteChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = e.target;
-    setNoteChange((prevValue) => ({
-      ...prevValue,
-      [name]: value,
-    }));
-    setNoteChange((prev) => ({ ...prev, catgeory: pathname }));
-    console.log(NoteChange);
+      setNotesData({
+        title: "",
+        description: "",
+        id: Date.now(),
+        pinned: false,
+        catgeory: "",
+      });
+      setLocalIsPinned(false);
+      setListClick(false);
+    } catch (error) {
+      console.error(error);
+    }
   };
-  // track StoreNoteChange
-  useEffect(() => {
-    console.log("Updated StoreNoteChange:", StoreNoteChange);
-  }, [StoreNoteChange]);
-
-  // track archieve and delete notes changes
-  useEffect(() => {
-    console.log("Updated archieved note array : ", archievedNote);
-    console.log("Updated delete note array : ", deletedNotes);
-  }, [archievedNote, deletedNotes]);
 
   return (
     <>
       <div className="flex justify-center items-center">
         {!InputClick ? (
-          // close input field
-
-          // <CloseNoteInput
-          // inputRef={inputRef}
-          // HandleNoteChange={HandleNoteChange}
-          // NoteChange={NoteChange}
-          // setInputClick={setInputClick}
-          // setListClick={setListClick}
-          // />
-
           <div
             ref={inputRef}
             className="shadow-lg min-w-[600px] py-2  px-4 border rounded-[5px] border-[#5F6368] flex flex-col gap-2"
@@ -134,9 +116,10 @@ export const NoteInput = () => {
               <input
                 className="w-full outline-none "
                 type="text"
+                name="title"
                 placeholder="Take a note"
-                onChange={HandleNoteChange}
-                value={NoteChange.note}
+                onChange={HandleNoteData}
+                value={NotesData.title}
                 onClick={() => {
                   setInputClick(true);
                 }}
@@ -165,44 +148,35 @@ export const NoteInput = () => {
             {/* title input field */}
             <div className="flex w-full px-4">
               <input
-                onChange={HandleNoteChange}
+                onChange={HandleNoteData}
                 autoComplete="off"
                 className="w-full outline-none "
                 type="text"
                 placeholder="Title"
-                name="note"
-                value={NoteChange.note}
+                name="title"
+                value={NotesData.title}
               />
 
               {/* pinned icon */}
               {LocalIsPinned ? (
-                <div className="rounded-full  cursor-pointer w-[25px] h-[25px] p-1 hover:bg-[#52535596] ">
-                  <TiPin
-                    className=" "
-                    onClick={() => {
-                      setLocalIsPinned(false);
-                      setIspinned(false);
-
-                      setNoteChange((prev) => ({
-                        ...prev,
-                        pinned: Ispinned,
-                      }));
-                    }}
-                  />
+                <div
+                  className="rounded-full  cursor-pointer w-[25px] h-[25px] p-1 hover:bg-[#52535596]"
+                  onClick={() => {
+                    setNotesData({ ...NotesData, pinned: false });
+                    setLocalIsPinned(false);
+                  }}
+                >
+                  <TiPin className=" " />
                 </div>
               ) : (
-                <div className="rounded-full  cursor-pointer w-[25px] h-[25px] p-1 hover:bg-[#52535596] ">
-                  <TiPinOutline
-                    className="cursor-pointer mr-8"
-                    onClick={() => {
-                      setLocalIsPinned(true);
-                      setIspinned(true);
-                      setNoteChange((prev) => ({
-                        ...prev,
-                        pinned: Ispinned,
-                      }));
-                    }}
-                  />
+                <div
+                  className="rounded-full  cursor-pointer w-[25px] h-[25px] p-1 hover:bg-[#52535596]"
+                  onClick={() => {
+                    setNotesData({ ...NotesData, pinned: true });
+                    setLocalIsPinned(true);
+                  }}
+                >
+                  <TiPinOutline className="cursor-pointer mr-8" />
                 </div>
               )}
             </div>
@@ -211,9 +185,9 @@ export const NoteInput = () => {
             {!listClick ? (
               <div className="px-4">
                 <textarea
-                  onChange={HandleNoteChange}
+                  onChange={HandleNoteData}
                   autoComplete="off"
-                  value={NoteChange.description}
+                  value={NotesData.description}
                   className="w-full outline-none resize-none"
                   rows={2}
                   name="description"
@@ -223,11 +197,16 @@ export const NoteInput = () => {
               </div>
             ) : (
               // input list
-
-              <InputList
-                listItemIsCliced={listItemIsCliced}
-                setlistItemIsCliced={setlistItemIsCliced}
-              />
+              <>
+                {listArray.map((item) => (
+                  <InputList
+                    key={item}
+                    listItemIsCliced={listItemIsCliced}
+                    setlistItemIsCliced={setlistItemIsCliced}
+                    onClicked={() => setListArray((prev) => [...prev, 0])}
+                  />
+                ))}
+              </>
             )}
             {/* list of icon */}
             <div className=" flex items-center  justify-between px-4">
@@ -243,23 +222,18 @@ export const NoteInput = () => {
               <div
                 className="pr-6"
                 onClick={() => {
-                  setStoreNoteChange((prev) => [...prev, NoteChange]);
                   setInputClick(false);
-                  setNoteChange({
-                    note: "",
-                    description: "",
+                  apiCall(NotesData);
+                  setNotesData({
                     id: Date.now(),
+                    title: "",
+                    description: "",
                     pinned: false,
                     catgeory: "",
                   });
                 }}
               >
-                <p
-                  className="cursor-pointer hover:bg-[#56585b1f] px-5 py-2"
-                  onClick={() => {
-                    setDataSubmit(true);
-                  }}
-                >
+                <p className="cursor-pointer hover:bg-[#56585b1f] px-5 py-2">
                   close
                 </p>
               </div>
