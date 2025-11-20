@@ -65,7 +65,7 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
     return () => {
       document.removeEventListener("click", handleClick);
     };
-  }, []);
+  }, [onclose]);
   return (
     <>
       <div className="fixed top-0 left-0 inset-0 bg-black/10 flex justify-center items-center z-150">

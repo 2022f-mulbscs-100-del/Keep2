@@ -73,7 +73,6 @@ const Navbar = () => {
               onClick={(e) => {
                 e.stopPropagation();
                 setSandboxOpen(true);
-                console.log(sandboxOpen);
               }}
             />
             {sandboxOpen && (
