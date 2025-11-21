@@ -70,7 +70,8 @@ const Navbar = () => {
 
             <PiCodesandboxLogo
               className="cursor-pointer"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 setSandboxOpen(true);
               }}
             />
