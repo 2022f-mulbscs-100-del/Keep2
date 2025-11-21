@@ -1,5 +1,4 @@
 import Masonry from "react-masonry-css";
-// import { useNote } from "../../Context/noteContext";
 import NoteInput from "../../component/NoteMakingInputField/NoteInput";
 import Note from "../../component/Note/Note";
 import { useNote } from "../../Context/noteContext";
