@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, {useContext, useState, createContext, useEffect} from 'react';
 
 type Note = {
@@ -6,6 +7,7 @@ type Note = {
   id: number;
   catgeory: string;
   pinned: boolean;
+  
 };
 
 type list = {
@@ -14,6 +16,17 @@ type list = {
   catgeory: string;
   pinned: boolean;
 };
+
+type NoteType = {
+  id: number;
+  title: string;
+  description: string;
+  pinned: boolean;
+  isDeleted: boolean;
+  isArchived: boolean;
+
+};
+
 
 type noteContextprops = {
   StoreNoteChange: Note[];
@@ -24,24 +37,19 @@ type noteContextprops = {
   setStoreListData: React.Dispatch<React.SetStateAction<list[]>>;
   remainderNote: Note[];
   setremainderNote: React.Dispatch<React.SetStateAction<Note[]>>;
-  archievedNote: Note[];
-  setArchieveNote: React.Dispatch<React.SetStateAction<Note[]>>;
-  deletedNotes: Note[];
-  setDeletedNotes: React.Dispatch<React.SetStateAction<Note[]>>;
+  archievedNote: NoteType[];
+  setArchieveNote: React.Dispatch<React.SetStateAction<NoteType[]>>;
+  ArchivedNotes: () => Promise<void>;
   NoteChange: Note;
   setNoteChange: React.Dispatch<React.SetStateAction<Note>>;
   Ispinned: boolean;
   setIspinned: React.Dispatch<React.SetStateAction<boolean>>;
   fetchApiData: () => Promise<void>;
   items: NoteType[];
+  deletedNotes: NoteType[];
+  DeletedNotes: () => Promise<void>;
 };
 
-type NoteType = {
-  id: number;
-  title: string;
-  description: string;
-  pinned: boolean;
-};
 
 const noteContext = createContext<noteContextprops | undefined>(undefined);
 
@@ -49,7 +57,6 @@ export const NoteContext = ({children}: {children: React.ReactNode}) => {
   const [StoreNoteChange, setStoreNoteChange] = useState<Note[]>([]);
   const [storeListData, setStoreListData] = useState<list[]>([]);
   const [remainderNote, setremainderNote] = useState<Note[]>([]);
-  const [archievedNote, setArchieveNote] = useState<Note[]>([]);
   const [NoteChange, setNoteChange] = useState<Note>({
     note: '',
     description: '',
@@ -63,9 +70,10 @@ export const NoteContext = ({children}: {children: React.ReactNode}) => {
     pinned: false,
     catgeory: ''
   });
+  const [archievedNote, setArchieveNote] = useState<NoteType[]>([]);
   const [Ispinned, setIspinned] = useState<boolean>(false);
   const [items, setItems] = useState<NoteType[]>([]);
-
+  const [deletedNotes, setDeletedNotes] = useState<NoteType[]>([]);
   const fetchApiData = async () => {
     fetch('http://localhost:2404/api/notes', {
       method: 'GET',
@@ -81,14 +89,45 @@ export const NoteContext = ({children}: {children: React.ReactNode}) => {
         console.log(data);
       });
   };
+
+
+  const DeletedNotes = async()=>{
+    axios.get('http://localhost:2404/api/deletedNotes')
+    .then((res)=>{
+    setDeletedNotes(res.data);
+    console.log("Deleted notes fetched:", res.data);
+    })
+    .catch((error)=>{
+      console.error("Error fetching deleted notes:", error);
+    });
+  }
+
+  const ArchivedNotes = async()=>{
+    axios.get('http://localhost:2404/api/getArchivedNotes')
+    .then((res)=>{
+    setArchieveNote(res.data);
+    console.log("Archived notes fetched:", res.data);
+    })
+    .catch((error)=>{
+      console.error("Error fetching archived notes:", error);
+    });
+  }
+
+
   useEffect(() => {
     fetchApiData();
+    DeletedNotes();
+    ArchivedNotes();
   }, []);
+
+
+  
 
   return (
     <noteContext.Provider
       value={
         {
+          ArchivedNotes,
           storeListData,
           setStoreListData,
           listData,
@@ -104,7 +143,9 @@ export const NoteContext = ({children}: {children: React.ReactNode}) => {
           archievedNote,
           setArchieveNote,
           items,
-          fetchApiData
+          fetchApiData,
+          deletedNotes,
+          DeletedNotes
         } as noteContextprops
       }
     >

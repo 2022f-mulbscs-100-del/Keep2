@@ -47,9 +47,7 @@ const Dialougebox = ({  setisActive }:{setisActive: React.Dispatch<React.SetStat
         )
     }
 
-    console.log(
-        "inputchange", input,
-        "label", label);
+
 
     return (
         <>

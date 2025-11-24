@@ -9,33 +9,34 @@ import { MdDeleteSweep } from "react-icons/md";
 const IconsArray = [
     {
         id: 1,
-        title: "Formatting options",
+        tooltip: "Formatting options",
         icon: PiTextAUnderlineBold
     },
     {
-        title: "Background",
+        tooltip: "Background",
         id: 2,
         icon: IoIosColorPalette
     },
     {
-        title: "Remind me",
+        tooltip: "Remind me",
         id: 3,
         icon: BiSolidBellPlus
     },
     {
-        title: "Add image",
+        tooltip: "Add image",
         id: 4,
         icon: FaImage
     },
     {
-        title: "Archive",
+        tooltip: "Archive",
         id: 5,
         icon: IoMdArchive
     },
     {
-        title: "More",
+        tooltip: "Bin",
         id: 6,
-        icon: MdDeleteForever
+        icon: MdDeleteForever,
+       
     },
 
 ];
@@ -43,10 +44,12 @@ const IconsArray = [
 const DeleteIconsArray = [
     {
         id: 1,
+        tooltip: "Delete forever",
         icon: MdDeleteForever
     },
     {
         id: 2,
+        tooltip: "Restore",
         icon: MdDeleteSweep
     }]
 
