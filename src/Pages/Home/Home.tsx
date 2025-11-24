@@ -2,6 +2,7 @@ import Masonry from "react-masonry-css";
 import NoteInput from "../../component/NoteMakingInputField/NoteInput";
 import Note from "../../component/Note/Note";
 import { useNote } from "../../Context/noteContext";
+import { useEffect } from "react";
 
 const breakpointColumnsObj = {
   default: 5,
@@ -19,7 +20,11 @@ interface NoteType {
 
 export default function Home() {
   // const { StoreNoteChange } = useNote();
-  const { items } = useNote();
+  const { items,fetchApiData } = useNote();
+
+  useEffect(() => {
+   fetchApiData();
+  }, []);
 
   return (
     <>

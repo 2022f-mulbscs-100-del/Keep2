@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useNote } from "../../Context/noteContext";
 import { useTheme } from "../../zustand/ThemeSwitcherStore";
+import ActionIcons from "./ActionIcons";
 
 interface NoteType {
   id: number;
@@ -14,7 +15,6 @@ export default function NoteModal() {
   const [showModal, setShowModal] = useState(true);
   const { fetchApiData } = useNote();
   const { theme } = useTheme();
-
   const [value, setValue] = useState<NoteType>({
     id: 0,
     title: "",
@@ -24,7 +24,7 @@ export default function NoteModal() {
   const ref = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
-
+  
   useEffect(() => {
     if (textAreaRef.current) {
       textAreaRef.current.focus();
@@ -34,6 +34,7 @@ export default function NoteModal() {
   const { id } = useParams();
   useEffect(() => {
     const fetchNote = async () => {
+      setShowModal(true);
       try {
         const response = await fetch(`http://localhost:2404/api/notes/${id}`, {
           method: "GET",
@@ -95,9 +96,10 @@ export default function NoteModal() {
       className="fixed bg-black/60 top-0 left-0 w-full h-full flex justify-center items-center z-100"
       onClick={handleOverlayClick}
     >
+
       <div
         ref={ref}
-        className={` border-[#5F6368] border rounded-[8px] w-[90%] md:w-[60%] lg:w-[40%] h-[500px] p-4  ${theme !== "dark" ? "text-black bg-white" : "text-white bg-[#121212]"} relative`}
+        className={` border-[#5F6368] border rounded-[8px] w-[90%] md:w-[60%] lg:w-[40%] h-[520px] p-4  ${theme !== "dark" ? "text-black bg-white" : "text-white bg-[#121212]"} relative`}
       >
         <div className="flex justify-between items-center">
           <input
@@ -117,6 +119,9 @@ export default function NoteModal() {
             onChange={handleChange}
           />
         </div>
+         <div className="">
+         <ActionIcons IsHover={true} id={Number(id)} />
+         </div>
       </div>
     </div>
   );

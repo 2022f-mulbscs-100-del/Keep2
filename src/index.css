@@ -61,3 +61,18 @@ html {
 .customScrollBar {
   scrollbar-width: none;
 }
+
+
+.Toastify__toast {
+  background: #1e1e1e !important;
+  color: #ffffff !important;
+  border-radius: 14px !important;
+  padding: 14px 20px !important;
+  font-size: 15px !important;
+  font-weight: 500;
+  border: 1px solid #333 !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
+}
+.Toastify__toast-icon {
+ display: none !important;
+}

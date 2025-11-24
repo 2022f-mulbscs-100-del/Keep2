@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { PiCodesandboxLogo } from "react-icons/pi";
 import { useNote } from "../Context/noteContext";
+import { toast } from "react-toastify";
 
 interface SandboxMoadlProps {
   onclose: () => void;
@@ -9,6 +10,7 @@ interface SandboxMoadlProps {
 function SandboxMoadl({ onclose }: SandboxMoadlProps) {
   const [numNotes, setNumNotes] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [useRandomData, setUseRandomData] = useState(false);
   const clickRef = useRef<HTMLDivElement>(null);
   const { fetchApiData } = useNote();
 
@@ -17,11 +19,13 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
     axios
       .post("http://localhost:2404/api/generateSandbox", {
         numNotes,
+        useRandomData,
       })
       .then(() => {
         fetchApiData();
         setIsLoading(false);
         onclose();
+        toast.success("Sandbox data generated successfully");
       })
       .catch((error) => {
         console.error("Error generating sandbox data:", error);
@@ -103,6 +107,17 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
                 max={100}
                 onChange={handleInputChange}
               />
+            </div>
+            <div>
+              <label className="flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 cursor-pointer"
+                  checked={useRandomData}
+                  onChange={(e) => setUseRandomData(e.target.checked)}
+                />
+                Generate Notes with Random Pinned
+              </label>
             </div>
             <button
               className="w-full cursor-pointer rounded-lg p-2 hover:bg-[#41331C]"

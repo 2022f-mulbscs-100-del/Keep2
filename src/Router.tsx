@@ -5,6 +5,8 @@ import Home from './Pages/Home/Home';
 import Layout from './Layout';
 import NoteModal from './component/Note/NoteModal';
 import BackgroundLayout from './component/Note/BackgroundLayout';
+import Bin from './Pages/Bin/Bin';
+import Archieve from './Pages/Archieve/Archieve';
 
 interface ProviderWrapperProps {
   children: React.ReactNode;
@@ -52,10 +54,12 @@ const router = createBrowserRouter([
         path: '/editlabel/:title'
       },
       {
-        path: '/archieve'
+        path: '/archieve',
+        element: <Archieve/>
       },
       {
-        path: '/bin'
+        path: '/bin',
+        element: <Bin/>
       },
       {
         path: '*',
