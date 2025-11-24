@@ -45,6 +45,6 @@
     "*.{js,jsx,ts,tsx,json}": [
       "eslint --fix"
     ],
-    "src/**/*.{ts,tsx}": "tsc --noEmit"
+    "src/**/*.{ts,tsx}": "bash scripts/typecheck.sh"
   }
 }
