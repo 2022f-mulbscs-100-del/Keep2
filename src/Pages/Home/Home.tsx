@@ -16,14 +16,14 @@ interface NoteType {
   title: string;
   description: string;
   pinned: boolean;
+  image: string;
 }
 
 export default function Home() {
-  // const { StoreNoteChange } = useNote();
-  const { items,fetchApiData } = useNote();
+  const { items, fetchApiData } = useNote();
 
   useEffect(() => {
-   fetchApiData();
+    fetchApiData();
   }, []);
 
   return (
@@ -51,6 +51,7 @@ export default function Home() {
                   title={item?.title}
                   description={item?.description}
                   NotePinned={item?.pinned}
+                  image={JSON.parse(item?.image)}
                 />
               );
             })}
