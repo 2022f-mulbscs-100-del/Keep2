@@ -91,6 +91,8 @@ export default function NoteModal() {
       console.error("Error updating note:", error);
     }
   };
+
+  const image = value.image ? JSON.parse(value.image) : [];
   return (
     <div
       className="fixed bg-black/60 top-0 left-0 w-full h-full flex justify-center items-center z-100"
@@ -98,8 +100,20 @@ export default function NoteModal() {
     >
       <div
         ref={ref}
-        className={` border-[#5F6368] border rounded-[8px] w-[90%] md:w-[60%] lg:w-[40%] h-[520px] p-4  ${theme !== "dark" ? "text-black bg-white" : "text-white bg-[#121212]"} relative`}
+        className={` border-[#5F6368] border rounded-[8px] w-[90%] md:w-[60%] lg:w-[40%] p-4  ${theme !== "dark" ? "text-black bg-white" : "text-white bg-[#121212]"} relative`}
       >
+        {image && image.length > 0 && (
+          <div className="flex  items-center p-4 gap-4">
+            {image.map((item: string, index: number) => (
+              <img
+                key={index}
+                src={item}
+                alt=""
+                className="w-[100px] h-[100px] object-cover rounded-t-[8px]"
+              />
+            ))}
+          </div>
+        )}
         <div className="flex justify-between items-center">
           <input
             className="border-0 w-full h-full bg-transparent focus:outline-none text-xl font-semibold"
@@ -118,6 +132,7 @@ export default function NoteModal() {
             onChange={handleChange}
           />
         </div>
+
         <div className="">
           <ActionIcons
             IsHover={true}
