@@ -9,6 +9,7 @@ interface NoteType {
   title: string;
   description: string;
   pinned: boolean;
+  image?: string;
 }
 
 export default function NoteModal() {
@@ -24,7 +25,7 @@ export default function NoteModal() {
   const ref = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
-  
+
   useEffect(() => {
     if (textAreaRef.current) {
       textAreaRef.current.focus();
@@ -90,13 +91,11 @@ export default function NoteModal() {
       console.error("Error updating note:", error);
     }
   };
-
   return (
     <div
       className="fixed bg-black/60 top-0 left-0 w-full h-full flex justify-center items-center z-100"
       onClick={handleOverlayClick}
     >
-
       <div
         ref={ref}
         className={` border-[#5F6368] border rounded-[8px] w-[90%] md:w-[60%] lg:w-[40%] h-[520px] p-4  ${theme !== "dark" ? "text-black bg-white" : "text-white bg-[#121212]"} relative`}
@@ -119,9 +118,13 @@ export default function NoteModal() {
             onChange={handleChange}
           />
         </div>
-         <div className="">
-         <ActionIcons IsHover={true} id={Number(id)} />
-         </div>
+        <div className="">
+          <ActionIcons
+            IsHover={true}
+            id={Number(id)}
+            onClick={() => setShowModal(false)}
+          />
+        </div>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
-import axios from 'axios';
-import React, {useContext, useState, createContext, useEffect} from 'react';
+import axios from "axios";
+import React, { useContext, useState, createContext, useEffect } from "react";
 
 type Note = {
   note: string;
@@ -7,7 +7,6 @@ type Note = {
   id: number;
   catgeory: string;
   pinned: boolean;
-  
 };
 
 type list = {
@@ -24,9 +23,8 @@ type NoteType = {
   pinned: boolean;
   isDeleted: boolean;
   isArchived: boolean;
-
+  image: string;
 };
-
 
 type noteContextprops = {
   StoreNoteChange: Note[];
@@ -50,78 +48,74 @@ type noteContextprops = {
   DeletedNotes: () => Promise<void>;
 };
 
-
 const noteContext = createContext<noteContextprops | undefined>(undefined);
 
-export const NoteContext = ({children}: {children: React.ReactNode}) => {
+export const NoteContext = ({ children }: { children: React.ReactNode }) => {
   const [StoreNoteChange, setStoreNoteChange] = useState<Note[]>([]);
   const [storeListData, setStoreListData] = useState<list[]>([]);
   const [remainderNote, setremainderNote] = useState<Note[]>([]);
   const [NoteChange, setNoteChange] = useState<Note>({
-    note: '',
-    description: '',
+    note: "",
+    description: "",
     id: Date.now(),
     pinned: false,
-    catgeory: ''
+    catgeory: "",
   });
   const [listData, setlistData] = useState({
     id: Date.now(),
-    data: '',
+    data: "",
     pinned: false,
-    catgeory: ''
+    catgeory: "",
   });
   const [archievedNote, setArchieveNote] = useState<NoteType[]>([]);
   const [Ispinned, setIspinned] = useState<boolean>(false);
   const [items, setItems] = useState<NoteType[]>([]);
   const [deletedNotes, setDeletedNotes] = useState<NoteType[]>([]);
   const fetchApiData = async () => {
-    fetch('http://localhost:2404/api/notes', {
-      method: 'GET',
+    fetch("http://localhost:2404/api/notes", {
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json'
-      }
+        "Content-Type": "application/json",
+      },
     })
-      .then(res => {
+      .then((res) => {
         return res.json();
       })
-      .then(data => {
+      .then((data) => {
         setItems(data);
         console.log(data);
       });
   };
 
+  const DeletedNotes = async () => {
+    axios
+      .get("http://localhost:2404/api/deletedNotes")
+      .then((res) => {
+        setDeletedNotes(res.data);
+        console.log("Deleted notes fetched:", res.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching deleted notes:", error);
+      });
+  };
 
-  const DeletedNotes = async()=>{
-    axios.get('http://localhost:2404/api/deletedNotes')
-    .then((res)=>{
-    setDeletedNotes(res.data);
-    console.log("Deleted notes fetched:", res.data);
-    })
-    .catch((error)=>{
-      console.error("Error fetching deleted notes:", error);
-    });
-  }
-
-  const ArchivedNotes = async()=>{
-    axios.get('http://localhost:2404/api/getArchivedNotes')
-    .then((res)=>{
-    setArchieveNote(res.data);
-    console.log("Archived notes fetched:", res.data);
-    })
-    .catch((error)=>{
-      console.error("Error fetching archived notes:", error);
-    });
-  }
-
+  const ArchivedNotes = async () => {
+    axios
+      .get("http://localhost:2404/api/getArchivedNotes")
+      .then((res) => {
+        setArchieveNote(res.data);
+        console.log("Archived notes fetched:", res.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching archived notes:", error);
+      });
+  };
 
   useEffect(() => {
     fetchApiData();
     DeletedNotes();
     ArchivedNotes();
   }, []);
-
-
-  
 
   return (
     <noteContext.Provider
@@ -145,7 +139,7 @@ export const NoteContext = ({children}: {children: React.ReactNode}) => {
           items,
           fetchApiData,
           deletedNotes,
-          DeletedNotes
+          DeletedNotes,
         } as noteContextprops
       }
     >
@@ -157,7 +151,7 @@ export const NoteContext = ({children}: {children: React.ReactNode}) => {
 export const useNote = () => {
   const context = useContext(noteContext);
   if (!context) {
-    throw new Error('useNote must be used within a noteProvider');
+    throw new Error("useNote must be used within a noteProvider");
   }
   return context;
 };
