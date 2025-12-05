@@ -1,54 +1,53 @@
-import { RouterProvider } from "react-router-dom"
-import router from "./Router"
-import { NoteContext } from "./Context/noteContext"
-import { SideBarProvider } from "./Context/sidebarContext"
-import { NavbarProvider } from "./Context/navbarContext"
-import { EditLabelProvider } from "./Context/editLabelContext"
-import { useLayoutEffect } from "react"
-import { useTheme } from "./zustand/ThemeSwitcherStore"
-import { ToastContainer } from "react-toastify"
+import { RouterProvider } from "react-router-dom";
+import router from "./Router";
+import { NoteContext } from "./Context/noteContext";
+import { SideBarProvider } from "./Context/sidebarContext";
+import { NavbarProvider } from "./Context/navbarContext";
+import { EditLabelProvider } from "./Context/editLabelContext";
+import { useLayoutEffect } from "react";
+import { useTheme } from "./Context/themeSwitcherContext";
+import { ToastContainer } from "react-toastify";
+import { ThemeSwitcherProvider } from "./Context/themeSwitcherContext";
 
-
-function App() {
+export const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   const { theme } = useTheme();
   useLayoutEffect(() => {
     if (theme === "light") {
-      document.documentElement.classList.remove("dark")
+      document.documentElement.classList.remove("dark");
     } else {
-
-      document.documentElement.classList.add(theme)
+      document.documentElement.classList.add(theme);
     }
-  }, [theme])
-
-
-
-
+  }, [theme]);
+  return <>{children}</>;
+};
+function App() {
   return (
-
-    <EditLabelProvider>
-      <NavbarProvider>
-        <SideBarProvider>
-          <NoteContext>
-            <ToastContainer
-              position="bottom-left"
-              autoClose={4000}
-              hideProgressBar={true}
-              newestOnTop={true}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-              theme="dark"
-            />
-            <RouterProvider router={router} />
-          </NoteContext>
-        </SideBarProvider>
-      </NavbarProvider>
-    </EditLabelProvider>
-
-  )
+    <ThemeSwitcherProvider>
+      <EditLabelProvider>
+        <NavbarProvider>
+          <SideBarProvider>
+            <NoteContext>
+              <ToastContainer
+                position="bottom-left"
+                autoClose={4000}
+                hideProgressBar={true}
+                newestOnTop={true}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+              />
+              <LayoutWrapper>
+                <RouterProvider router={router} />
+              </LayoutWrapper>
+            </NoteContext>
+          </SideBarProvider>
+        </NavbarProvider>
+      </EditLabelProvider>
+    </ThemeSwitcherProvider>
+  );
 }
 
-export default App
-
+export default App;

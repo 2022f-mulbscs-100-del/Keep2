@@ -1,5 +1,4 @@
-'use client';
-import React, {createContext, useContext, useState} from 'react';
+import React, { createContext, useContext, useState } from "react";
 
 type SideBarContextType = {
   isOpen: boolean;
@@ -8,11 +7,15 @@ type SideBarContextType = {
 
 const SideBarContext = createContext<SideBarContextType | undefined>(undefined);
 
-export const SideBarProvider = ({children}: {children: React.ReactNode}) => {
+export const SideBarProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
-    <SideBarContext.Provider value={{isOpen, setIsOpen}}>
+    <SideBarContext.Provider value={{ isOpen, setIsOpen }}>
       {children}
     </SideBarContext.Provider>
   );
@@ -22,7 +25,7 @@ export const SideBarProvider = ({children}: {children: React.ReactNode}) => {
 export const useSidebar = () => {
   const context = useContext(SideBarContext);
   if (!context) {
-    throw new Error('useSideba must be used within a SideBarProvider');
+    throw new Error("useSideba must be used within a SideBarProvider");
   }
   return context;
 };

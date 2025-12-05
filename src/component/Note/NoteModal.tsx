@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useNote } from "../../Context/noteContext";
-import { useTheme } from "../../zustand/ThemeSwitcherStore";
+import { useTheme } from "../../Context/themeSwitcherContext";
 import ActionIcons from "./ActionIcons";
 
 interface NoteType {
