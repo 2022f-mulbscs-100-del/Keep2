@@ -44,7 +44,6 @@ export default function NoteModal() {
           },
         });
         const data = await response.json();
-        console.log(data);
         setValue(data);
       } catch (error) {
         console.error("Error fetching note:", error);
@@ -57,7 +56,6 @@ export default function NoteModal() {
   // Overlay click handler
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (ref.current && !ref.current.contains(e.target as Node)) {
-      console.log("Clicked outside modal");
       setShowModal(false);
       navigate("/");
     }
@@ -74,7 +72,6 @@ export default function NoteModal() {
     };
 
     setValue(updatedNote);
-    console.log("Updating note with ID:", id, "and data:", updatedNote);
     try {
       const response = await fetch(
         `http://localhost:2404/api/UpdateNotes/${id}`,
@@ -85,8 +82,7 @@ export default function NoteModal() {
         },
       );
       fetchApiData();
-      const data = await response.json();
-      console.log("Note updated:", data);
+      await response.json();
     } catch (error) {
       console.error("Error updating note:", error);
     }

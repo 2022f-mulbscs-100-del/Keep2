@@ -8,7 +8,7 @@ import { useEffect } from "react";
 const Bin = () => {
   const { layout } = useNavbar();
   const { deletedNotes, DeletedNotes } = useNote();
-  console.group("Deleted Notes:", deletedNotes);
+
   useEffect(() => {
     DeletedNotes();
   }, []);

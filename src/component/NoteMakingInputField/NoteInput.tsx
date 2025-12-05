@@ -79,7 +79,7 @@ export const NoteInput = () => {
       pinned: NotesData.pinned,
       catgeory: NotesData.catgeory,
     };
-    console.log(sendNotwe);
+
     try {
       axios
         .post("http://localhost:2404/api/addnotes", sendNotwe)

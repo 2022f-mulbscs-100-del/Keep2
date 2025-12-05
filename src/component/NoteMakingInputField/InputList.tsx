@@ -2,7 +2,6 @@ import React from "react";
 import Listitem from "./Listitem";
 import { FaPlus } from "react-icons/fa";
 import IconStyling from "../IconStyling";
-import { useNote } from "../../Context/noteContext";
 
 type InputListProps = {
   listItemIsCliced: boolean;
@@ -15,7 +14,6 @@ export const InputList = ({
   setlistItemIsCliced,
   onClicked,
 }: InputListProps) => {
-  const { listData, setlistData, setStoreListData, storeListData } = useNote();
   return (
     <>
       <div>
@@ -31,14 +29,6 @@ export const InputList = ({
 
         <div
           onClick={() => {
-            setStoreListData((prev) => [...prev, listData]);
-            setlistData({
-              id: Date.now(),
-              data: "",
-              pinned: false,
-              catgeory: "",
-            });
-            console.log(storeListData);
             if (onClicked) {
               onClicked();
             }
