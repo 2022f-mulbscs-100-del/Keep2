@@ -1,21 +1,6 @@
 import axios from "axios";
 import React, { useContext, useState, createContext, useEffect } from "react";
 
-type Note = {
-  note: string;
-  description: string;
-  id: number;
-  catgeory: string;
-  pinned: boolean;
-};
-
-type list = {
-  data: string;
-  id: number;
-  catgeory: string;
-  pinned: boolean;
-};
-
 type NoteType = {
   id: number;
   title: string;
@@ -27,46 +12,20 @@ type NoteType = {
 };
 
 type noteContextprops = {
-  StoreNoteChange: Note[];
-  setStoreNoteChange: React.Dispatch<React.SetStateAction<Note[]>>;
-  listData: list;
-  setlistData: React.Dispatch<React.SetStateAction<list>>;
-  storeListData: list[];
-  setStoreListData: React.Dispatch<React.SetStateAction<list[]>>;
-  remainderNote: Note[];
-  setremainderNote: React.Dispatch<React.SetStateAction<Note[]>>;
-  archievedNote: NoteType[];
   setArchieveNote: React.Dispatch<React.SetStateAction<NoteType[]>>;
   ArchivedNotes: () => Promise<void>;
-  NoteChange: Note;
-  setNoteChange: React.Dispatch<React.SetStateAction<Note>>;
   Ispinned: boolean;
   setIspinned: React.Dispatch<React.SetStateAction<boolean>>;
   fetchApiData: () => Promise<void>;
   items: NoteType[];
   deletedNotes: NoteType[];
   DeletedNotes: () => Promise<void>;
+  archievedNote: NoteType[];
 };
 
 const noteContext = createContext<noteContextprops | undefined>(undefined);
 
 export const NoteContext = ({ children }: { children: React.ReactNode }) => {
-  const [StoreNoteChange, setStoreNoteChange] = useState<Note[]>([]);
-  const [storeListData, setStoreListData] = useState<list[]>([]);
-  const [remainderNote, setremainderNote] = useState<Note[]>([]);
-  const [NoteChange, setNoteChange] = useState<Note>({
-    note: "",
-    description: "",
-    id: Date.now(),
-    pinned: false,
-    catgeory: "",
-  });
-  const [listData, setlistData] = useState({
-    id: Date.now(),
-    data: "",
-    pinned: false,
-    catgeory: "",
-  });
   const [archievedNote, setArchieveNote] = useState<NoteType[]>([]);
   const [Ispinned, setIspinned] = useState<boolean>(false);
   const [items, setItems] = useState<NoteType[]>([]);
@@ -83,7 +42,6 @@ export const NoteContext = ({ children }: { children: React.ReactNode }) => {
       })
       .then((data) => {
         setItems(data);
-        console.log(data);
       });
   };
 
@@ -92,7 +50,6 @@ export const NoteContext = ({ children }: { children: React.ReactNode }) => {
       .get("http://localhost:2404/api/deletedNotes")
       .then((res) => {
         setDeletedNotes(res.data);
-        console.log("Deleted notes fetched:", res.data);
       })
       .catch((error) => {
         console.error("Error fetching deleted notes:", error);
@@ -104,7 +61,6 @@ export const NoteContext = ({ children }: { children: React.ReactNode }) => {
       .get("http://localhost:2404/api/getArchivedNotes")
       .then((res) => {
         setArchieveNote(res.data);
-        console.log("Archived notes fetched:", res.data);
       })
       .catch((error) => {
         console.error("Error fetching archived notes:", error);
@@ -122,16 +78,6 @@ export const NoteContext = ({ children }: { children: React.ReactNode }) => {
       value={
         {
           ArchivedNotes,
-          storeListData,
-          setStoreListData,
-          listData,
-          setlistData,
-          setremainderNote,
-          remainderNote,
-          NoteChange,
-          setNoteChange,
-          StoreNoteChange,
-          setStoreNoteChange,
           Ispinned,
           setIspinned,
           archievedNote,

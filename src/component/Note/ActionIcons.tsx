@@ -15,12 +15,7 @@ type ActionIconsProps = {
 const ActionIcons = ({ IsHover, id, onClick }: ActionIconsProps) => {
   const { fetchApiData, DeletedNotes } = useNote();
   const inputRef = useRef<HTMLInputElement>(null);
-  const {
-    StoreNoteChange,
-    setStoreNoteChange,
-    setremainderNote,
-    ArchivedNotes,
-  } = useNote();
+  const { ArchivedNotes } = useNote();
 
   const deleteNote = (id: number) => {
     axios
@@ -88,40 +83,18 @@ const ActionIcons = ({ IsHover, id, onClick }: ActionIconsProps) => {
       });
   };
 
-  const RemainderNote = (id: number) => {
-    const PushRemainderNote = StoreNoteChange.find((item) => item.id === id);
-
-    if (PushRemainderNote) {
-      PushRemainderNote.catgeory = "/reminders";
-      setremainderNote((prev) => [...prev, PushRemainderNote]);
-    }
-    const updateNote = StoreNoteChange.filter((item) => {
-      return item.id !== id;
-    });
-    setStoreNoteChange(updateNote);
-  };
-
-  const openFileDialog = (id: number) => {
+  const openFileDialog = () => {
     inputRef.current?.click();
-    console.log("Open file dialog", id);
   };
   const UploadOnClaudinary = async (e: ChangeEvent<HTMLInputElement>) => {
-    console.log("File input changed");
-    console.log("e.target.files:", e.target.files);
     let arrayOfFiles: File[] = [];
     arrayOfFiles = Array.from(e.target.files ? e.target.files : []);
-    console.log("arrayOfFiles length:", arrayOfFiles.length);
-    console.log("Upload on claudinary", arrayOfFiles);
-
     // const backendImageUrl = arrayOfFiles.map(async(file:File)=>{
     //   const data = new FormData();
     //   //eslint-disable-next-line
     //   data.append("file",file as any);
     //   data.append("upload_preset", "keepNote");
     //   data.append("cloud_name", "dxxbj1gjf");
-
-    // console.log("files uploading to claudinary",file)
-
     //  await axios.post("https://api.cloudinary.com/v1_1/dxxbj1gjf/image/upload", data)
     //     .then((response) => {
     //       setFile(response.data.url);
@@ -135,7 +108,7 @@ const ActionIcons = ({ IsHover, id, onClick }: ActionIconsProps) => {
     // })
 
     // const fileUrl = await Promise.all(backendImageUrl);
-    // console.log("fileUrl",fileUrl)
+
     //  UploadToBackend(id, backendImageUrl.());
 
     const backendImageUrl = arrayOfFiles.map(async (file: File) => {
@@ -144,8 +117,6 @@ const ActionIcons = ({ IsHover, id, onClick }: ActionIconsProps) => {
       data.append("file", file as any);
       data.append("upload_preset", "keepNote");
       data.append("cloud_name", "dxxbj1gjf");
-
-      console.log("files uploading to cloudinary", file);
 
       try {
         const response = await axios.post(
@@ -166,7 +137,6 @@ const ActionIcons = ({ IsHover, id, onClick }: ActionIconsProps) => {
   };
 
   const UploadToBackend = (id: number, fileUrl: string[]) => {
-    console.log("Uploading to backend with fileUrl:", fileUrl);
     axios
       .put(`http://localhost:2404/api/UpdateNotes/${id}`, {
         imageUrl: fileUrl,
@@ -214,10 +184,10 @@ const ActionIcons = ({ IsHover, id, onClick }: ActionIconsProps) => {
                       ArchieveDescion(id);
                     }
                     if (item.id === 3) {
-                      RemainderNote(id);
+                      return;
                     }
                     if (item.id === 4) {
-                      openFileDialog(id);
+                      openFileDialog();
                     }
                   }}
                 >
