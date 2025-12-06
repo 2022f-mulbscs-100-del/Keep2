@@ -7,6 +7,9 @@ import NoteModal from './component/Note/NoteModal';
 import BackgroundLayout from './component/Note/BackgroundLayout';
 import Bin from './Pages/Bin/Bin';
 import Archieve from './Pages/Archieve/Archieve';
+import Login from './Pages/Auth/Login';
+import SignUp from './Pages/Auth/SignUp';
+import ForgetPassword from './Pages/Auth/ForgetPassword';
 
 interface ProviderWrapperProps {
   children: React.ReactNode;
@@ -60,6 +63,18 @@ const router = createBrowserRouter([
       {
         path: '/bin',
         element: <Bin/>
+      },
+      {
+        path:"/login",
+        element:<Login/>
+      },
+      {
+        path:"/sign-up",
+        element:<SignUp/>
+      },
+      {
+        path:"/forget-password",
+        element:<ForgetPassword/>
       },
       {
         path: '*',

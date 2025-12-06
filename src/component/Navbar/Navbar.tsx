@@ -11,11 +11,12 @@ import ThemeSwitcherButton from "../Buttons/ThemeSwitcherButton";
 import { PiCodesandboxLogo } from "react-icons/pi";
 import SandboxMoadl from "../SandboxMoadl";
 import { useState } from "react";
+import { useNote } from "../../Context/noteContext";
 
 const Navbar = () => {
   const { pathname: path } = useLocation();
   const [sandboxOpen, setSandboxOpen] = useState(false);
-
+  const {fetchApiData} = useNote();
   const { isOpen, setIsOpen } = useSidebar();
   const { layout, setLayout } = useNavbar();
   return (
@@ -47,7 +48,10 @@ const Navbar = () => {
 
         <div className="flex justify-end items-center gap-16">
           <div className="flex items-center gap-4">
-            <IoMdRefresh />
+            <IoMdRefresh 
+            className="cursor-pointer"
+            onClick={()=>{fetchApiData()}}
+            />
 
             {layout ? (
               <LuLayoutGrid
