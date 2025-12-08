@@ -9,7 +9,7 @@ import { useNavbar } from "../../Context/navbarContext";
 import { useLocation } from "react-router-dom";
 import ThemeSwitcherButton from "../Buttons/ThemeSwitcherButton";
 import { PiCodesandboxLogo } from "react-icons/pi";
-import SandboxMoadl from "../SandboxMoadl";
+import SandboxModal from "../SandboxModal";
 import { useState } from "react";
 import { useNote } from "../../Context/noteContext";
 
@@ -80,7 +80,7 @@ const Navbar = () => {
               }}
             />
             {sandboxOpen && (
-              <SandboxMoadl
+              <SandboxModal
                 onclose={() => {
                   setSandboxOpen(false);
                 }}

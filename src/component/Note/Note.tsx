@@ -90,20 +90,21 @@ const Note = ({ title, description, NotePinned, id, image }: NoteProps) => {
         </div>
         <div>
           {image && image.length > 0 && (
-            <div className="" onClick={HandleClick}>
-              <img
-                src={image[0]}
-                alt="Note"
-                className="w-full h-auto max-h-48 object-cover"
-              />
-
-              {image.length > 1 && (
-                <div className="grid grid-cols-4   ">
-                  {image.slice(1).map((item) => (
-                    <img src={item} alt="" />
-                  ))}
-                </div>
-              )}
+            <div
+              className={`grid max-h-[400px]  ${
+                image.length <= 2
+                  ? "grid-cols-2 grid-rows-1"
+                  : "grid-cols-2 grid-rows-" + image.length
+              }`}
+            >
+              {image.map((item, index) => (
+                <img
+                  key={index}
+                  className="object-cover max-h-[100px] w-full"
+                  src={item}
+                  alt=""
+                />
+              ))}
             </div>
           )}
         </div>
