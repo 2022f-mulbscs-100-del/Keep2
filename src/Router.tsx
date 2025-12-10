@@ -11,6 +11,7 @@ import Login from "./Pages/Auth/Login";
 import SignUp from "./Pages/Auth/SignUp";
 import ForgetPassword from "./Pages/Auth/ForgetPassword";
 import ProtectedRoute from "./ProtectedRoute";
+import Profile from "./Pages/Profile/Profile";
 
 interface ProviderWrapperProps {
   children: React.ReactNode;
@@ -97,6 +98,14 @@ const router = createBrowserRouter([
       {
         path: "/forget-password",
         element: <ForgetPassword />,
+      },
+      {
+        path: "/Profile",
+        element: (
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "*",

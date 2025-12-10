@@ -8,7 +8,7 @@ type UserDataType = {
   profileImage: string;
 };
 
-type UserContextType = {
+type AuthContextType = {
   userData: UserDataType | null;
   isLoading: boolean;
   LoginHandler: (loginData: LoginDatatype) => void;
@@ -16,13 +16,13 @@ type UserContextType = {
   accessToken: string | null;
 };
 
-const UserContext = createContext<UserContextType | null>(null);
+const AuthContext = createContext<AuthContextType | null>(null);
 type LoginDatatype = {
   email: string;
   password: string;
 };
 
-export const UserProvider = ({ children }: { children: React.ReactNode }) => {
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [userData, setUserData] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -65,19 +65,19 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <UserContext.Provider
+    <AuthContext.Provider
       value={{ userData, LoginHandler, isLoading, isDisable, accessToken }}
     >
       {children}
-    </UserContext.Provider>
+    </AuthContext.Provider>
   );
 };
 
 //eslint-disable-next-line
-export const useUser = () => {
-  const context = useContext(UserContext);
+export const useAuth = () => {
+  const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useUser must be used inside UserProvider");
+    throw new Error("useAuth must be used inside AuthProvider");
   }
   return context;
 };

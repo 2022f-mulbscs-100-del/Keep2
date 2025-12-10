@@ -3,7 +3,7 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 
 import { useNavigate } from "react-router-dom";
 // import { toast } from "react-toastify"
-import { useUser } from "../../Context/UserContext";
+import { useAuth } from "../../Context/AuthContext";
 import { toast } from "react-toastify";
 
 function Login() {
@@ -14,7 +14,7 @@ function Login() {
     password: "",
   });
 
-  const { LoginHandler, isLoading } = useUser();
+  const { LoginHandler, isLoading } = useAuth();
   const handlePasswordToggle = () => {
     setShowPassword(!showPassword);
   };

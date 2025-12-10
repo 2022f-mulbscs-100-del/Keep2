@@ -6,7 +6,7 @@ import Input from "../InputFields/Input";
 import { LuLayoutGrid } from "react-icons/lu";
 import { useSidebar } from "../../Context/sidebarContext";
 import { useNavbar } from "../../Context/navbarContext";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import ThemeSwitcherButton from "../Buttons/ThemeSwitcherButton";
 import { PiCodesandboxLogo } from "react-icons/pi";
 import SandboxModal from "../SandboxModal";
@@ -19,6 +19,7 @@ const Navbar = () => {
   const { fetchApiData } = useNote();
   const { isOpen, setIsOpen } = useSidebar();
   const { layout, setLayout } = useNavbar();
+  const navigate = useNavigate();
   return (
     <>
       <div className="grid grid-cols-[auto_1fr_auto]  gap-8 px-8 py-2 items-center text-[20px] border-b border-[#525355]">
@@ -90,7 +91,12 @@ const Navbar = () => {
             )}
           </div>
           <div>
-            <div className="w-[30px] h-[30px] bg-amber-900 rounded-full">
+            <div
+              className="w-[30px] h-[30px] bg-amber-900 rounded-full cursor-pointer"
+              onClick={() => {
+                navigate("/profile");
+              }}
+            >
               <img src="#" alt="" />
             </div>
           </div>

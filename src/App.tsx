@@ -8,7 +8,7 @@ import { useLayoutEffect } from "react";
 import { useTheme } from "./Context/themeSwitcherContext";
 import { ToastContainer } from "react-toastify";
 import { ThemeSwitcherProvider } from "./Context/themeSwitcherContext";
-import { UserProvider } from "./Context/UserContext";
+import { AuthProvider } from "./Context/AuthContext";
 
 export const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   const { theme } = useTheme();
@@ -24,7 +24,7 @@ export const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
 function App() {
   return (
     <ThemeSwitcherProvider>
-      <UserProvider>
+      <AuthProvider>
         <EditLabelProvider>
           <NavbarProvider>
             <SideBarProvider>
@@ -48,7 +48,7 @@ function App() {
             </SideBarProvider>
           </NavbarProvider>
         </EditLabelProvider>
-      </UserProvider>
+      </AuthProvider>
     </ThemeSwitcherProvider>
   );
 }
