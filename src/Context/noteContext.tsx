@@ -1,6 +1,5 @@
-import axios from "axios";
 import React, { useContext, useState, createContext, useEffect } from "react";
-
+import axiosClient from "../api/axiosClient";
 type NoteType = {
   id: number;
   title: string;
@@ -31,23 +30,19 @@ export const NoteContext = ({ children }: { children: React.ReactNode }) => {
   const [items, setItems] = useState<NoteType[]>([]);
   const [deletedNotes, setDeletedNotes] = useState<NoteType[]>([]);
   const fetchApiData = async () => {
-    fetch("http://localhost:2404/api/notes", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
+    axiosClient
+      .get("/notes")
       .then((res) => {
-        return res.json();
+        setItems(res.data);
       })
-      .then((data) => {
-        setItems(data);
+      .catch((error) => {
+        console.error("Error fetching notes:", error);
       });
   };
 
   const DeletedNotes = async () => {
-    axios
-      .get("http://localhost:2404/api/deletedNotes")
+    axiosClient
+      .get("/deletedNotes")
       .then((res) => {
         setDeletedNotes(res.data);
       })
@@ -57,8 +52,8 @@ export const NoteContext = ({ children }: { children: React.ReactNode }) => {
   };
 
   const ArchivedNotes = async () => {
-    axios
-      .get("http://localhost:2404/api/getArchivedNotes")
+    axiosClient
+      .get("/getArchivedNotes")
       .then((res) => {
         setArchieveNote(res.data);
       })

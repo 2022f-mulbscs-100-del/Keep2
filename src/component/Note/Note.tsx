@@ -5,10 +5,11 @@ import ActionIcons from "./ActionIcons";
 import NoteTitle from "./NoteTitle";
 import { useNavigate } from "react-router-dom";
 import { TiPin, TiPinOutline } from "react-icons/ti";
-import axios from "axios";
+
 import { useNote } from "../../Context/noteContext";
 import "react-tooltip/dist/react-tooltip.css";
 import { Tooltip } from "react-tooltip";
+import axiosClient from "../../api/axiosClient";
 type NoteProps = {
   id: number;
   title: string;
@@ -43,7 +44,7 @@ const Note = ({ title, description, NotePinned, id, image }: NoteProps) => {
   }, []);
 
   const HandlePinned = () => {
-    axios
+    axiosClient
       .patch(`http://localhost:2404/api/pinnedNotes/${id}`, {
         pinned: !NotePinned,
       })

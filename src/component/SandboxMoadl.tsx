@@ -1,8 +1,8 @@
-import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { PiCodesandboxLogo } from "react-icons/pi";
 import { useNote } from "../Context/noteContext";
 import { toast } from "react-toastify";
+import axiosClient from "../api/axiosClient";
 
 interface SandboxMoadlProps {
   onclose: () => void;
@@ -16,7 +16,7 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
 
   const generateData = () => {
     setIsLoading(true);
-    axios
+    axiosClient
       .post("http://localhost:2404/api/generateSandbox", {
         numNotes,
         useRandomData,
@@ -35,7 +35,7 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
 
   const deletedData = () => {
     setIsLoading(true);
-    axios
+    axiosClient
       .delete("http://localhost:2404/api/deleteSandbox")
       .then(() => {
         fetchApiData();
