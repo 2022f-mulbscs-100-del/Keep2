@@ -9,14 +9,14 @@ import { useNavbar } from "../../Context/navbarContext";
 import { useLocation } from "react-router-dom";
 import ThemeSwitcherButton from "../Buttons/ThemeSwitcherButton";
 import { PiCodesandboxLogo } from "react-icons/pi";
-import SandboxMoadl from "../SandboxMoadl";
+import SandboxModal from "../SandboxModal";
 import { useState } from "react";
 import { useNote } from "../../Context/noteContext";
 
 const Navbar = () => {
   const { pathname: path } = useLocation();
   const [sandboxOpen, setSandboxOpen] = useState(false);
-  const {fetchApiData} = useNote();
+  const { fetchApiData } = useNote();
   const { isOpen, setIsOpen } = useSidebar();
   const { layout, setLayout } = useNavbar();
   return (
@@ -48,9 +48,11 @@ const Navbar = () => {
 
         <div className="flex justify-end items-center gap-16">
           <div className="flex items-center gap-4">
-            <IoMdRefresh 
-            className="cursor-pointer"
-            onClick={()=>{fetchApiData()}}
+            <IoMdRefresh
+              className="cursor-pointer"
+              onClick={() => {
+                fetchApiData();
+              }}
             />
 
             {layout ? (
@@ -80,7 +82,7 @@ const Navbar = () => {
               }}
             />
             {sandboxOpen && (
-              <SandboxMoadl
+              <SandboxModal
                 onclose={() => {
                   setSandboxOpen(false);
                 }}

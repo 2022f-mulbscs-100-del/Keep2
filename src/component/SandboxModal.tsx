@@ -9,17 +9,32 @@ interface SandboxMoadlProps {
 }
 function SandboxMoadl({ onclose }: SandboxMoadlProps) {
   const [numNotes, setNumNotes] = useState<number>(0);
+  const [archiveNotes, setArchiveNotes] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
   const [useRandomData, setUseRandomData] = useState(false);
+  const [useRandomImages, setUseRandomImages] = useState(false);
   const clickRef = useRef<HTMLDivElement>(null);
   const { fetchApiData } = useNote();
 
   const generateData = () => {
+    if (numNotes === 0) {
+      toast.error("Please Enter the number of notes to generate");
+      return;
+    }
+
+    if (Number(archiveNotes) >= Number(numNotes)) {
+      console.log("archiveNotes:", archiveNotes);
+      console.log("numNotes:", numNotes);
+      toast.error("Archive notes should be less than total notes");
+      return;
+    }
     setIsLoading(true);
     axiosClient
       .post("http://localhost:2404/api/generateSandbox", {
         numNotes,
         useRandomData,
+        useRandomImages,
+        archiveNotes,
       })
       .then(() => {
         fetchApiData();
@@ -49,11 +64,18 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value);
-    if (value > 100) {
-      return;
-    } else {
-      setNumNotes(value);
+    if (e.target.name === "numNotes") {
+      const value = parseInt(e.target.value);
+      if (value > 100) {
+        return;
+      } else {
+        setNumNotes(value);
+      }
+    }
+
+    if (e.target.name === "archiveNotes") {
+      const value = parseInt(e.target.value);
+      setArchiveNotes(value);
     }
   };
 
@@ -102,14 +124,34 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
               <input
                 className="outline-none w-full"
                 type="number"
+                name="numNotes"
                 placeholder=""
                 value={numNotes}
                 max={100}
                 onChange={handleInputChange}
               />
             </div>
+            {numNotes > 0 && (
+              <div>
+                <p className="text-sm">
+                  Enter number of notes you want to Archive
+                </p>
+                <div className="flex items-center gap-4  p-1 rounded-[4px] bg-transparent border border-[#525355] ">
+                  <input
+                    className="outline-none w-full"
+                    type="number"
+                    name="archiveNotes"
+                    placeholder=""
+                    value={archiveNotes}
+                    max={100}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
+            )}
+
             <div>
-              <label className="flex items-center gap-2 text-sm">
+              <label className="flex items-center gap-2 text-sm cursor-pointer">
                 <input
                   type="checkbox"
                   className="w-4 h-4 cursor-pointer"
@@ -117,6 +159,17 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
                   onChange={(e) => setUseRandomData(e.target.checked)}
                 />
                 Generate Notes with Random Pinned
+              </label>
+            </div>
+            <div>
+              <label className="flex items-center gap-2 text-sm cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 cursor-pointer"
+                  checked={useRandomImages}
+                  onChange={(e) => setUseRandomImages(e.target.checked)}
+                />
+                Generate Notes with Random Images
               </label>
             </div>
             <button
