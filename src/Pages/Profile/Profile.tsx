@@ -1,43 +1,23 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import axiosClient from "../../api/axiosClient";
-import { useAuth } from "../../Context/AuthContext";
+// import { useAuth } from "../../Context/AuthContext";
 import axios from "axios";
-
-type ProfileDataType = {
-  name: string;
-  email: string;
-  profileImage: string;
-  phone: number | null;
-};
+import { useUser } from "../../Context/UserContext";
+import Input from "../../component/InputFields/Input";
+import Pills from "../../component/Pills/Pill";
 
 const Profile = () => {
-  const [profileData, setProfileData] = useState<ProfileDataType | null>({
-    name: "",
-    email: "",
-    profileImage: "",
-    phone: null,
-  });
-
   const imageRef = useRef<HTMLInputElement>(null);
-  const { userData } = useAuth();
-  useEffect(() => {
-    const fetchUserProfile = () => {
-      axiosClient
-        .get(`userProfile/${userData?.id}`)
-        .then((res) => setProfileData(res.data))
-        .catch((error) => console.log(error));
-    };
+  //   const { userData } = useAuth();
 
-    fetchUserProfile();
-  }, []);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setProfileData({
-      ...profileData!,
-      [name]: value,
-    });
-  };
+  const { profileData, setProfileData } = useUser();
+  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //     const { name, value } = e.target;
+  //     setProfileData({
+  //         ...profileData!,
+  //         [name]: value,
+  //     });
+  // };
 
   const UploadToCloudinary = async (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log(e.target.files?.[0]);
@@ -55,6 +35,7 @@ const Profile = () => {
             ...profileData!, // tells to TypeScript: "Trust me, profileData is not null or undefined here." non-null assertion operator.
             profileImage: res.data.url,
           });
+          console.log(res.data.url);
         })
         .catch((err) => console.error(err));
       UpdateBackend();
@@ -64,26 +45,27 @@ const Profile = () => {
   };
 
   const UpdateBackend = () => {
+    console.log(profileData);
     axiosClient
       .post("/updateProfile", { profileData })
       .then((res) => setProfileData(res.data))
       .catch((error) => console.log(error));
   };
+
   return (
     <>
       <div
-        className=" pt-10
-            grid lg:grid-cols-2 gap-4
-            md:grid-cols-1
+        className=" m-10 px-10
+        flex flex-col items-center justify-center gap-5
             "
       >
         <div
-          className="flex lg:justify-end
+          className="flex lg:justify-start
                 md:justify-center
                 "
         >
           <div
-            className="h-[250px] rounded-[15px] max-w-[400px] min-w-[400px] bg-black/10 cursor-pointer z-10  "
+            className="h-[200px] w-[200px] rounded-full  bg-black/10 cursor-pointer z-10 overflow-hidden  "
             onClick={() => imageRef.current?.click()}
           >
             <img
@@ -93,51 +75,31 @@ const Profile = () => {
             />
           </div>
         </div>
+
         <div
-          className="flex lg:flex-col lg:justify-center
-                xsm:flex-row xsm:justify-center
+          className="flex lg:flex-col
+                xsm:flex-row w-full
                 "
         >
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-4   lg:max-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-[#525355] ">
-              <input
-                className="outline-none w-full"
-                type="text"
-                placeholder="Name"
-                name="name"
-                value={profileData?.name}
-                onChange={handleChange}
-              />
+          <div className="flex items-center flex-col gap-2">
+            <div>
+              <h2 className="text-4xl font-bold">{profileData?.name}</h2>
             </div>
-            <div className="flex items-center gap-4 max-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-[#525355] ">
-              <input
-                className="outline-none w-full"
-                type="email"
-                placeholder="Email"
-                name="email"
-                value={profileData?.email}
-                disabled={true}
-              />
-            </div>
-            <div className="flex items-center gap-4 max-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-[#525355] ">
-              <input
-                className="outline-none w-full"
-                type="text"
-                placeholder="Phone"
-                name="phone"
-                value={profileData?.phone ?? ""}
-              />
-            </div>
-            <div className="hover:bg-[#52535596] flex items-center gap-4 max-w-[400px] justify-center cursor-pointer  p-2 mt-4 rounded-lg">
-              <button
-                onClick={UpdateBackend}
-                className="cursor-pointer"
-                type="submit"
-              >
-                Save Changes
-              </button>
+            <div>
+              <h2 className=" ">{profileData?.email}</h2>
             </div>
           </div>
+        </div>
+
+        <div className=""></div>
+      </div>
+      <div className="flex flex-col gap-4 max-w-[600px] m-auto ">
+        <Input />
+        <div className="flex justify-center items-center gap-4">
+          <Pills title="Passwords" />
+          <Pills title="Delete Account" />
+          <Pills title="Theme" />
+          <Pills title="Logout" />
         </div>
       </div>
 

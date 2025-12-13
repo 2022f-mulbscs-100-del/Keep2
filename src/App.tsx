@@ -9,6 +9,7 @@ import { useTheme } from "./Context/themeSwitcherContext";
 import { ToastContainer } from "react-toastify";
 import { ThemeSwitcherProvider } from "./Context/themeSwitcherContext";
 import { AuthProvider } from "./Context/AuthContext";
+import { UserProvider } from "./Context/UserContext";
 
 export const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   const { theme } = useTheme();
@@ -25,29 +26,31 @@ function App() {
   return (
     <ThemeSwitcherProvider>
       <AuthProvider>
-        <EditLabelProvider>
-          <NavbarProvider>
-            <SideBarProvider>
-              <NoteContext>
-                <ToastContainer
-                  position="bottom-left"
-                  autoClose={4000}
-                  hideProgressBar={true}
-                  newestOnTop={true}
-                  closeOnClick
-                  rtl={false}
-                  pauseOnFocusLoss
-                  draggable
-                  pauseOnHover
-                  theme="dark"
-                />
-                <LayoutWrapper>
-                  <RouterProvider router={router} />
-                </LayoutWrapper>
-              </NoteContext>
-            </SideBarProvider>
-          </NavbarProvider>
-        </EditLabelProvider>
+        <UserProvider>
+          <EditLabelProvider>
+            <NavbarProvider>
+              <SideBarProvider>
+                <NoteContext>
+                  <ToastContainer
+                    position="bottom-left"
+                    autoClose={4000}
+                    hideProgressBar={true}
+                    newestOnTop={true}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="dark"
+                  />
+                  <LayoutWrapper>
+                    <RouterProvider router={router} />
+                  </LayoutWrapper>
+                </NoteContext>
+              </SideBarProvider>
+            </NavbarProvider>
+          </EditLabelProvider>
+        </UserProvider>
       </AuthProvider>
     </ThemeSwitcherProvider>
   );

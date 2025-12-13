@@ -12,6 +12,8 @@ import { PiCodesandboxLogo } from "react-icons/pi";
 import SandboxModal from "../SandboxModal";
 import { useState } from "react";
 import { useNote } from "../../Context/noteContext";
+import { useUser } from "../../Context/UserContext";
+import { Tooltip } from "react-tooltip";
 
 const Navbar = () => {
   const { pathname: path } = useLocation();
@@ -19,6 +21,7 @@ const Navbar = () => {
   const { fetchApiData } = useNote();
   const { isOpen, setIsOpen } = useSidebar();
   const { layout, setLayout } = useNavbar();
+  const { profileData } = useUser();
   const navigate = useNavigate();
   return (
     <>
@@ -32,11 +35,12 @@ const Navbar = () => {
                 setIsOpen(!isOpen);
               }}
             />
-
             <h1>
-              {path === "/" || path.slice(0, 6) === "/notes"
-                ? `Keeper`
-                : path.slice(1, 2).toUpperCase() + path.slice(2)}
+              {path === "/setting" || path.startsWith("/setting/")
+                ? path.slice(9, 10).toUpperCase() + path.slice(10)
+                : path === "/" || path.slice(0, 6) === "/notes"
+                  ? `Keeper`
+                  : path.slice(1, 2).toUpperCase() + path.slice(2)}
             </h1>
           </div>
         </div>
@@ -49,12 +53,17 @@ const Navbar = () => {
 
         <div className="flex justify-end items-center gap-16">
           <div className="flex items-center gap-4">
-            <IoMdRefresh
-              className="cursor-pointer"
-              onClick={() => {
-                fetchApiData();
-              }}
-            />
+            <div
+              data-tooltip-id="refresh-tooltip"
+              data-tooltip-content="Refresh"
+            >
+              <IoMdRefresh
+                className="cursor-pointer"
+                onClick={() => {
+                  fetchApiData();
+                }}
+              />
+            </div>
 
             {layout ? (
               <LuLayoutGrid
@@ -72,16 +81,33 @@ const Navbar = () => {
               />
             )}
 
-            <IoSettingsOutline />
-            <ThemeSwitcherButton />
-
-            <PiCodesandboxLogo
-              className="cursor-pointer"
-              onClick={(e) => {
-                e.stopPropagation();
-                setSandboxOpen(true);
-              }}
-            />
+            <div
+              data-tooltip-id="setting-tooltip"
+              data-tooltip-content="Settings"
+            >
+              <IoSettingsOutline
+                className="cursor-pointer"
+                onClick={() => navigate("/setting/personal-info")}
+              />
+            </div>
+            <div
+              data-tooltip-id="theme-switcher-tooltip"
+              data-tooltip-content="Change Theme"
+            >
+              <ThemeSwitcherButton />
+            </div>
+            <div
+              data-tooltip-id="sandbox-tooltip"
+              data-tooltip-content="Sandbox"
+            >
+              <PiCodesandboxLogo
+                className="cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSandboxOpen(true);
+                }}
+              />
+            </div>
             {sandboxOpen && (
               <SandboxModal
                 onclose={() => {
@@ -90,18 +116,27 @@ const Navbar = () => {
               />
             )}
           </div>
-          <div>
+          <div data-tooltip-id="profile-tooltip" data-tooltip-content="Profile">
             <div
-              className="w-[30px] h-[30px] bg-amber-900 rounded-full cursor-pointer"
+              className="w-[30px] h-[30px] bg-amber-900 rounded-full cursor-pointer overflow-hidden"
               onClick={() => {
                 navigate("/profile");
               }}
             >
-              <img src="#" alt="" />
+              <img
+                className="object-cover w-full h-full "
+                src={profileData?.profileImage}
+                alt=""
+              />
             </div>
           </div>
         </div>
       </div>
+      <Tooltip id="refresh-tooltip" place="top" />
+      <Tooltip id="theme-switcher-tooltip" place="top" />
+      <Tooltip id="sandbox-tooltip" place="top" />
+      <Tooltip id="profile-tooltip" place="top" />
+      <Tooltip id="setting-tooltip" place="top" />
     </>
   );
 };
