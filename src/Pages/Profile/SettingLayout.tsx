@@ -7,6 +7,7 @@ import Theme from "../Settings/Theme";
 import Logout from "../Settings/Logout";
 import PersonalInfo from "../Settings/PersonalInfo";
 import UserPrefrence from "../Settings/UserPrefrence";
+import SubscriptionPage from "../Settings/SubscriptionPage";
 
 const SettingLayout = ({ children }: { children: React.ReactNode }) => {
   const { id } = useParams();
@@ -16,7 +17,7 @@ const SettingLayout = ({ children }: { children: React.ReactNode }) => {
       <div className="flex-1">
         {id === undefined && children}
         {id === "personal-info" && <PersonalInfo />}
-        {id === "subscription" && <PersonalInfo />}
+        {id === "subscription" && <SubscriptionPage />}
         {id === "user-preferences" && <UserPrefrence />}
         {id === "security" && <Security />}
         {id === "delete-account" && <DeleteAccount />}
