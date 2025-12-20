@@ -9,7 +9,7 @@ import { FaBell } from "react-icons/fa";
 import { TbLabelFilled } from "react-icons/tb";
 import { useEditLaber } from "../../Context/editLabelContext";
 import Dialougebox from "../EditLabelDialougebox";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useSidebar } from "../../Context/sidebarContext";
 
 const Sidebar = () => {
@@ -67,6 +67,11 @@ const Sidebar = () => {
     });
   }
 
+  const { pathname } = useLocation();
+  console.log("the current path is", pathname);
+  // const pathname = location.split("/")[1];
+  console.log(pathname);
+
   const { isOpen } = useSidebar();
   return (
     <>
@@ -82,10 +87,12 @@ const Sidebar = () => {
             return (
               <Link to={item.path} key={item.id}>
                 <li
-                  className={`py-4 h-[50px] ${isOpen ? `pl-4 ml-0 w-[250px] rounded-r-[25px]` : `pl-0 ml-4 w-[50px] rounded-full`} flex     overflow-hidden   gap-4 ${isActive === item.id ? `bg-[#41331C]` : "hover:bg-[#36363898]"} `}
+                  className={`py-4 h-[50px] ${isOpen ? `pl-4 ml-0 w-[250px] rounded-r-[25px]` : `pl-0 ml-4 w-[50px] rounded-full`} flex     overflow-hidden   gap-4 ${isActive && (pathname === item.path ? `bg-[#41331C]` : "hover:bg-[#36363898]")} `}
                   key={item.id}
                   onClick={() => {
                     HandleClick(item.id);
+                    console.log("the actice path", item.path);
+                    console.log("the actice location", pathname);
                   }}
                 >
                   <div

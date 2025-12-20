@@ -22,3 +22,4 @@ task
 *.njsproj
 *.sln
 *.sw?
+.env

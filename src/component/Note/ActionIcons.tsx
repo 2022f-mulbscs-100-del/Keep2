@@ -3,9 +3,11 @@ import IconStyling from "../IconStyling";
 import { useNote } from "../../Context/noteContext";
 import IconsArray, { DeleteIconsArray } from "../../../public/Data.js";
 import { useLocation } from "react-router-dom";
-import axios from "axios";
 import { toast } from "react-toastify";
 import { useRef, type ChangeEvent } from "react";
+import axiosClient from "../../api/axiosClient.js";
+import axios from "axios";
+
 type ActionIconsProps = {
   IsHover: boolean;
   id: number;
@@ -18,7 +20,7 @@ const ActionIcons = ({ IsHover, id, onClick }: ActionIconsProps) => {
   const { ArchivedNotes } = useNote();
 
   const deleteNote = (id: number) => {
-    axios
+    axiosClient
       .put(`http://localhost:2404/api/UpdateNotes/${id}`, {
         isDeleted: true,
       })
@@ -34,7 +36,7 @@ const ActionIcons = ({ IsHover, id, onClick }: ActionIconsProps) => {
   };
 
   const RestoreNote = (id: number) => {
-    axios
+    axiosClient
       .put(`http://localhost:2404/api/UpdateNotes/${id}`, {
         isDeleted: false,
       })
@@ -57,7 +59,7 @@ const ActionIcons = ({ IsHover, id, onClick }: ActionIconsProps) => {
   };
 
   const ForeverDelete = (id: number) => {
-    axios
+    axiosClient
       .delete(`http://localhost:2404/api/deleteNotes/${id}`)
       .then(() => {
         DeletedNotes();
@@ -69,7 +71,7 @@ const ActionIcons = ({ IsHover, id, onClick }: ActionIconsProps) => {
   };
 
   const archieveNote = (id: number) => {
-    axios
+    axiosClient
       .put(`http://localhost:2404/api/UpdateNotes/${id}`, {
         isArchived: true,
       })
@@ -137,7 +139,7 @@ const ActionIcons = ({ IsHover, id, onClick }: ActionIconsProps) => {
   };
 
   const UploadToBackend = (id: number, fileUrl: string[]) => {
-    axios
+    axiosClient
       .put(`http://localhost:2404/api/UpdateNotes/${id}`, {
         imageUrl: fileUrl,
       })
@@ -150,7 +152,7 @@ const ActionIcons = ({ IsHover, id, onClick }: ActionIconsProps) => {
       });
   };
   const UnarchievedNote = (id: number) => {
-    axios
+    axiosClient
       .put(`http://localhost:2404/api/UpdateNotes/${id}`, {
         isArchived: false,
       })

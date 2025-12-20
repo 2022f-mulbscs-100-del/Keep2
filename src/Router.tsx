@@ -1,15 +1,20 @@
-import React from 'react';
-import {createBrowserRouter, Outlet} from 'react-router-dom';
-import ErrorBoundary from './ErrorHandling/ErrorBoundary';
-import Home from './Pages/Home/Home';
-import Layout from './Layout';
-import NoteModal from './component/Note/NoteModal';
-import BackgroundLayout from './component/Note/BackgroundLayout';
-import Bin from './Pages/Bin/Bin';
-import Archieve from './Pages/Archieve/Archieve';
-import Login from './Pages/Auth/Login';
-import SignUp from './Pages/Auth/SignUp';
-import ForgetPassword from './Pages/Auth/ForgetPassword';
+import React from "react";
+import { createBrowserRouter, Outlet } from "react-router-dom";
+import ErrorBoundary from "./ErrorHandling/ErrorBoundary";
+import Home from "./Pages/Home/Home";
+import Layout from "./Layout";
+import NoteModal from "./component/Note/NoteModal";
+import BackgroundLayout from "./component/Note/BackgroundLayout";
+import Bin from "./Pages/Bin/Bin";
+import Archieve from "./Pages/Archieve/Archieve";
+import Login from "./Pages/Auth/Login";
+import SignUp from "./Pages/Auth/SignUp";
+import ForgetPassword from "./Pages/Auth/ForgetPassword";
+import ProtectedRoute from "./ProtectedRoute";
+import Profile from "./Pages/Profile/Profile";
+import Setting from "./Pages/Settings/Setting";
+import SettingLayout from "./Pages/Profile/SettingLayout";
+import PersonalInfo from "./Pages/Settings/PersonalInfo";
 
 interface ProviderWrapperProps {
   children: React.ReactNode;
@@ -27,7 +32,7 @@ const ProviderWrapper: React.FC<ProviderWrapperProps> = () => {
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: (
       <ProviderWrapper>
         <div />
@@ -35,53 +40,108 @@ const router = createBrowserRouter([
     ),
     children: [
       {
-        path: '/',
-        element: <Home />
+        path: "/",
+        element: (
+          <ProtectedRoute>
+            <Home />
+          </ProtectedRoute>
+        ),
       },
       {
-        path: '/notes/:id',
+        path: "/notes/:id",
         element: (
           <BackgroundLayout>
             <NoteModal />
           </BackgroundLayout>
-        )
+        ),
       },
       {
-        path: '/reminders',
-        element: <div>Reminders</div>
+        path: "/reminders",
+        element: (
+          <ProtectedRoute>
+            <div>Reminders</div>
+          </ProtectedRoute>
+        ),
       },
       {
-        path: '/editlabel'
+        path: "/editlabel",
+        element: (
+          <ProtectedRoute>
+            <div>Edit Label</div>
+          </ProtectedRoute>
+        ),
       },
       {
-        path: '/editlabel/:title'
+        path: "/editlabel/:title",
       },
       {
-        path: '/archieve',
-        element: <Archieve/>
+        path: "/archieve",
+        element: (
+          <ProtectedRoute>
+            <Archieve />
+          </ProtectedRoute>
+        ),
       },
       {
-        path: '/bin',
-        element: <Bin/>
+        path: "/bin",
+        element: (
+          <ProtectedRoute>
+            <Bin />
+          </ProtectedRoute>
+        ),
       },
       {
-        path:"/login",
-        element:<Login/>
+        path: "/login",
+        element: <Login />,
       },
       {
-        path:"/sign-up",
-        element:<SignUp/>
+        path: "/sign-up",
+        element: <SignUp />,
       },
       {
-        path:"/forget-password",
-        element:<ForgetPassword/>
+        path: "/forget-password",
+        element: <ForgetPassword />,
       },
       {
-        path: '*',
-        element: <div>404</div>
-      }
-    ]
-  }
+        path: "/setting",
+        element: <Setting />,
+      },
+      {
+        path: "/profile",
+        element: (
+          <ProtectedRoute>
+            <SettingLayout>
+              <Profile />
+            </SettingLayout>
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/setting/personal-info",
+        element: (
+          <ProtectedRoute>
+            <SettingLayout>
+              <PersonalInfo />
+            </SettingLayout>
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/setting/:id",
+        element: (
+          <ProtectedRoute>
+            <SettingLayout>
+              <PersonalInfo />
+            </SettingLayout>
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "*",
+        element: <div>404</div>,
+      },
+    ],
+  },
 ]);
 
 export default router;

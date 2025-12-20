@@ -7,7 +7,7 @@ import { CiViewList } from "react-icons/ci";
 import { InputList } from "./InputList";
 import IconsArray from "../../../public/Data";
 import { useNote } from "../../Context/noteContext";
-import axios from "axios";
+import axiosClient from "../../api/axiosClient";
 
 export const NoteInput = () => {
   interface NoteType {
@@ -81,7 +81,7 @@ export const NoteInput = () => {
     };
 
     try {
-      axios
+      axiosClient
         .post("http://localhost:2404/api/addnotes", sendNotwe)
         .then(() => {
           fetchApiData();
