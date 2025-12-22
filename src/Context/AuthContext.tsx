@@ -1,5 +1,6 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
+import { ExtractName } from "../utils/ExtractName";
 
 type UserDataType = {
   id: number;
@@ -45,7 +46,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
   }, []);
 
-  const LoginHandler = (loginData: LoginDatatype) => {
+  const LoginHandler = async (loginData: LoginDatatype) => {
     setIsLoading(true);
     axios
       .post("http://localhost:2404/api/login", loginData, {
@@ -62,6 +63,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         console.log(err);
         setIsLoading(false);
       });
+
+    try {
+      const response = await axios.post(
+        "http://localhost:2404/api/send-email",
+        {
+          email: loginData.email,
+          name: ExtractName(loginData.email),
+          templateId: 1,
+          params: {
+            name: ExtractName(loginData.email),
+          },
+        },
+      );
+
+      console.log("Email sent successfully:", response.data);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
