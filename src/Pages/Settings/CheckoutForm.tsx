@@ -41,9 +41,7 @@ export default function CheckoutForm() {
   if (!stripe || !elements) {
     return (
       <div className="m-auto w-full p-10">
-        <h1 className="text-3xl font-bold mb-6 text-center">
-          User Preferences
-        </h1>
+        <h1 className="text-3xl font-bold mb-6 text-center">Subscription</h1>
         <Placeholder height="250px" borderRadius="8px" />
       </div>
     );
@@ -53,9 +51,7 @@ export default function CheckoutForm() {
     <>
       {!paymentStatus ? (
         <div className="m-auto w-full p-10">
-          <h1 className="text-3xl font-bold mb-6 text-center">
-            User Preferences
-          </h1>
+          <h1 className="text-3xl font-bold mb-6 text-center">Subscription</h1>
 
           <form onSubmit={handleSubmit} style={{ margin: "auto" }}>
             <div style={{ height: isLoading ? "250px" : "" }}>
