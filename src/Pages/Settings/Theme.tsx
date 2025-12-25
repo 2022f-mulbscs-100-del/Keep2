@@ -1,14 +1,18 @@
 import { IoSunnyOutline, IoMoonOutline } from "react-icons/io5";
+import SettingHeader from "../../component/settingHeader/SettingHeader";
 
 const Theme = () => {
   const handleThemeSelect = (theme: string) => {
-    console.log(`${theme} theme selected`);
     localStorage.setItem("themeMode", theme);
   };
 
   return (
-    <div className="m-auto w-full p-10">
-      <h1 className="text-3xl font-bold mb-6 text-center">Theme Settings</h1>
+    <div
+      className="m-auto w-full 
+        md:p-10
+    xsm:p-4"
+    >
+      <SettingHeader title="Theme Settings" />
 
       <div className="mx-auto border border-[#525355] rounded-[10px] p-6">
         {/* Light Theme Option */}

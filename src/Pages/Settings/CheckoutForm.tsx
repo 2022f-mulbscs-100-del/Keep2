@@ -6,6 +6,7 @@ import {
 import { useState } from "react";
 import { toast } from "react-toastify";
 import Placeholder from "../../component/Placeholder/Placeholder";
+import SettingHeader from "../../component/settingHeader/SettingHeader";
 
 type Status = string;
 
@@ -40,8 +41,12 @@ export default function CheckoutForm() {
 
   if (!stripe || !elements) {
     return (
-      <div className="m-auto w-full p-10">
-        <h1 className="text-3xl font-bold mb-6 text-center">Subscription</h1>
+      <div
+        className="m-auto w-full 
+          md:p-10
+    xsm:p-4"
+      >
+        <SettingHeader title="Subscription" />
         <Placeholder height="250px" borderRadius="8px" />
       </div>
     );
@@ -50,11 +55,17 @@ export default function CheckoutForm() {
   return (
     <>
       {!paymentStatus ? (
-        <div className="m-auto w-full p-10">
-          <h1 className="text-3xl font-bold mb-6 text-center">Subscription</h1>
-
+        <div
+          className="m-auto w-full 
+          md:p-10
+          xsm:p-4"
+        >
+          <SettingHeader title="Subscription" />
           <form onSubmit={handleSubmit} style={{ margin: "auto" }}>
-            <div style={{ height: isLoading ? "250px" : "" }}>
+            <div
+              className="height-[250px]"
+              style={{ height: isLoading ? "250px" : "" }}
+            >
               {isLoading && (
                 <div style={{}}>
                   <Placeholder height="250px" borderRadius="8px" />

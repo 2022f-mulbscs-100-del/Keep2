@@ -8,13 +8,16 @@ import Logout from "../Settings/Logout";
 import PersonalInfo from "../Settings/PersonalInfo";
 import UserPrefrence from "../Settings/UserPrefrence";
 import SubscriptionPage from "../Settings/SubscriptionPage";
+import { useScreenSize } from "../../component/CustomHooks/useScreenSize";
 
 const SettingLayout = ({ children }: { children: React.ReactNode }) => {
   const { id } = useParams();
-  console.log(id);
+  const { isMobile, isTablet, size } = useScreenSize();
+  console.log("isMobile:", isMobile, "isTablet:", isTablet);
+  console.log("size", size);
   return (
     <div className="flex  ">
-      <div className="flex-1">
+      <div className={`${!isMobile && !isTablet ? "flex-1" : "w-full"}  `}>
         {id === undefined && children}
         {id === "personal-info" && <PersonalInfo />}
         {id === "subscription" && <SubscriptionPage />}
@@ -24,7 +27,11 @@ const SettingLayout = ({ children }: { children: React.ReactNode }) => {
         {id === "appearance" && <Theme />}
         {id === "logout" && <Logout />}
       </div>
-      <ProfileSidebar />
+      {size >= 1000 && (
+        <div>
+          <ProfileSidebar />
+        </div>
+      )}
     </div>
   );
 };

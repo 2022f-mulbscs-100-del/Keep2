@@ -1,6 +1,6 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
-import { ExtractName } from "../utils/ExtractName";
+import { toast } from "react-toastify";
 
 type UserDataType = {
   id: number;
@@ -15,6 +15,7 @@ type AuthContextType = {
   LoginHandler: (loginData: LoginDatatype) => void;
   isDisable: boolean;
   accessToken: string | null;
+  SignUpHandler: (signUpData: SignUpDatatype) => void;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -23,6 +24,11 @@ type LoginDatatype = {
   password: string;
 };
 
+type SignUpDatatype = {
+  name: string;
+  email: string;
+  password: string;
+};
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [userData, setUserData] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
@@ -64,28 +70,68 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setIsLoading(false);
       });
 
-    try {
-      const response = await axios.post(
-        "http://localhost:2404/api/send-email",
-        {
-          email: loginData.email,
-          name: ExtractName(loginData.email),
-          templateId: 1,
-          params: {
-            name: ExtractName(loginData.email),
-          },
-        },
-      );
+    // try {
+    //   const response = await axios.post(
+    //     "http://localhost:2404/api/send-email",
+    //     {
+    //       email: loginData.email,
+    //       name: ExtractName(loginData.email),
+    //       templateId: 1,
+    //       params: {
+    //         name: ExtractName(loginData.email),
+    //       },
+    //     },
+    //   );
 
-      console.log("Email sent successfully:", response.data);
-    } catch (error) {
-      console.error(error);
-    }
+    //   console.log("Email sent successfully:", response.data);
+    // } catch (error) {
+    //   console.error(error);
+    // }
   };
 
+  const SignUpHandler = async (signUpData: SignUpDatatype) => {
+    try {
+      setIsLoading(true);
+
+      const res = await axios.post(
+        "http://localhost:2404/api/signup",
+        signUpData,
+      );
+
+      setUserData(res.data.rest);
+      setAccessToken(res.data.accessToken);
+      sessionStorage.setItem("accessToken", res.data.accessToken);
+      localStorage.setItem("userData", JSON.stringify(res.data.rest));
+      toast.success("SignUp Successfull");
+
+      const emailRes = await axios.post(
+        "http://localhost:2404/api/send-email",
+        {
+          email: signUpData.email,
+          name: signUpData.name,
+          templateId: 1,
+          params: { name: signUpData.name },
+        },
+      );
+      console.log("Email sent successfully:", emailRes.data);
+      return res;
+    } catch (error) {
+      console.error("Signup failed:", error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
     <AuthContext.Provider
-      value={{ userData, LoginHandler, isLoading, isDisable, accessToken }}
+      value={{
+        userData,
+        LoginHandler,
+        isLoading,
+        isDisable,
+        accessToken,
+        SignUpHandler,
+      }}
     >
       {children}
     </AuthContext.Provider>

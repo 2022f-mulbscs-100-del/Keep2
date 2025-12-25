@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import CheckoutForm from "./CheckoutForm";
 import axiosClient from "../../api/axiosClient";
 import Placeholder from "../../component/Placeholder/Placeholder";
+import SettingHeader from "../../component/settingHeader/SettingHeader";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 export default function SubscriptionPage() {
@@ -66,10 +67,12 @@ export default function SubscriptionPage() {
 
   if (!clientSecret && loading) {
     return (
-      <div className="m-auto w-full p-10">
-        <h1 className="text-3xl font-bold mb-6 text-center">
-          User Preferences
-        </h1>
+      <div
+        className="m-auto w-full 
+          md:p-10
+    xsm:p-4"
+      >
+        <SettingHeader title="Subscription" />
         <Placeholder height="250px" borderRadius="8px" />
       </div>
     );

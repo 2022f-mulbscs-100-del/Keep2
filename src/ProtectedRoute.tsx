@@ -5,7 +5,11 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { userData, isLoading } = useAuth();
   console.log("ProtectedRoute - userData:", userData);
   console.log("ProtectedRoute - isLoading:", isLoading);
-  return <>{!isLoading && (userData ? children : <Navigate to="/login" />)}</>;
+  return (
+    <>
+      {!isLoading && (userData !== null ? children : <Navigate to="/login" />)}
+    </>
+  );
 };
 
 export default ProtectedRoute;

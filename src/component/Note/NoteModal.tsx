@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useNote } from "../../Context/noteContext";
 import { useTheme } from "../../Context/themeSwitcherContext";
 import ActionIcons from "./ActionIcons";
+import axiosClient from "../../api/axiosClient";
 
 interface NoteType {
   id: number;
@@ -37,14 +38,7 @@ export default function NoteModal() {
     const fetchNote = async () => {
       setShowModal(true);
       try {
-        const response = await fetch(`http://localhost:2404/api/notes/${id}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        const data = await response.json();
-        setValue(data);
+        axiosClient.get(`/notes/${id}`).then((res) => setValue(res.data));
       } catch (error) {
         console.error("Error fetching note:", error);
       }
@@ -72,17 +66,10 @@ export default function NoteModal() {
     };
 
     setValue(updatedNote);
+
     try {
-      const response = await fetch(
-        `http://localhost:2404/api/UpdateNotes/${id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updatedNote),
-        },
-      );
+      axiosClient.put(`/notes/${id}`, updatedNote);
       fetchApiData();
-      await response.json();
     } catch (error) {
       console.error("Error updating note:", error);
     }

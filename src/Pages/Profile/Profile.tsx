@@ -5,8 +5,11 @@ import axios from "axios";
 import { useUser } from "../../Context/UserContext";
 import Input from "../../component/InputFields/Input";
 import Pills from "../../component/Pills/Pill";
+import ProfileLowerSidebar from "./ProfileLowerSIdebar";
+import { useScreenSize } from "../../component/CustomHooks/useScreenSize";
 
 const Profile = () => {
+  const { size } = useScreenSize();
   const imageRef = useRef<HTMLInputElement>(null);
   //   const { userData } = useAuth();
 
@@ -36,16 +39,15 @@ const Profile = () => {
             profileImage: res.data.url,
           });
           console.log(res.data.url);
+          UpdateBackend();
         })
         .catch((err) => console.error(err));
-      UpdateBackend();
     } catch (error) {
       console.log(error);
     }
   };
 
   const UpdateBackend = () => {
-    console.log(profileData);
     axiosClient
       .post("/updateProfile", { profileData })
       .then((res) => setProfileData(res.data))
@@ -55,18 +57,25 @@ const Profile = () => {
   return (
     <>
       <div
-        className=" m-10 px-10
-        flex flex-col items-center justify-center gap-5
-            "
+        className=" 
+        flex  items-center justify-center gap-5    flex-col
+      md:m-10 md:px-10
+        xsm:m-2   
+        transition-all duration-300
+        "
       >
         <div
           className="flex lg:justify-start
-                md:justify-center
-                "
+                md:justify-center   "
         >
           <div
-            className="h-[200px] w-[200px] rounded-full  bg-black/10 cursor-pointer z-10 overflow-hidden  "
-            onClick={() => imageRef.current?.click()}
+            className="md:h-[200px] md:w-[200px] rounded-full  bg-black/10 cursor-pointer z-10 overflow-hidden  
+            
+            xsm:h-[150px] xsm:w-[150px]
+            "
+            onClick={() => {
+              imageRef.current?.click();
+            }}
           >
             <img
               className="w-full h-full object-cover "
@@ -77,25 +86,40 @@ const Profile = () => {
         </div>
 
         <div
-          className="flex lg:flex-col
+          className="flex lg:flex-col  justify-center items-center 
+          lg:text-center
                 xsm:flex-row w-full
+
                 "
         >
-          <div className="flex items-center flex-col gap-2">
+          <div className="flex  flex-col gap-2 text-center">
             <div>
-              <h2 className="text-4xl font-bold">{profileData?.name}</h2>
+              <h2
+                className="md:text-4xl font-bold
+              xms:text-[22px]
+              "
+              >
+                {profileData?.name}
+              </h2>
             </div>
             <div>
-              <h2 className=" ">{profileData?.email}</h2>
+              <h2
+                className=" 
+              xsm:text-[14px]
+              "
+              >
+                {profileData?.email}
+              </h2>
             </div>
           </div>
         </div>
 
         <div className=""></div>
       </div>
-      <div className="flex flex-col gap-4 max-w-[600px] m-auto ">
+
+      <div className="flex flex-wrap flex-col gap-4 m-auto p-2  ">
         <Input />
-        <div className="flex justify-center items-center gap-4">
+        <div className="flex flex-wrap justify-center items-center gap-4">
           <Pills title="Passwords" />
           <Pills title="Delete Account" />
           <Pills title="Theme" />
@@ -103,6 +127,11 @@ const Profile = () => {
         </div>
       </div>
 
+      {size < 1000 && (
+        <div className="flex justify-center items-center mt-4">
+          <ProfileLowerSidebar />
+        </div>
+      )}
       <input
         ref={imageRef}
         className="hidden"

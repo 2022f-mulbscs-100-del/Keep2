@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaRegLightbulb } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { IoMdArchive } from "react-icons/io";
@@ -11,11 +11,13 @@ import { useEditLaber } from "../../Context/editLabelContext";
 import Dialougebox from "../EditLabelDialougebox";
 import { Link, useLocation } from "react-router-dom";
 import { useSidebar } from "../../Context/sidebarContext";
+import { useScreenSize } from "../CustomHooks/useScreenSize";
 
 const Sidebar = () => {
   const { label } = useEditLaber();
   const [isActive, setisActive] = useState<number | null>(null);
 
+  const { size, isMobile, isTablet } = useScreenSize();
   const HandleClick = (id: number) => {
     setisActive(id);
   };
@@ -67,17 +69,18 @@ const Sidebar = () => {
     });
   }
 
-  const { pathname } = useLocation();
-  console.log("the current path is", pathname);
-  // const pathname = location.split("/")[1];
-  console.log(pathname);
+  useEffect(() => {
+    if (isMobile || isTablet) {
+      setIsOpen(false);
+    }
+  }, [size]);
 
-  const { isOpen } = useSidebar();
+  const { pathname } = useLocation();
+
+  const { isOpen, setIsOpen } = useSidebar();
   return (
     <>
-      <div
-        className={`   ${isOpen ? "w-[250px]" : `w-[100px]`} cursor-pointer `}
-      >
+      <div className={`   ${isOpen ? "w-[250px]" : `w-fit`} cursor-pointer `}>
         <ul
           className={`py-4 
                 transition-all 
@@ -87,12 +90,10 @@ const Sidebar = () => {
             return (
               <Link to={item.path} key={item.id}>
                 <li
-                  className={`py-4 h-[50px] ${isOpen ? `pl-4 ml-0 w-[250px] rounded-r-[25px]` : `pl-0 ml-4 w-[50px] rounded-full`} flex     overflow-hidden   gap-4 ${isActive && (pathname === item.path ? `bg-[#41331C]` : "hover:bg-[#36363898]")} `}
+                  className={`py-4 h-[50px] ${isOpen ? `pl-4 ml-0 w-[250px] rounded-r-[25px]` : `pl-0  w-[50px] rounded-full md:ml-4`} flex     overflow-hidden   gap-4 hover:bg-[#36363898] ${isActive && (pathname === item.path ? `bg-[#41331C]` : "hover:bg-[#36363898]")} `}
                   key={item.id}
                   onClick={() => {
                     HandleClick(item.id);
-                    console.log("the actice path", item.path);
-                    console.log("the actice location", pathname);
                   }}
                 >
                   <div

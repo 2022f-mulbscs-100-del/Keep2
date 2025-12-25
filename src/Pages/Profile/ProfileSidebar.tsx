@@ -60,7 +60,7 @@ const ProfileSidebar = () => {
 
   // const [active, setactive] = useState(0);
   const { pathname } = useLocation();
-  console.log(pathname);
+
   return (
     <div className="flex justify-end mr-10 mt-5">
       <div className=" w-fit flex justify-end">
