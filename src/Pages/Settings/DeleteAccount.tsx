@@ -1,4 +1,5 @@
 import { IoTrashOutline } from "react-icons/io5";
+import SettingHeader from "../../component/settingHeader/SettingHeader";
 
 const DeleteAccount = () => {
   const handleDelete = () => {
@@ -7,8 +8,12 @@ const DeleteAccount = () => {
   };
 
   return (
-    <div className="m-auto w-full p-10">
-      <h1 className="text-3xl font-bold mb-6 text-center">Security Settings</h1>
+    <div
+      className="m-auto w-full 
+        md:p-10
+    xsm:p-4"
+    >
+      <SettingHeader title="Delete Account" />
 
       <div className="mx-auto border border-[#525355] rounded-[10px] p-6">
         <div className="flex items-center gap-4 mb-4">

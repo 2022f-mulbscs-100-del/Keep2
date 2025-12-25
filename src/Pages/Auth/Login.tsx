@@ -31,8 +31,10 @@ function Login() {
   const HandleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     LoginHandler(loginData);
-    toast.success("login successfull");
-    navigate("/");
+    if (sessionStorage.getItem("accessToken")) {
+      toast.success("login successfull");
+      navigate("/");
+    }
   };
   return (
     <>
@@ -100,15 +102,14 @@ function Login() {
             </div>
           </div>
 
-          <div className="hover:bg-[#52535596] cursor-pointer flex justify-center p-2 mt-4 rounded-lg">
-            <button
-              disabled={isLoading}
-              className="cursor-pointer"
-              type="submit"
-            >
-              {isLoading ? "Loading..." : "Login"}
-            </button>
-          </div>
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="hover:bg-[#52535596] cursor-pointer flex justify-center p-2 mt-4 rounded-lg w-full disabled:cursor-not-allowed disabled:opacity-60
+  "
+          >
+            {isLoading ? "Loading..." : "Login"}
+          </button>
         </div>
       </form>
     </>

@@ -1,5 +1,7 @@
 import { IoExitOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import SettingHeader from "../../component/settingHeader/SettingHeader";
+import axios from "axios";
 
 const Logout = () => {
   const navigate = useNavigate();
@@ -7,12 +9,26 @@ const Logout = () => {
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("userData");
+    sessionStorage.removeItem("accessToken");
     navigate("/login");
+
+    axios
+      .get("http://localhost:2404/api/logout", { withCredentials: true })
+      .then((response) => {
+        console.log("Logged out from server:", response.data);
+      })
+      .catch((error) => {
+        console.error("Error logging out from server:", error);
+      });
   };
 
   return (
-    <div className="m-auto w-full p-10">
-      <h1 className="text-3xl font-bold mb-6 text-center">Security Settings</h1>
+    <div
+      className="m-auto w-full 
+        md:p-10
+    xsm:p-4"
+    >
+      <SettingHeader title="Logout Settings" />
 
       <div className="mx-auto border border-[#525355] rounded-[10px] p-6">
         <div className="flex items-center gap-4 mb-4">

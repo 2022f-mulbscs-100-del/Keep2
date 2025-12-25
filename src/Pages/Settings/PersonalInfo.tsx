@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { IoCallOutline, IoMailOutline, IoPersonOutline } from "react-icons/io5";
 import Pills from "../../component/Pills/Pill";
 import axiosClient from "../../api/axiosClient";
+import SettingHeader from "../../component/settingHeader/SettingHeader";
 
 const PersonalInfo = () => {
   const [profileData, setProfileData] = useState({
@@ -48,8 +49,14 @@ const PersonalInfo = () => {
 
   const [showSecondaryEmailField, setShowSecondaryEmailField] = useState(false);
   return (
-    <div className="m-auto w-full p-10">
-      <h1 className="text-3xl font-bold mb-6 text-center">Account Settings</h1>
+    <div
+      className="m-auto w-full 
+    md:p-10
+    xsm:p-4
+    "
+    >
+      <SettingHeader title="Account Settings" />
+
       <div
         className="flex justify-end"
         onClick={() => {

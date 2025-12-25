@@ -23,8 +23,6 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
     }
 
     if (Number(archiveNotes) >= Number(numNotes)) {
-      console.log("archiveNotes:", archiveNotes);
-      console.log("numNotes:", numNotes);
       toast.error("Archive notes should be less than total notes");
       return;
     }

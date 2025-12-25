@@ -5,6 +5,7 @@ import {
 } from "react-icons/io5";
 import { useState } from "react";
 import Pills from "../../component/Pills/Pill";
+import SettingHeader from "../../component/settingHeader/SettingHeader";
 
 // type ShowBlockProps = {
 //   showBlock: string[];
@@ -16,10 +17,16 @@ const UserPrefrence = () => {
   const [showBlock, setShowBlock] = useState<string[] | null>(["auto-logout"]);
 
   return (
-    <div className="m-auto w-full p-10">
-      <h1 className="text-3xl font-bold mb-6 text-center">User Preferences</h1>
+    <div
+      className="m-auto w-full 
+       md:p-10
+    xsm:p-4
+    
+    "
+    >
+      <SettingHeader title="User Preference Settings" />
 
-      <div className="flex justify-end mb-5 gap-4">
+      <div className="flex justify-end mb-5 gap-4 flex-wrap">
         <div
           onClick={() => {
             setShowBlock((prev) =>

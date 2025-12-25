@@ -2,7 +2,7 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import { IoMdRefresh } from "react-icons/io";
 import { TbLayoutList } from "react-icons/tb";
 import { IoSettingsOutline } from "react-icons/io5";
-import Input from "../InputFields/Input";
+// import Input from "../InputFields/Input";
 import { LuLayoutGrid } from "react-icons/lu";
 import { useSidebar } from "../../Context/sidebarContext";
 import { useNavbar } from "../../Context/navbarContext";
@@ -14,6 +14,7 @@ import { useState } from "react";
 import { useNote } from "../../Context/noteContext";
 import { useUser } from "../../Context/UserContext";
 import { Tooltip } from "react-tooltip";
+import { useScreenSize } from "../CustomHooks/useScreenSize";
 
 const Navbar = () => {
   const { pathname: path } = useLocation();
@@ -23,9 +24,21 @@ const Navbar = () => {
   const { layout, setLayout } = useNavbar();
   const { profileData } = useUser();
   const navigate = useNavigate();
+
+  const { isMobile, isTablet } = useScreenSize();
+
+  console.log("Screen size:", isMobile);
   return (
     <>
-      <div className="grid grid-cols-[auto_1fr_auto]  gap-8 px-8 py-2 items-center text-[20px] border-b border-[#525355]">
+      <div
+        className="grid grid-cols-[auto_1fr_auto]    items-center text-[20px] border-b border-[#525355]
+      
+      md:px-8 md:py-4 md:gap-8
+      xsm:p-4
+
+      transition-all duration-300
+      "
+      >
         {/* logo and title */}
         <div className=" items-center gap-30 w-[130px]">
           <div className="flex items-center gap-4">
@@ -47,75 +60,80 @@ const Navbar = () => {
 
         {/* input field */}
 
-        <div className="pr-50">
+        {/* <div className="lg:pr-50
+        ">
           <Input />
-        </div>
+        </div> */}
 
         <div className="flex justify-end items-center gap-16">
-          <div className="flex items-center gap-4">
-            <div
-              data-tooltip-id="refresh-tooltip"
-              data-tooltip-content="Refresh"
-            >
-              <IoMdRefresh
-                className="cursor-pointer"
-                onClick={() => {
-                  fetchApiData();
-                }}
-              />
-            </div>
+          {!isTablet && !isMobile && (
+            <div className="flex items-center gap-4">
+              <div
+                data-tooltip-id="refresh-tooltip"
+                data-tooltip-content="Refresh"
+              >
+                <IoMdRefresh
+                  className="cursor-pointer"
+                  onClick={() => {
+                    fetchApiData();
+                  }}
+                />
+              </div>
 
-            {layout ? (
-              <LuLayoutGrid
-                className="cursor-pointer"
-                onClick={() => {
-                  setLayout(false);
-                }}
-              />
-            ) : (
-              <TbLayoutList
-                className="cursor-pointer"
-                onClick={() => {
-                  setLayout(true);
-                }}
-              />
-            )}
+              {layout ? (
+                <LuLayoutGrid
+                  className="cursor-pointer"
+                  onClick={() => {
+                    setLayout(false);
+                  }}
+                />
+              ) : (
+                <TbLayoutList
+                  className="cursor-pointer"
+                  onClick={() => {
+                    setLayout(true);
+                  }}
+                />
+              )}
 
-            <div
-              data-tooltip-id="setting-tooltip"
-              data-tooltip-content="Settings"
-            >
-              <IoSettingsOutline
-                className="cursor-pointer"
-                onClick={() => navigate("/setting/personal-info")}
-              />
+              <div
+                data-tooltip-id="setting-tooltip"
+                data-tooltip-content="Settings"
+              >
+                <IoSettingsOutline
+                  className="cursor-pointer"
+                  onClick={() => navigate("/setting/personal-info")}
+                />
+              </div>
+
+              <div
+                data-tooltip-id="theme-switcher-tooltip"
+                data-tooltip-content="Change Theme"
+              >
+                <ThemeSwitcherButton />
+              </div>
+              <div
+                data-tooltip-id="sandbox-tooltip"
+                data-tooltip-content="Sandbox"
+              >
+                <PiCodesandboxLogo
+                  className="cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSandboxOpen(true);
+                  }}
+                />
+              </div>
+              {sandboxOpen && (
+                <SandboxModal
+                  onclose={() => {
+                    setSandboxOpen(false);
+                  }}
+                />
+              )}
             </div>
-            <div
-              data-tooltip-id="theme-switcher-tooltip"
-              data-tooltip-content="Change Theme"
-            >
-              <ThemeSwitcherButton />
-            </div>
-            <div
-              data-tooltip-id="sandbox-tooltip"
-              data-tooltip-content="Sandbox"
-            >
-              <PiCodesandboxLogo
-                className="cursor-pointer"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setSandboxOpen(true);
-                }}
-              />
-            </div>
-            {sandboxOpen && (
-              <SandboxModal
-                onclose={() => {
-                  setSandboxOpen(false);
-                }}
-              />
-            )}
-          </div>
+          )}
+
           <div data-tooltip-id="profile-tooltip" data-tooltip-content="Profile">
             <div
               className="w-[30px] h-[30px] bg-amber-900 rounded-full cursor-pointer overflow-hidden"
