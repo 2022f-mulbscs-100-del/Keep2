@@ -1,10 +1,55 @@
 import { IoTrashOutline } from "react-icons/io5";
 import SettingHeader from "../../component/settingHeader/SettingHeader";
+import axiosClient from "../../api/axiosClient";
+import { useState } from "react";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 const DeleteAccount = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [stage, setStage] = useState("deleteConfirmation");
+  const [formData, setFormData] = useState({
+    password: "",
+  });
+
+  const handlePasswordToggle = () => {
+    setShowPassword(!showPassword);
+  };
+
   const handleDelete = () => {
-    // TODO: API call for delete account
+    if (formData.password === "") {
+      toast.error("Please enter your password to delete account");
+      return;
+    }
+    axiosClient
+      .delete("/deleteProfile", {
+        data: {
+          password: formData.password,
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("userData");
+        sessionStorage.removeItem("accessToken");
+        window.location.href = "/login";
+      })
+      .catch((error) => {
+        toast.error(error.response?.data?.message || "Error deleting account");
+        console.log(error);
+      });
+
     console.log("Account deleted");
+  };
+
+  const HandleLoginFormData = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, name } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+
+    console.log({ [name]: value });
   };
 
   return (
@@ -25,13 +70,43 @@ const DeleteAccount = () => {
           Permanently delete your account and all associated data. This action
           cannot be undone.
         </p>
+        {stage === "accountDeleted" && (
+          <div className="flex items-center gap-4  px-4 min-w-[400px]  py-2 rounded-[8px] bg-transparent border border-[#525355] mb-4">
+            <input
+              className="outline-none w-full"
+              type={`${showPassword ? "text" : "password"}`}
+              placeholder="Password"
+              name="password"
+              onChange={HandleLoginFormData}
+              value={formData.password}
+            />
+
+            {!showPassword ? (
+              <FaRegEyeSlash
+                className="cursor-pointer"
+                onClick={handlePasswordToggle}
+              />
+            ) : (
+              <FaRegEye
+                className="cursor-pointer"
+                onClick={handlePasswordToggle}
+              />
+            )}
+          </div>
+        )}
 
         <div
-          onClick={handleDelete}
+          onClick={
+            stage === "deleteConfirmation"
+              ? () => setStage("accountDeleted")
+              : handleDelete
+          }
           className="hover:bg-red-500/10 cursor-pointer flex justify-center p-2 rounded-lg"
         >
           <button className="cursor-pointer text-red-400">
-            Delete Account
+            {stage === "deleteConfirmation"
+              ? "Delete My Account"
+              : "Confirm Account Deletion"}
           </button>
         </div>
       </div>
