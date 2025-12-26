@@ -34,7 +34,6 @@ function SignUp() {
       [name]: value,
     });
   };
-  //   const signUpForm
 
   const SignUpHandleFunction = async () => {
     if (!token) {
@@ -99,6 +98,7 @@ function SignUp() {
   };
   const { SignUpHandler } = useAuth();
   const navigate = useNavigate();
+
   return (
     <>
       <div className="flex justify-center items-center h-full mt-10">

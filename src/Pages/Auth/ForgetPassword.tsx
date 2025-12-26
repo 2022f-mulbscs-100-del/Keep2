@@ -70,6 +70,7 @@ function ForgetPassword() {
         email,
         code,
         password,
+        resetThroughToken: true,
       })
       .then((res) => {
         console.log(res.data);

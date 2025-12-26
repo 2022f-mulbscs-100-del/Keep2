@@ -1,7 +1,7 @@
 import type React from "react";
 import ProfileSidebar from "./ProfileSidebar";
 import { useParams } from "react-router-dom";
-import Security from "../Settings/Security";
+import Security from "../Settings/Security/Security";
 import DeleteAccount from "../Settings/DeleteAccount";
 import Theme from "../Settings/Theme";
 import Logout from "../Settings/Logout";

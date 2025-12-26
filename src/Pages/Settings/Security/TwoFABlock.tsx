@@ -1,16 +1,9 @@
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
-import SettingHeader from "../../component/settingHeader/SettingHeader";
 
-const Security = () => {
+const TwoFABlock = () => {
   return (
-    <div
-      className="m-auto w-full 
-        md:p-10
-    xsm:p-4"
-    >
-      <SettingHeader title="Security Settings" />
-
-      <div className="mx-auto border border-[#525355] rounded-[10px] p-6">
+    <>
+      <div className="mx-auto border border-[#525355] rounded-[10px] p-6 mb-4">
         <div className="flex items-center gap-4 mb-4">
           <IoShieldCheckmarkOutline className="text-2xl text-gray-400" />
           <h2 className="text-xl font-semibold">Two-Factor Authentication</h2>
@@ -25,8 +18,8 @@ const Security = () => {
           <button className="cursor-pointer">Enable 2FA</button>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
-export default Security;
+export default TwoFABlock;

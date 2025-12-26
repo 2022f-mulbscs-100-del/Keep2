@@ -11,6 +11,7 @@ type ProfileDataType = {
 type userContextType = {
   profileData: ProfileDataType | null;
   setProfileData: React.Dispatch<React.SetStateAction<ProfileDataType | null>>;
+  fetchUserProfile: () => void;
 };
 
 const UserContext = createContext<userContextType | null>(null);
@@ -34,7 +35,9 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     fetchUserProfile();
   }, []);
   return (
-    <UserContext.Provider value={{ profileData, setProfileData }}>
+    <UserContext.Provider
+      value={{ profileData, setProfileData, fetchUserProfile }}
+    >
       {children}
     </UserContext.Provider>
   );

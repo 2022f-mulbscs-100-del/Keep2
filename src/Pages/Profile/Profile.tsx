@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import axiosClient from "../../api/axiosClient";
 // import { useAuth } from "../../Context/AuthContext";
 import axios from "axios";
@@ -13,7 +13,7 @@ const Profile = () => {
   const imageRef = useRef<HTMLInputElement>(null);
   //   const { userData } = useAuth();
 
-  const { profileData, setProfileData } = useUser();
+  const { profileData, setProfileData, fetchUserProfile } = useUser();
   // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   //     const { name, value } = e.target;
   //     setProfileData({
@@ -21,6 +21,10 @@ const Profile = () => {
   //         [name]: value,
   //     });
   // };
+
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
 
   const UploadToCloudinary = async (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log(e.target.files?.[0]);
