@@ -6,12 +6,14 @@ type ProfileDataType = {
   email: string;
   profileImage: string;
   phone: number | null;
+  isTwoFaEnabled: boolean;
 };
 
 type userContextType = {
   profileData: ProfileDataType | null;
   setProfileData: React.Dispatch<React.SetStateAction<ProfileDataType | null>>;
   fetchUserProfile: () => void;
+  UpdateUserProfile: (profileData: ProfileDataType) => void;
 };
 
 const UserContext = createContext<userContextType | null>(null);
@@ -22,6 +24,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     email: "",
     profileImage: "",
     phone: null,
+    isTwoFaEnabled: false,
   });
 
   const fetchUserProfile = () => {
@@ -31,12 +34,24 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       .catch((error) => console.log(error));
   };
 
+  const UpdateUserProfile = (profileData: ProfileDataType) => {
+    axiosClient
+      .patch("/updateProfile", { profileData })
+      .then((res) => setProfileData(res.data))
+      .catch((error) => console.log(error));
+  };
+
   useEffect(() => {
     fetchUserProfile();
   }, []);
   return (
     <UserContext.Provider
-      value={{ profileData, setProfileData, fetchUserProfile }}
+      value={{
+        profileData,
+        setProfileData,
+        fetchUserProfile,
+        UpdateUserProfile,
+      }}
     >
       {children}
     </UserContext.Provider>

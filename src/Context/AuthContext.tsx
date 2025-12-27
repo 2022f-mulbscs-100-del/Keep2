@@ -16,6 +16,9 @@ type AuthContextType = {
   isDisable: boolean;
   accessToken: string | null;
   SignUpHandler: (signUpData: SignUpDatatype) => void;
+  loginStage: string;
+  TwoFaLoginHandler: (loginData: LoginDatatype, twoFaCode: string) => void;
+  setLoginStage: (stage: string) => void;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -33,6 +36,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [userData, setUserData] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [loginStage, setLoginStage] = useState("login");
   const isDisable = userData === null;
   useEffect(() => {
     setIsLoading(true);
@@ -59,13 +63,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         withCredentials: true,
       })
       .then((res) => {
-        setUserData(res.data.rest);
-        setAccessToken(res.data.accessToken);
-        sessionStorage.setItem("accessToken", res.data.accessToken);
-        localStorage.setItem("userData", JSON.stringify(res.data.rest));
-        setIsLoading(false);
+        if (res.data.message === "2FA enabled") {
+          setLoginStage("2FA");
+          setIsLoading(false);
+          return;
+        } else {
+          setLoginStage("success");
+          console.log(loginStage);
+          setUserData(res.data.rest);
+          setAccessToken(res.data.accessToken);
+          sessionStorage.setItem("accessToken", res.data.accessToken);
+          localStorage.setItem("userData", JSON.stringify(res.data.rest));
+          setIsLoading(false);
+        }
       })
       .catch((err) => {
+        setLoginStage("failed");
         console.log(err);
         setIsLoading(false);
       });
@@ -87,6 +100,32 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // } catch (error) {
     //   console.error(error);
     // }
+  };
+
+  const TwoFaLoginHandler = async (
+    loginData: LoginDatatype,
+    twoFaCode: string,
+  ) => {
+    setIsLoading(true);
+    try {
+      const res = await axios.post(
+        "http://localhost:2404/api/2fa-login",
+        { email: loginData.email, twoFaCode },
+        {
+          withCredentials: true,
+        },
+      );
+      setUserData(res.data.rest);
+      setAccessToken(res.data.accessToken);
+      sessionStorage.setItem("accessToken", res.data.accessToken);
+      localStorage.setItem("userData", JSON.stringify(res.data.rest));
+      setIsLoading(false);
+      setLoginStage("success");
+    } catch (err) {
+      setLoginStage("failed");
+      console.log(err);
+      setIsLoading(false);
+    }
   };
 
   const SignUpHandler = async (signUpData: SignUpDatatype) => {
@@ -131,6 +170,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         isDisable,
         accessToken,
         SignUpHandler,
+        loginStage,
+        TwoFaLoginHandler,
+        setLoginStage,
       }}
     >
       {children}
