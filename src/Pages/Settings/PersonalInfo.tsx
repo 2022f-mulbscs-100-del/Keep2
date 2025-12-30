@@ -28,7 +28,7 @@ const PersonalInfo = () => {
   const updateProfileData = () => {
     setIsLoading(true);
     axiosClient
-      .post("/updateProfile", { profileData })
+      .patch("/updateProfile", { profileData })
       .then((res) => {
         setProfileData(res.data);
         setIsLoading(false);
@@ -84,7 +84,9 @@ const PersonalInfo = () => {
 
         <div>
           <label className="block text-sm font-medium mb-1">Email</label>
-          <div className="flex items-center gap-4 px-4 py-2 rounded-[8px] bg-transparent border border-[#525355]">
+          <div
+            className={`flex items-center gap-4 px-4 py-2 rounded-[8px] bg-transparent border border-[#525355] `}
+          >
             <IoMailOutline className="text-gray-400" />
             <input
               className="outline-none w-full bg-transparent"
@@ -93,6 +95,7 @@ const PersonalInfo = () => {
               name="email"
               value={profileData.email}
               onChange={HandleChange}
+              disabled={true}
             />
           </div>
         </div>

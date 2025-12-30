@@ -6,7 +6,7 @@ import DeleteAccount from "../Settings/DeleteAccount";
 import Theme from "../Settings/Theme";
 import Logout from "../Settings/Logout";
 import PersonalInfo from "../Settings/PersonalInfo";
-import UserPrefrence from "../Settings/UserPrefrence";
+import UserPrefrence from "../Settings/UserPrefrences/UserPrefrence";
 import SubscriptionPage from "../Settings/SubscriptionPage";
 import { useScreenSize } from "../../component/CustomHooks/useScreenSize";
 

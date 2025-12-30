@@ -19,6 +19,7 @@ type AuthContextType = {
   loginStage: string;
   TwoFaLoginHandler: (loginData: LoginDatatype, twoFaCode: string) => void;
   setLoginStage: (stage: string) => void;
+  setUserData: React.Dispatch<React.SetStateAction<UserDataType | null>>;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -33,7 +34,7 @@ type SignUpDatatype = {
   password: string;
 };
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState<UserDataType | null>(null);
   const [accessToken, setAccessToken] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loginStage, setLoginStage] = useState("login");
@@ -52,6 +53,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       .catch((err) => {
         console.log(err);
         setUserData(null);
+        sessionStorage.removeItem("accessToken");
+        localStorage.removeItem("userData");
+        localStorage.removeItem("accessToken");
         setIsLoading(false);
       });
   }, []);
@@ -173,6 +177,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         loginStage,
         TwoFaLoginHandler,
         setLoginStage,
+        setUserData,
       }}
     >
       {children}
