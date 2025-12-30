@@ -15,7 +15,7 @@ export const ThemeSwitcherProvider = ({
   children: React.ReactNode;
 }) => {
   const [theme, setTheme] = useState(
-    localStorage.getItem(LOCAL_THEME_VALUE) || "light",
+    localStorage.getItem(LOCAL_THEME_VALUE) || "dark",
   );
 
   const settingTheme = (value: string) => {
