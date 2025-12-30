@@ -2,11 +2,13 @@ import { createContext, useContext, useEffect, useState } from "react";
 import axiosClient from "../api/axiosClient";
 
 type ProfileDataType = {
-  name: string;
-  email: string;
-  profileImage: string;
-  phone: number | null;
-  isTwoFaEnabled: boolean;
+  name?: string;
+  email?: string;
+  profileImage?: string;
+  phone?: number | null;
+  isTwoFaEnabled?: boolean;
+  autoLogoutEnabled?: boolean;
+  autoLogoutTime?: number;
 };
 
 type userContextType = {

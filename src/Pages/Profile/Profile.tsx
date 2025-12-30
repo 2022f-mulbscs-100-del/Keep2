@@ -53,7 +53,7 @@ const Profile = () => {
 
   const UpdateBackend = () => {
     axiosClient
-      .post("/updateProfile", { profileData })
+      .patch("/updateProfile", { profileData })
       .then((res) => setProfileData(res.data))
       .catch((error) => console.log(error));
   };

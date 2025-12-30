@@ -17,10 +17,6 @@ const TwoFABlock = () => {
   const handleEnable2FA = () => {
     // Logic to enable 2FA goes here
     UpdateUserProfile({
-      name: "",
-      email: "",
-      profileImage: "",
-      phone: null,
       isTwoFaEnabled: !enable2FA,
     });
     console.log("Enable 2FA clicked");
@@ -39,11 +35,12 @@ const TwoFABlock = () => {
           two-factor authentication (2FA).
         </p>
 
-        <div className="hover:bg-[#52535596] cursor-pointer flex justify-center p-2 rounded-lg">
-          <button className="cursor-pointer" onClick={handleEnable2FA}>
-            {enable2FA ? "Disable 2FA" : "Enable 2FA"}
-          </button>
-        </div>
+        <button
+          className="cursor-pointer hover:bg-[#52535596]  flex justify-center p-2 rounded-lg w-full"
+          onClick={handleEnable2FA}
+        >
+          {enable2FA ? "Disable 2FA" : "Enable 2FA"}
+        </button>
       </div>
     </>
   );

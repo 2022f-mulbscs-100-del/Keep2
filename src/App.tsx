@@ -4,12 +4,13 @@ import { NoteContext } from "./Context/noteContext";
 import { SideBarProvider } from "./Context/sidebarContext";
 import { NavbarProvider } from "./Context/navbarContext";
 import { EditLabelProvider } from "./Context/editLabelContext";
-import { useLayoutEffect } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import { useTheme } from "./Context/themeSwitcherContext";
 import { ToastContainer } from "react-toastify";
 import { ThemeSwitcherProvider } from "./Context/themeSwitcherContext";
-import { AuthProvider } from "./Context/AuthContext";
-import { UserProvider } from "./Context/UserContext";
+import { AuthProvider, useAuth } from "./Context/AuthContext";
+import { UserProvider, useUser } from "./Context/UserContext";
+import axiosClient from "./api/axiosClient";
 
 export const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   const { theme } = useTheme();
@@ -20,6 +21,89 @@ export const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
       document.documentElement.classList.add(theme);
     }
   }, [theme]);
+
+  const intervalRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { userData, setUserData } = useAuth();
+  const { profileData } = useUser();
+  useEffect(() => {
+    console.log("LayoutWrapper - useEffect running");
+    const logoutUser = () => {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("userData");
+      sessionStorage.removeItem("accessToken");
+      setUserData(null);
+      console.log("User has been logged out due to inactivity.");
+      axiosClient
+        .get("http://localhost:2404/api/logout", { withCredentials: true })
+        .then(() => {})
+        .catch((error) => {
+          console.error("Error during logout:", error);
+        });
+      window.location.reload();
+    };
+    const resetTimer = () => {
+      if (intervalRef.current) {
+        clearTimeout(intervalRef.current);
+        console.log("Timer reset due to user activity.");
+        console.log(
+          "Auto-logout setting:",
+          profileData?.autoLogoutEnabled,
+          profileData?.autoLogoutTime,
+        );
+        // axios.post("http://localhost:2404/api/auto-logout",{autoLogoutTime: 1}, { withCredentials: true,
+        //   headers:
+        //     {
+        //       Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`
+        //     }.
+
+        //  }).then(() => {}).catch((error) => {
+        //   console.error("Error refreshing token:", error);
+        // });
+      }
+
+      intervalRef.current = setTimeout(
+        () => {
+          logoutUser();
+        },
+        profileData?.autoLogoutTime
+          ? profileData?.autoLogoutTime * 60 * 1000
+          : 7 * 24 * 60 * 60 * 1000,
+      );
+      console.log(
+        "Auto-logout timer ",
+        profileData?.autoLogoutTime,
+        "minutes set.",
+      );
+      // const timestamp = Date.now() + 1000 * 10 * 1;
+      // localStorage.setItem("lastActivityTime", timestamp.toString());
+    };
+
+    const handleUserActivity = () => {
+      resetTimer();
+    };
+
+    const USER_ACTIVITY_EVENTS = [
+      "mousemove",
+      "click",
+      "keydown",
+      "scroll",
+      "touchstart",
+    ];
+
+    if (userData && profileData?.autoLogoutEnabled) {
+      console.log("Setting up auto-logout event listeners.");
+      USER_ACTIVITY_EVENTS.forEach((event) =>
+        window.addEventListener(event, handleUserActivity as EventListener),
+      );
+    }
+    return () => {
+      USER_ACTIVITY_EVENTS.forEach((event) =>
+        window.removeEventListener(event, handleUserActivity as EventListener),
+      );
+      if (intervalRef.current) clearTimeout(intervalRef.current);
+    };
+  }, [userData, profileData]);
+
   return <>{children}</>;
 };
 function App() {
