@@ -20,6 +20,13 @@ type AuthContextType = {
   TwoFaLoginHandler: (loginData: LoginDatatype, twoFaCode: string) => void;
   setLoginStage: (stage: string) => void;
   setUserData: React.Dispatch<React.SetStateAction<UserDataType | null>>;
+  setSignUpStage: (stage: string) => void;
+  signUpStage: string;
+  setAccessToken: React.Dispatch<React.SetStateAction<string | null>>;
+  SignUpConfirmation: (
+    email: string,
+    verificationCode: string,
+  ) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -29,15 +36,17 @@ type LoginDatatype = {
 };
 
 type SignUpDatatype = {
-  name: string;
-  email: string;
-  password: string;
+  name?: string;
+  email?: string;
+  password?: string;
+  code?: string;
 };
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [userData, setUserData] = useState<UserDataType | null>(null);
-  const [accessToken, setAccessToken] = useState(null);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loginStage, setLoginStage] = useState("login");
+  const [signUpStage, setSignUpStage] = useState("signUp");
   const isDisable = userData === null;
   useEffect(() => {
     setIsLoading(true);
@@ -69,6 +78,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       .then((res) => {
         if (res.data.message === "2FA enabled") {
           setLoginStage("2FA");
+          setIsLoading(false);
+          return;
+        } else if (res.data.message === "verify email") {
+          setLoginStage("verifyEmail");
           setIsLoading(false);
           return;
         } else {
@@ -106,6 +119,40 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // }
   };
 
+  const SignUpConfirmation = async (
+    email: string,
+    verificationCode: string,
+  ) => {
+    try {
+      const res = await axios.post(
+        "http://localhost:2404/api/signUpConfirmation",
+        {
+          email,
+          code: verificationCode,
+        },
+      );
+      setLoginStage("success");
+      setUserData(res.data.rest);
+      setAccessToken(res.data.accessToken);
+      sessionStorage.setItem("accessToken", res.data.accessToken);
+      localStorage.setItem("userData", JSON.stringify(res.data.rest));
+      setIsLoading(false);
+      const emailRes = await axios.post(
+        "http://localhost:2404/api/send-email",
+        {
+          email: email,
+          name: res.data.rest?.name,
+          templateId: 1,
+          params: { name: res.data.rest?.name },
+        },
+      );
+      console.log("Email sent successfully:", emailRes.data);
+    } catch (error) {
+      setLoginStage("Invalid verification code");
+      console.error("Email confirmation failed:", error);
+    }
+  };
+
   const TwoFaLoginHandler = async (
     loginData: LoginDatatype,
     twoFaCode: string,
@@ -140,24 +187,28 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         "http://localhost:2404/api/signup",
         signUpData,
       );
+      if (res.data.message === "verify email") {
+        setSignUpStage("verifyEmail");
+      } else {
+        setSignUpStage("success");
+        setUserData(res.data.rest);
+        setAccessToken(res.data.accessToken);
+        sessionStorage.setItem("accessToken", res.data.accessToken);
+        localStorage.setItem("userData", JSON.stringify(res.data.rest));
+        toast.success("SignUp Successfull");
 
-      setUserData(res.data.rest);
-      setAccessToken(res.data.accessToken);
-      sessionStorage.setItem("accessToken", res.data.accessToken);
-      localStorage.setItem("userData", JSON.stringify(res.data.rest));
-      toast.success("SignUp Successfull");
-
-      const emailRes = await axios.post(
-        "http://localhost:2404/api/send-email",
-        {
-          email: signUpData.email,
-          name: signUpData.name,
-          templateId: 1,
-          params: { name: signUpData.name },
-        },
-      );
-      console.log("Email sent successfully:", emailRes.data);
-      return res;
+        const emailRes = await axios.post(
+          "http://localhost:2404/api/send-email",
+          {
+            email: signUpData.email,
+            name: signUpData.name,
+            templateId: 1,
+            params: { name: signUpData.name },
+          },
+        );
+        console.log("Email sent successfully:", emailRes.data);
+        return res;
+      }
     } catch (error) {
       console.error("Signup failed:", error);
       throw error;
@@ -178,6 +229,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         TwoFaLoginHandler,
         setLoginStage,
         setUserData,
+        setSignUpStage,
+        signUpStage,
+        setAccessToken,
+        SignUpConfirmation,
       }}
     >
       {children}

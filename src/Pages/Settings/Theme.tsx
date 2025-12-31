@@ -1,10 +1,9 @@
 import { IoSunnyOutline, IoMoonOutline } from "react-icons/io5";
 import SettingHeader from "../../component/settingHeader/SettingHeader";
+import { useTheme } from "../../Context/themeSwitcherContext";
 
 const Theme = () => {
-  const handleThemeSelect = (theme: string) => {
-    localStorage.setItem("themeMode", theme);
-  };
+  const { settingTheme } = useTheme();
 
   return (
     <div
@@ -26,7 +25,7 @@ const Theme = () => {
         </p>
 
         <div
-          onClick={() => handleThemeSelect("Light")}
+          onClick={() => settingTheme("light")}
           className="hover:bg-[#52535596] cursor-pointer flex justify-center p-2 rounded-lg mb-6"
         >
           <button className="cursor-pointer">Select Light</button>
@@ -43,7 +42,7 @@ const Theme = () => {
         </p>
 
         <div
-          onClick={() => handleThemeSelect("Dark")}
+          onClick={() => settingTheme("dark")}
           className="hover:bg-[#52535596] cursor-pointer flex justify-center p-2 rounded-lg"
         >
           <button className="cursor-pointer">Select Dark</button>
