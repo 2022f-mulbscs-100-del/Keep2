@@ -11,6 +11,8 @@ function Login() {
   const navigate = useNavigate();
   const [TwoFa, setTwoFa] = useState(false);
   const [twoFaCode, setTwoFaCode] = useState("");
+  const [verificationCode, setVerificationCode] = useState("");
+  const [emailVerifcation, setEmailVerification] = useState(false);
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
@@ -22,6 +24,7 @@ function Login() {
     loginStage,
     TwoFaLoginHandler,
     setLoginStage,
+    SignUpConfirmation,
   } = useAuth();
   const handlePasswordToggle = () => {
     setShowPassword(!showPassword);
@@ -65,6 +68,9 @@ function Login() {
       if (loginStage === "2FA") {
         setTwoFa(true);
       }
+      if (loginStage === "verifyEmail") {
+        setEmailVerification(true);
+      }
     }
   }, [loginStage]);
 
@@ -81,13 +87,27 @@ function Login() {
         setLoginStage("login");
       } else if (loginStage === "failed") {
         toast.error("Invalid 2FA code. Please try again.");
+      } else if (loginStage === "Invalid verification code") {
+        toast.error("Invalid verification code. Please try again.");
       }
     }
   }, [loginStage]);
 
+  const HandleEmailVerification = (e: React.FormEvent<HTMLFormElement>) => {
+    if (!emailVerifcation) {
+      return;
+    }
+    if (verificationCode.length === 0) {
+      toast.error("Please enter the verification code.");
+      return;
+    }
+    e.preventDefault();
+    SignUpConfirmation(loginData.email, verificationCode);
+  };
+
   return (
     <>
-      {!TwoFa && (
+      {!TwoFa && !emailVerifcation && (
         <form
           onSubmit={HandleLogin}
           className="flex justify-center items-center h-full mt-10"
@@ -183,6 +203,42 @@ function Login() {
                     name="2faCode"
                     value={twoFaCode}
                     onChange={(e) => setTwoFaCode(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="hover:bg-[#52535596] mt-4 cursor-pointer flex justify-center p-2 mt-  4 rounded-lg w-full disabled:cursor-not-allowed disabled:opacity-60
+  "
+              >
+                {isLoading ? "Loading..." : "Verify"}
+              </button>
+            </div>
+          </div>
+        </form>
+      )}
+
+      {emailVerifcation && (
+        <form onSubmit={HandleEmailVerification}>
+          <div className="flex justify-center items-center h-full mt-10">
+            <div className="">
+              <div className="flex flex-col items-center mb-4">
+                <h1 className="font-bold text-2xl">Email Verification</h1>
+                <p>
+                  Enter the verification code sent to your email to continue
+                </p>
+              </div>
+              <div className="flex flex-col gap-4 ">
+                <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-[#525355] ">
+                  <input
+                    className="outline-none w-full"
+                    type="number"
+                    placeholder="Enter Verification Code"
+                    name="verificationCode"
+                    value={verificationCode}
+                    onChange={(e) => setVerificationCode(e.target.value)}
                   />
                 </div>
               </div>

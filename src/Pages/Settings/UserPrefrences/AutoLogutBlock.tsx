@@ -63,6 +63,8 @@ const AutoLogoutBlock = () => {
               disabled={autoLogout === false}
               onChange={(e) => setAutoLogoutTime(Number(e.target.value))}
               onBlur={HandlerAutoLogoutTime}
+              min={0}
+              max={100}
             />
           </div>
           <button
