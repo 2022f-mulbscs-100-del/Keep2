@@ -27,6 +27,7 @@ type AuthContextType = {
     email: string,
     verificationCode: string,
   ) => Promise<void>;
+  MFACodeVerification: (email: string, mfaCode: string) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -84,6 +85,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setLoginStage("verifyEmail");
           setIsLoading(false);
           return;
+        } else if (res.data.message === "MFA enabled") {
+          setLoginStage("MFA");
+          setIsLoading(false);
+          return;
         } else {
           setLoginStage("success");
           console.log(loginStage);
@@ -119,6 +124,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // }
   };
 
+  const MFACodeVerification = async (email: string, mfaCode: string) => {
+    try {
+      const res = await axios.post(
+        "http://localhost:2404/api/login-verify-mfa",
+        {
+          email,
+          token: mfaCode,
+        },
+      );
+      setUserData(res.data.rest);
+      setAccessToken(res.data.accessToken);
+      sessionStorage.setItem("accessToken", res.data.accessToken);
+      localStorage.setItem("userData", JSON.stringify(res.data.rest));
+      setIsLoading(false);
+      setLoginStage("success");
+    } catch (error) {
+      setLoginStage("failed");
+      console.error("MFA verification failed:", error);
+    }
+  };
   const SignUpConfirmation = async (
     email: string,
     verificationCode: string,
@@ -233,6 +258,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         signUpStage,
         setAccessToken,
         SignUpConfirmation,
+        MFACodeVerification,
       }}
     >
       {children}

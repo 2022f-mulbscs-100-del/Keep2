@@ -3,6 +3,7 @@ import { useState } from "react";
 import Pills from "../../../component/Pills/Pill";
 import TwoFABlock from "./TwoFABlock";
 import ResetPasswordBlock from "./ResetPasswordBlock";
+import MFABlock from "./MFABlock";
 
 const Security = () => {
   const [showBlock, setShowBlock] = useState<string[] | null>([
@@ -39,11 +40,23 @@ const Security = () => {
         >
           <Pills title="Reset password" />
         </div>
+        <div
+          onClick={() => {
+            setShowBlock((prev) =>
+              prev?.includes("MFA")
+                ? prev.filter((item) => item !== "MFA")
+                : [...(prev ?? []), "MFA"],
+            );
+          }}
+        >
+          <Pills title="MFA" />
+        </div>
       </div>
       {showBlock!.includes("reset-password") && <ResetPasswordBlock />}
       {showBlock!.includes("two-factor-authentication") && ( //this tell the compiler that we know the value of showBlock is not null
         <TwoFABlock />
       )}
+      {showBlock!.includes("MFA") && <MFABlock />}
     </div>
   );
 };

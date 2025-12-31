@@ -9,6 +9,7 @@ type ProfileDataType = {
   isTwoFaEnabled?: boolean;
   autoLogoutEnabled?: boolean;
   autoLogoutTime?: number;
+  MfaEnabled?: boolean;
 };
 
 type userContextType = {
