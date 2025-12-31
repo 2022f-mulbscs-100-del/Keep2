@@ -132,6 +132,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           email,
           token: mfaCode,
         },
+        {
+          withCredentials: true,
+        },
       );
       setUserData(res.data.rest);
       setAccessToken(res.data.accessToken);
