@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
-
 import { useNavigate } from "react-router-dom";
 // import { toast } from "react-toastify"
 import { useAuth } from "../../Context/AuthContext";
@@ -13,6 +12,8 @@ function Login() {
   const [twoFaCode, setTwoFaCode] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
   const [emailVerifcation, setEmailVerification] = useState(false);
+  const [MFAcode, setMFAcode] = useState("");
+  const [MFA, setMFA] = useState(false);
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
@@ -25,6 +26,7 @@ function Login() {
     TwoFaLoginHandler,
     setLoginStage,
     SignUpConfirmation,
+    MFACodeVerification,
   } = useAuth();
   const handlePasswordToggle = () => {
     setShowPassword(!showPassword);
@@ -71,6 +73,9 @@ function Login() {
       if (loginStage === "verifyEmail") {
         setEmailVerification(true);
       }
+      if (loginStage === "MFA") {
+        setMFA(true);
+      }
     }
   }, [loginStage]);
 
@@ -105,9 +110,14 @@ function Login() {
     SignUpConfirmation(loginData.email, verificationCode);
   };
 
+  const HandleMFAVerification = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    MFACodeVerification(loginData.email, MFAcode);
+  };
+
   return (
     <>
-      {!TwoFa && !emailVerifcation && (
+      {!TwoFa && !emailVerifcation && !MFA && (
         <form
           onSubmit={HandleLogin}
           className="flex justify-center items-center h-full mt-10"
@@ -239,6 +249,40 @@ function Login() {
                     name="verificationCode"
                     value={verificationCode}
                     onChange={(e) => setVerificationCode(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="hover:bg-[#52535596] mt-4 cursor-pointer flex justify-center p-2 mt-  4 rounded-lg w-full disabled:cursor-not-allowed disabled:opacity-60
+  "
+              >
+                {isLoading ? "Loading..." : "Verify"}
+              </button>
+            </div>
+          </div>
+        </form>
+      )}
+
+      {MFA && (
+        <form onSubmit={HandleMFAVerification}>
+          <div className="flex justify-center items-center h-full mt-10">
+            <div className="">
+              <div className="flex flex-col items-center mb-4">
+                <h1 className="font-bold text-2xl">MFA Verification</h1>
+                <p>Enter the MFA code to continue</p>
+              </div>
+              <div className="flex flex-col gap-4 ">
+                <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-[#525355] ">
+                  <input
+                    className="outline-none w-full"
+                    type="number"
+                    placeholder="Enter MFA Code"
+                    name="mfaCode"
+                    value={MFAcode}
+                    onChange={(e) => setMFAcode(e.target.value)}
                   />
                 </div>
               </div>
