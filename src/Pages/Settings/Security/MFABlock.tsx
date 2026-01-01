@@ -1,6 +1,6 @@
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import { useUser } from "../../../Context/UserContext";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axiosClient from "../../../api/axiosClient";
 
 const MFABlock = () => {
@@ -8,7 +8,7 @@ const MFABlock = () => {
   const [enableMFA, setEnableMFA] = useState(false);
   const [MFAcode, setMFAcode] = useState("");
   const [qrCode, setQrCode] = useState("");
-
+  const formRef = useRef<HTMLFormElement | null>(null);
   useEffect(() => {
     if (profileData?.MfaEnabled === true) {
       setEnableMFA(true);
@@ -57,6 +57,22 @@ const MFABlock = () => {
     setEnableMFA(false);
   };
 
+  useEffect(() => {
+    if (formRef.current === null) {
+      return;
+    }
+    if (formRef.current && MFAcode.length === 6) {
+      const timer = setTimeout(() => {
+        if (formRef.current) {
+          formRef.current.dispatchEvent(
+            new Event("submit", { cancelable: true, bubbles: true }),
+          );
+        }
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [MFAcode]);
   return (
     <>
       <div className="mx-auto border border-[#525355] rounded-[10px] p-6 mb-4">
@@ -75,16 +91,18 @@ const MFABlock = () => {
           {qrCode && (
             <>
               <img src={qrCode} alt="MFA QR Code" />
-              <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-[#525355] ">
-                <input
-                  className="outline-none w-full"
-                  type="number"
-                  placeholder="Enter MFA Code"
-                  name="mfaCode"
-                  value={MFAcode}
-                  onChange={(e) => setMFAcode(e.target.value)}
-                />
-              </div>
+              <form ref={formRef} onSubmit={CodeVerification}>
+                <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-[#525355] ">
+                  <input
+                    className="outline-none w-full"
+                    type="number"
+                    placeholder="Enter MFA Code"
+                    name="mfaCode"
+                    value={MFAcode}
+                    onChange={(e) => setMFAcode(e.target.value)}
+                  />
+                </div>
+              </form>
             </>
           )}
         </div>

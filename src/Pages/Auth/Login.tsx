@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 // import { toast } from "react-toastify"
@@ -14,6 +14,7 @@ function Login() {
   const [emailVerifcation, setEmailVerification] = useState(false);
   const [MFAcode, setMFAcode] = useState("");
   const [MFA, setMFA] = useState(false);
+  const formRef = useRef<HTMLFormElement | null>(null);
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
@@ -115,10 +116,51 @@ function Login() {
     MFACodeVerification(loginData.email, MFAcode);
   };
 
+  useEffect(() => {
+    if (formRef.current === null) {
+      return;
+    }
+    if (MFAcode.length === 6 && !isLoading && formRef.current) {
+      const timer = setTimeout(() => {
+        if (formRef.current) {
+          formRef.current.dispatchEvent(
+            new Event("submit", { cancelable: true, bubbles: true }),
+          );
+        }
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+
+    if (twoFaCode.length === 6 && !isLoading && formRef.current) {
+      const timer = setTimeout(() => {
+        if (formRef.current) {
+          formRef.current.dispatchEvent(
+            new Event("submit", { cancelable: true, bubbles: true }),
+          );
+        }
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    }
+
+    if (verificationCode.length === 6 && !isLoading && formRef.current) {
+      const timer = setTimeout(() => {
+        if (formRef.current) {
+          formRef.current.dispatchEvent(
+            new Event("submit", { cancelable: true, bubbles: true }),
+          );
+        }
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [MFAcode, isLoading, twoFaCode, verificationCode]);
+
   return (
     <>
       {!TwoFa && !emailVerifcation && !MFA && (
         <form
+          ref={formRef}
           onSubmit={HandleLogin}
           className="flex justify-center items-center h-full mt-10"
         >
@@ -195,7 +237,7 @@ function Login() {
       )}
 
       {TwoFa && (
-        <form onSubmit={Handle2FASubmit}>
+        <form ref={formRef} onSubmit={Handle2FASubmit}>
           <div className="flex justify-center items-center h-full mt-10">
             <div className="">
               <div className="flex flex-col items-center mb-4">
@@ -231,7 +273,7 @@ function Login() {
       )}
 
       {emailVerifcation && (
-        <form onSubmit={HandleEmailVerification}>
+        <form ref={formRef} onSubmit={HandleEmailVerification}>
           <div className="flex justify-center items-center h-full mt-10">
             <div className="">
               <div className="flex flex-col items-center mb-4">
@@ -267,7 +309,7 @@ function Login() {
       )}
 
       {MFA && (
-        <form onSubmit={HandleMFAVerification}>
+        <form ref={formRef} onSubmit={HandleMFAVerification}>
           <div className="flex justify-center items-center h-full mt-10">
             <div className="">
               <div className="flex flex-col items-center mb-4">
