@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../Context/AuthContext";
@@ -13,6 +13,7 @@ function SignUp() {
   const [token, setToken] = useState<string | null>(null);
   const [turnstileVerified, setTurnstileVerified] = useState(false);
   const [SignUpCode, setSignUpCode] = useState("");
+  const formRef = useRef<HTMLFormElement | null>(null);
   const [signUpForm, setSignUpForm] = useState({
     name: "",
     email: "",
@@ -137,6 +138,23 @@ function SignUp() {
   };
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (formRef.current === null) {
+      return;
+    }
+
+    if (
+      !isLoading &&
+      formRef.current &&
+      stage === "verifyEmail" &&
+      SignUpCode.length === 6
+    ) {
+      formRef.current.dispatchEvent(
+        new Event("submit", { cancelable: true, bubbles: true }),
+      );
+    }
+  }, [SignUpCode, isLoading]);
+
   return (
     <>
       {stage === "signUp" && (
@@ -238,7 +256,7 @@ function SignUp() {
       )}
 
       {stage === "verifyEmail" && (
-        <form onSubmit={HandleEmailVerifaction}>
+        <form ref={formRef} onSubmit={HandleEmailVerifaction}>
           <div className="flex justify-center items-center h-full mt-10">
             <div className="">
               <div className="flex flex-col items-center mb-4">
