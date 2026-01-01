@@ -4,11 +4,17 @@ import Pills from "../../../component/Pills/Pill";
 import TwoFABlock from "./TwoFABlock";
 import ResetPasswordBlock from "./ResetPasswordBlock";
 import MFABlock from "./MFABlock";
+import { useUser } from "../../../Context/UserContext";
 
 const Security = () => {
   const [showBlock, setShowBlock] = useState<string[] | null>([
     "two-factor-authentication",
   ]);
+
+  const { profileData } = useUser();
+
+  const CAN_SHOW_MFA_BLOCK = profileData?.MfaEnabled;
+  const CAN_SHOW_2FA_BLOCK = profileData?.isTwoFaEnabled;
 
   return (
     <div
@@ -53,10 +59,11 @@ const Security = () => {
         </div>
       </div>
       {showBlock!.includes("reset-password") && <ResetPasswordBlock />}
-      {showBlock!.includes("two-factor-authentication") && ( //this tell the compiler that we know the value of showBlock is not null
+      {(showBlock!.includes("two-factor-authentication") ||
+        CAN_SHOW_2FA_BLOCK) && ( //this tell the compiler that we know the value of showBlock is not null
         <TwoFABlock />
       )}
-      {showBlock!.includes("MFA") && <MFABlock />}
+      {(showBlock!.includes("MFA") || CAN_SHOW_MFA_BLOCK) && <MFABlock />}
     </div>
   );
 };
