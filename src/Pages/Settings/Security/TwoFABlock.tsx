@@ -1,9 +1,10 @@
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import { useUser } from "../../../Context/UserContext";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 const TwoFABlock = () => {
-  const { UpdateUserProfile, profileData } = useUser();
+  const { UpdateUserProfile, profileData, error: userError } = useUser();
   const [enable2FA, setEnable2FA] = useState(false);
 
   useEffect(() => {
@@ -22,6 +23,11 @@ const TwoFABlock = () => {
     console.log("Enable 2FA clicked");
   };
 
+  useEffect(() => {
+    if (userError) {
+      toast.error(userError);
+    }
+  }, [userError]);
   return (
     <>
       <div className="mx-auto border border-[#525355] rounded-[10px] p-6 mb-4">

@@ -4,7 +4,7 @@ import { useUser } from "../../../Context/UserContext";
 import { toast } from "react-toastify";
 
 const AutoLogoutBlock = () => {
-  const { UpdateUserProfile, profileData } = useUser();
+  const { UpdateUserProfile, profileData, error } = useUser();
 
   const [autoLogout, setAutoLogout] = useState(
     profileData?.autoLogoutEnabled || false,
@@ -38,6 +38,11 @@ const AutoLogoutBlock = () => {
     toast.success(`Auto logout time updated to ${autoLogoutTime} minutes`);
   };
 
+  useEffect(() => {
+    if (error) {
+      toast.error(typeof error === "string" ? error : "An error occurred");
+    }
+  }, [error]);
   return (
     <>
       <div className="border border-[#525355] rounded-[10px] p-6 flex items-center justify-between">
@@ -52,7 +57,7 @@ const AutoLogoutBlock = () => {
         </div>
         <div className="flex items-center gap-4">
           <div
-            className={`flex items-center gap-4 min-w-[50px]  px-4  py-2 rounded-[8px]  border border-[#525355] ${autoLogout === false ? "bg-[#36363898] cursor-not-allowed" : "bg-transparent"} `}
+            className={`flex items-center gap-4 min-w-[250px]  px-4  py-2 rounded-[8px]  border border-[#525355] ${autoLogout === false ? "bg-[#36363898] cursor-not-allowed" : "bg-transparent"} `}
           >
             <input
               className={` outline-none w-full text-white ${autoLogout === false ? " cursor-not-allowed" : ""}`}

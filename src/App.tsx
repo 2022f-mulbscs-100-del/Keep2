@@ -34,7 +34,9 @@ export const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
       setUserData(null);
       console.log("User has been logged out due to inactivity.");
       axiosClient
-        .get("http://localhost:2404/api/logout", { withCredentials: true })
+        .get("https://keep2-d798.onrender.com/api/logout", {
+          withCredentials: true,
+        })
         .then(() => {})
         .catch((error) => {
           console.error("Error during logout:", error);
@@ -50,7 +52,7 @@ export const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
           profileData?.autoLogoutEnabled,
           profileData?.autoLogoutTime,
         );
-        // axios.post("http://localhost:2404/api/auto-logout",{autoLogoutTime: 1}, { withCredentials: true,
+        // axios.post("https://keep2-d798.onrender.com/api/auto-logout",{autoLogoutTime: 1}, { withCredentials: true,
         //   headers:
         //     {
         //       Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`

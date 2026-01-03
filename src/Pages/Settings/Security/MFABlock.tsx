@@ -2,9 +2,15 @@ import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import { useUser } from "../../../Context/UserContext";
 import { useEffect, useRef, useState } from "react";
 import axiosClient from "../../../api/axiosClient";
+import { toast } from "react-toastify";
 
 const MFABlock = () => {
-  const { profileData, UpdateUserProfile, fetchUserProfile } = useUser();
+  const {
+    profileData,
+    UpdateUserProfile,
+    fetchUserProfile,
+    error: userError,
+  } = useUser();
   const [enableMFA, setEnableMFA] = useState(false);
   const [MFAcode, setMFAcode] = useState("");
   const [qrCode, setQrCode] = useState("");
@@ -73,6 +79,13 @@ const MFABlock = () => {
       return () => clearTimeout(timer);
     }
   }, [MFAcode]);
+
+  useEffect(() => {
+    if (!userError) return;
+    toast.error(userError);
+    console.error(userError);
+  }, [userError]);
+
   return (
     <>
       <div className="mx-auto border border-[#525355] rounded-[10px] p-6 mb-4">

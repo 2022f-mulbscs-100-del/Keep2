@@ -82,7 +82,7 @@ export const NoteInput = () => {
 
     try {
       axiosClient
-        .post("http://localhost:2404/api/addnotes", sendNotwe)
+        .post("https://keep2-d798.onrender.com/api/addnotes", sendNotwe)
         .then(() => {
           fetchApiData();
         })

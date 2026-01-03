@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosClient = axios.create({
-  baseURL: "http://localhost:2404/api",
+  baseURL: "https://keep2-d798.onrender.com/api",
 });
 
 axiosClient.interceptors.request.use(
@@ -27,7 +27,7 @@ axiosClient.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
-      const res = await axios.get("http://localhost:2404/refresh", {
+      const res = await axios.get("https://keep2-d798.onrender.com/refresh", {
         withCredentials: true,
       });
       console.log("New access token generated:", res.data.accessToken);
@@ -85,7 +85,7 @@ export default axiosClient;
 // import axios from "axios";
 
 // const axiosClient = axios.create({
-//     baseURL: "http://localhost:2404/api"
+//     baseURL: "https://keep2-d798.onrender.com/api"
 // });
 
 // // Queue to hold failed requests while token is being refreshed
@@ -147,7 +147,7 @@ export default axiosClient;
 //             isRefreshing = true;
 
 //             try {
-//                 const res = await axios.get("http://localhost:2404/refresh", {
+//                 const res = await axios.get("https://keep2-d798.onrender.com/refresh", {
 //                     withCredentials: true
 //                 });
 

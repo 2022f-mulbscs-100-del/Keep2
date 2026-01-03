@@ -28,93 +28,8 @@ function Login() {
     setLoginStage,
     SignUpConfirmation,
     MFACodeVerification,
+    error,
   } = useAuth();
-  const handlePasswordToggle = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const HandleLoginFormData = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value, name } = e.target;
-
-    setLoginData({
-      ...loginData,
-      [name]: value,
-    });
-    console.log(loginData);
-  };
-  const HandleLogin = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    LoginHandler(loginData);
-    // if (loginStage==="success") {
-    //   toast.success("login successfull");
-    //   navigate("/");
-    // }else if(loginStage==="2FA"){
-    //  setTwoFa(true);
-    // }
-  };
-
-  useEffect(() => {
-    if (!TwoFa) {
-      console.log("useEffect called");
-      if (loginStage === "success") {
-        toast.success("Login successful");
-        navigate("/");
-        setLoginStage("login");
-      }
-
-      if (loginStage === "failed") {
-        toast.error("Invalid credentials. Please try again.");
-        setLoginStage("login");
-        console.log("Invalid credentials. Please try again");
-      }
-
-      if (loginStage === "2FA") {
-        setTwoFa(true);
-      }
-      if (loginStage === "verifyEmail") {
-        setEmailVerification(true);
-      }
-      if (loginStage === "MFA") {
-        setMFA(true);
-      }
-    }
-  }, [loginStage]);
-
-  const Handle2FASubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    TwoFaLoginHandler(loginData, twoFaCode);
-  };
-
-  useEffect(() => {
-    if (TwoFa) {
-      if (loginStage === "success") {
-        toast.success("login successfull");
-        navigate("/");
-        setLoginStage("login");
-      } else if (loginStage === "failed") {
-        toast.error("Invalid 2FA code. Please try again.");
-      } else if (loginStage === "Invalid verification code") {
-        toast.error("Invalid verification code. Please try again.");
-      }
-    }
-  }, [loginStage]);
-
-  const HandleEmailVerification = (e: React.FormEvent<HTMLFormElement>) => {
-    if (!emailVerifcation) {
-      return;
-    }
-    if (verificationCode.length === 0) {
-      toast.error("Please enter the verification code.");
-      return;
-    }
-    e.preventDefault();
-    SignUpConfirmation(loginData.email, verificationCode);
-  };
-
-  const HandleMFAVerification = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    MFACodeVerification(loginData.email, MFAcode);
-  };
 
   useEffect(() => {
     if (formRef.current === null) {
@@ -154,7 +69,97 @@ function Login() {
 
       return () => clearTimeout(timer);
     }
-  }, [MFAcode, isLoading, twoFaCode, verificationCode]);
+  }, [MFAcode, twoFaCode, verificationCode]);
+  useEffect(() => {
+    if (!TwoFa) {
+      console.log("useEffect called");
+      if (loginStage === "success") {
+        toast.success("Login successful");
+        navigate("/");
+        setLoginStage("login");
+      }
+
+      if (loginStage === "failed") {
+        toast.error("Invalid credentials. Please try again.");
+        setLoginStage("login");
+        console.log("Invalid credentials. Please try again");
+      }
+
+      if (loginStage === "2FA") {
+        setTwoFa(true);
+      }
+      if (loginStage === "verifyEmail") {
+        setEmailVerification(true);
+      }
+      if (loginStage === "MFA") {
+        setMFA(true);
+      }
+    }
+  }, [loginStage]);
+  useEffect(() => {
+    if (TwoFa) {
+      if (loginStage === "success") {
+        toast.success("login successfull");
+        navigate("/");
+        setLoginStage("login");
+      } else if (loginStage === "failed") {
+        toast.error("Invalid 2FA code. Please try again.");
+      } else if (loginStage === "Invalid verification code") {
+        toast.error("Invalid verification code. Please try again.");
+      }
+    }
+  }, [loginStage]);
+  useEffect(() => {
+    if (error.MFAError) {
+      toast.error(typeof error === "string" ? error : error.MFAError);
+    }
+    if (error.twoFaError) {
+      toast.error(typeof error === "string" ? error : error.twoFaError);
+    }
+    if (error.signUpConfirmationError) {
+      toast.error(
+        typeof error === "string" ? error : error.signUpConfirmationError,
+      );
+    }
+    if (error.loginError) {
+      toast.error(typeof error === "string" ? error : error.loginError);
+    }
+  }, [error]);
+  const Handle2FASubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    TwoFaLoginHandler(loginData, twoFaCode);
+  };
+  const HandleEmailVerification = (e: React.FormEvent<HTMLFormElement>) => {
+    if (!emailVerifcation) {
+      return;
+    }
+    if (verificationCode.length === 0) {
+      toast.error("Please enter the verification code.");
+      return;
+    }
+    e.preventDefault();
+    SignUpConfirmation(loginData.email, verificationCode);
+  };
+  const HandleMFAVerification = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    MFACodeVerification(loginData.email, MFAcode);
+  };
+  const HandleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    LoginHandler(loginData);
+  };
+  const HandleLoginFormData = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, name } = e.target;
+
+    setLoginData({
+      ...loginData,
+      [name]: value,
+    });
+    console.log(loginData);
+  };
+  const handlePasswordToggle = () => {
+    setShowPassword(!showPassword);
+  };
 
   return (
     <>
