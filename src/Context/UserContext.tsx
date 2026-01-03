@@ -17,11 +17,15 @@ type userContextType = {
   setProfileData: React.Dispatch<React.SetStateAction<ProfileDataType | null>>;
   fetchUserProfile: () => void;
   UpdateUserProfile: (profileData: ProfileDataType) => void;
+  error?: string | null;
+  isLoading?: boolean;
 };
 
 const UserContext = createContext<userContextType | null>(null);
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [profileData, setProfileData] = useState<ProfileDataType | null>({
     name: "",
     email: "",
@@ -31,17 +35,32 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   });
 
   const fetchUserProfile = () => {
+    setIsLoading(true);
     axiosClient
       .get(`/userProfile`)
-      .then((res) => setProfileData(res.data))
-      .catch((error) => console.log(error));
+      .then((res) => {
+        setIsLoading(false);
+        setProfileData(res.data);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        setError(error.message);
+      });
   };
 
   const UpdateUserProfile = (profileData: ProfileDataType) => {
+    setIsLoading(true);
     axiosClient
       .patch("/updateProfile", { profileData })
-      .then((res) => setProfileData(res.data))
-      .catch((error) => console.log(error));
+      .then((res) => {
+        setIsLoading(false);
+        setProfileData(res.data);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        setError(error.message);
+        console.log(error);
+      });
   };
 
   useEffect(() => {
@@ -54,6 +73,8 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         setProfileData,
         fetchUserProfile,
         UpdateUserProfile,
+        error,
+        isLoading,
       }}
     >
       {children}

@@ -2,25 +2,42 @@ import { IoExitOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import SettingHeader from "../../component/settingHeader/SettingHeader";
 import axios from "axios";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 const Logout = () => {
   const navigate = useNavigate();
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const handleLogout = () => {
+    setIsLoading(true);
     localStorage.removeItem("accessToken");
     localStorage.removeItem("userData");
     sessionStorage.removeItem("accessToken");
     navigate("/login");
 
     axios
-      .get("http://localhost:2404/api/logout", { withCredentials: true })
+      .get("https://keep2-d798.onrender.com/api/logout", {
+        withCredentials: true,
+      })
       .then((response) => {
+        setIsLoading(false);
         console.log("Logged out from server:", response.data);
       })
       .catch((error) => {
+        setIsLoading(false);
+        setError(`Error logging out from server: ${error.message}`);
         console.error("Error logging out from server:", error);
       });
   };
+
+  useEffect(() => {
+    if (error) {
+      toast.error(typeof error === "string" ? error : "An error occurred");
+    }
+  }, [error]);
 
   return (
     <div
@@ -45,7 +62,9 @@ const Logout = () => {
           onClick={handleLogout}
           className="hover:bg-[#52535596] cursor-pointer flex justify-center p-2 rounded-lg"
         >
-          <button className="cursor-pointer">Logout</button>
+          <button className="cursor-pointer" disabled={isLoading}>
+            {isLoading ? "Logging out..." : "Logout"}
+          </button>
         </div>
       </div>
     </div>

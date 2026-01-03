@@ -25,7 +25,7 @@ function ForgetPassword() {
     console.log(email, code);
 
     axios
-      .post("http://localhost:2404/api/code-check", {
+      .post("https://keep2-d798.onrender.com/api/code-check", {
         email,
         code,
       })
@@ -45,7 +45,7 @@ function ForgetPassword() {
 
     console.log(email);
     axios
-      .post("http://localhost:2404/api/forget-password-token", {
+      .post("https://keep2-d798.onrender.com/api/forget-password-token", {
         email,
       })
       .then((response) => {
@@ -66,7 +66,7 @@ function ForgetPassword() {
       return;
     }
     axios
-      .post("http://localhost:2404/api/reset-password", {
+      .post("https://keep2-d798.onrender.com/api/reset-password", {
         email,
         code,
         password,

@@ -21,7 +21,7 @@ const ActionIcons = ({ IsHover, id, onClick }: ActionIconsProps) => {
 
   const deleteNote = (id: number) => {
     axiosClient
-      .put(`http://localhost:2404/api/UpdateNotes/${id}`, {
+      .put(`https://keep2-d798.onrender.com/api/UpdateNotes/${id}`, {
         isDeleted: true,
       })
       .then(() => {
@@ -37,7 +37,7 @@ const ActionIcons = ({ IsHover, id, onClick }: ActionIconsProps) => {
 
   const RestoreNote = (id: number) => {
     axiosClient
-      .put(`http://localhost:2404/api/UpdateNotes/${id}`, {
+      .put(`https://keep2-d798.onrender.com/api/UpdateNotes/${id}`, {
         isDeleted: false,
       })
       .then(() => {
@@ -60,7 +60,7 @@ const ActionIcons = ({ IsHover, id, onClick }: ActionIconsProps) => {
 
   const ForeverDelete = (id: number) => {
     axiosClient
-      .delete(`http://localhost:2404/api/deleteNotes/${id}`)
+      .delete(`https://keep2-d798.onrender.com/api/deleteNotes/${id}`)
       .then(() => {
         DeletedNotes();
         toast.success("Note deleted permanently");
@@ -72,7 +72,7 @@ const ActionIcons = ({ IsHover, id, onClick }: ActionIconsProps) => {
 
   const archieveNote = (id: number) => {
     axiosClient
-      .put(`http://localhost:2404/api/UpdateNotes/${id}`, {
+      .put(`https://keep2-d798.onrender.com/api/UpdateNotes/${id}`, {
         isArchived: true,
       })
       .then(() => {
@@ -140,7 +140,7 @@ const ActionIcons = ({ IsHover, id, onClick }: ActionIconsProps) => {
 
   const UploadToBackend = (id: number, fileUrl: string[]) => {
     axiosClient
-      .put(`http://localhost:2404/api/UpdateNotes/${id}`, {
+      .put(`https://keep2-d798.onrender.com/api/UpdateNotes/${id}`, {
         imageUrl: fileUrl,
       })
       .then(() => {
@@ -153,7 +153,7 @@ const ActionIcons = ({ IsHover, id, onClick }: ActionIconsProps) => {
   };
   const UnarchievedNote = (id: number) => {
     axiosClient
-      .put(`http://localhost:2404/api/UpdateNotes/${id}`, {
+      .put(`https://keep2-d798.onrender.com/api/UpdateNotes/${id}`, {
         isArchived: false,
       })
       .then(() => {

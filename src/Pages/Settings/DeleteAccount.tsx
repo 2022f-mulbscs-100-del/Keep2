@@ -6,6 +6,7 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { toast } from "react-toastify";
 
 const DeleteAccount = () => {
+  const [Loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [stage, setStage] = useState("deleteConfirmation");
   const [formData, setFormData] = useState({
@@ -21,6 +22,7 @@ const DeleteAccount = () => {
       toast.error("Please enter your password to delete account");
       return;
     }
+    setLoading(true);
     axiosClient
       .delete("/deleteProfile", {
         data: {
@@ -32,9 +34,11 @@ const DeleteAccount = () => {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("userData");
         sessionStorage.removeItem("accessToken");
+        setLoading(false);
         window.location.href = "/login";
       })
       .catch((error) => {
+        setLoading(false);
         toast.error(error.response?.data?.message || "Error deleting account");
         console.log(error);
       });
@@ -103,10 +107,12 @@ const DeleteAccount = () => {
           }
           className="hover:bg-red-500/10 cursor-pointer flex justify-center p-2 rounded-lg"
         >
-          <button className="cursor-pointer text-red-400">
-            {stage === "deleteConfirmation"
-              ? "Delete My Account"
-              : "Confirm Account Deletion"}
+          <button className="cursor-pointer text-red-400" disabled={Loading}>
+            {!Loading
+              ? stage === "deleteConfirmation"
+                ? "Delete My Account"
+                : "Confirm Account Deletion"
+              : "Deleting Account..."}
           </button>
         </div>
       </div>

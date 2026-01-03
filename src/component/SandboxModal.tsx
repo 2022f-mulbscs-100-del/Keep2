@@ -28,7 +28,7 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
     }
     setIsLoading(true);
     axiosClient
-      .post("http://localhost:2404/api/generateSandbox", {
+      .post("https://keep2-d798.onrender.com/api/generateSandbox", {
         numNotes,
         useRandomData,
         useRandomImages,
@@ -49,7 +49,7 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
   const deletedData = () => {
     setIsLoading(true);
     axiosClient
-      .delete("http://localhost:2404/api/deleteSandbox")
+      .delete("https://keep2-d798.onrender.com/api/deleteSandbox")
       .then(() => {
         fetchApiData();
         setIsLoading(false);

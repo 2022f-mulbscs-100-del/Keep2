@@ -7,6 +7,7 @@ import TurnstileWidget from "../../component/turnstile/Turnstile";
 import axios from "axios";
 
 function SignUp() {
+  const { SignUpHandler, isLoading, signUpStage, error } = useAuth();
   const [stage, setStage] = useState("signUp");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -20,8 +21,6 @@ function SignUp() {
     password: "",
     confirmPassword: "",
   });
-  const { SignUpHandler, isLoading, signUpStage } = useAuth();
-
   const handlePasswordToggle = (id: number) => {
     if (id === 1) {
       setShowPassword(!showPassword);
@@ -30,6 +29,22 @@ function SignUp() {
       setShowConfirmPassword(!showConfirmPassword);
     }
   };
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (error.signUpError) {
+      toast.error(error.signUpError);
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (stage === "verifyEmail") {
+      if (signUpStage === "success") {
+        toast.success("Signup successful");
+        navigate("/");
+      }
+    }
+  }, [signUpStage]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
@@ -108,21 +123,12 @@ function SignUp() {
     }
   };
 
-  useEffect(() => {
-    if (stage === "verifyEmail") {
-      if (signUpStage === "success") {
-        toast.success("Signup successful");
-        navigate("/");
-      }
-    }
-  }, [signUpStage]);
-
   const handleVerify = (token: string) => {
     setToken(token);
     console.log("Turnstile token:", token);
     if (token) {
       axios
-        .post("http://localhost:2404/api/turnstile-verify", { token })
+        .post("https://keep2-d798.onrender.com/api/turnstile-verify", { token })
         .then((response) => {
           console.log("Turnstile verification response:", response.data);
 
@@ -136,7 +142,6 @@ function SignUp() {
         });
     }
   };
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (formRef.current === null) {
@@ -153,7 +158,7 @@ function SignUp() {
         new Event("submit", { cancelable: true, bubbles: true }),
       );
     }
-  }, [SignUpCode, isLoading]);
+  }, [SignUpCode]);
 
   return (
     <>

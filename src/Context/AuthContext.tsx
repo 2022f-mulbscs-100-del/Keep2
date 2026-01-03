@@ -9,6 +9,15 @@ type UserDataType = {
   profileImage: string;
 };
 
+type ErrorType = {
+  loginError?: string | null;
+  MFAError?: string | null;
+  twoFaError?: string | null;
+  signUpConfirmationError?: string | null;
+  signUpError?: string | null;
+  refreshError?: string | null;
+};
+
 type AuthContextType = {
   userData: UserDataType | null;
   isLoading: boolean;
@@ -28,6 +37,7 @@ type AuthContextType = {
     verificationCode: string,
   ) => Promise<void>;
   MFACodeVerification: (email: string, mfaCode: string) => Promise<void>;
+  error: ErrorType;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -43,16 +53,25 @@ type SignUpDatatype = {
   code?: string;
 };
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<ErrorType>({
+    loginError: null,
+    MFAError: null,
+    twoFaError: null,
+    signUpConfirmationError: null,
+    signUpError: null,
+    refreshError: null,
+  });
   const [userData, setUserData] = useState<UserDataType | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [loginStage, setLoginStage] = useState("login");
   const [signUpStage, setSignUpStage] = useState("signUp");
   const isDisable = userData === null;
+  console.log("AuthContext userData:", error.MFAError);
   useEffect(() => {
     setIsLoading(true);
     axios
-      .get("http://localhost:2404/refresh", { withCredentials: true })
+      .get("https://keep2-d798.onrender.com/refresh", { withCredentials: true })
       .then((res) => {
         setUserData(res.data.rest);
         setAccessToken(res.data.accessToken);
@@ -61,7 +80,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setIsLoading(false);
       })
       .catch((err) => {
-        console.log(err);
+        setError({
+          ...error,
+          refreshError: err.response?.data?.message || "Error refreshing token",
+        });
         setUserData(null);
         sessionStorage.removeItem("accessToken");
         localStorage.removeItem("userData");
@@ -73,7 +95,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const LoginHandler = async (loginData: LoginDatatype) => {
     setIsLoading(true);
     axios
-      .post("http://localhost:2404/api/login", loginData, {
+      .post("https://keep2-d798.onrender.com/api/login", loginData, {
         withCredentials: true,
       })
       .then((res) => {
@@ -100,14 +122,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
       })
       .catch((err) => {
-        setLoginStage("failed");
-        console.log(err);
+        setError({
+          ...error,
+          loginError: err.response?.data?.message || "Login error",
+        });
         setIsLoading(false);
       });
 
     // try {
     //   const response = await axios.post(
-    //     "http://localhost:2404/api/send-email",
+    //     "https://keep2-d798.onrender.com/api/send-email",
     //     {
     //       email: loginData.email,
     //       name: ExtractName(loginData.email),
@@ -125,9 +149,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const MFACodeVerification = async (email: string, mfaCode: string) => {
+    setIsLoading(true);
     try {
       const res = await axios.post(
-        "http://localhost:2404/api/login-verify-mfa",
+        "https://keep2-d798.onrender.com/api/login-verify-mfa",
         {
           email,
           token: mfaCode,
@@ -142,9 +167,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       localStorage.setItem("userData", JSON.stringify(res.data.rest));
       setIsLoading(false);
       setLoginStage("success");
-    } catch (error) {
+      //eslint-disable-next-line
+    } catch (err: any) {
       setLoginStage("failed");
-      console.error("MFA verification failed:", error);
+      setError({
+        ...error,
+        MFAError: err.response?.data?.message || "MFA Verification error",
+      });
+      setIsLoading(false);
     }
   };
   const SignUpConfirmation = async (
@@ -152,8 +182,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     verificationCode: string,
   ) => {
     try {
+      setIsLoading(true);
       const res = await axios.post(
-        "http://localhost:2404/api/signUpConfirmation",
+        "https://keep2-d798.onrender.com/api/signUpConfirmation",
         {
           email,
           code: verificationCode,
@@ -166,7 +197,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       localStorage.setItem("userData", JSON.stringify(res.data.rest));
       setIsLoading(false);
       const emailRes = await axios.post(
-        "http://localhost:2404/api/send-email",
+        "https://keep2-d798.onrender.com/api/send-email",
         {
           email: email,
           name: res.data.rest?.name,
@@ -175,9 +206,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         },
       );
       console.log("Email sent successfully:", emailRes.data);
-    } catch (error) {
+      //eslint-disable-next-line
+    } catch (err: any) {
+      setIsLoading(false);
       setLoginStage("Invalid verification code");
-      console.error("Email confirmation failed:", error);
+      setError({
+        ...error,
+        signUpConfirmationError:
+          err.response?.data?.message || "Error during sign up confirmation",
+      });
     }
   };
 
@@ -188,7 +225,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setIsLoading(true);
     try {
       const res = await axios.post(
-        "http://localhost:2404/api/2fa-login",
+        "https://keep2-d798.onrender.com/api/2fa-login",
         { email: loginData.email, twoFaCode },
         {
           withCredentials: true,
@@ -200,9 +237,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       localStorage.setItem("userData", JSON.stringify(res.data.rest));
       setIsLoading(false);
       setLoginStage("success");
-    } catch (err) {
+      //eslint-disable-next-line
+    } catch (err: any) {
       setLoginStage("failed");
-      console.log(err);
+      setError({
+        ...error,
+        twoFaError: err.response?.data?.message || "2FA Login error",
+      });
       setIsLoading(false);
     }
   };
@@ -212,11 +253,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setIsLoading(true);
 
       const res = await axios.post(
-        "http://localhost:2404/api/signup",
+        "https://keep2-d798.onrender.com/api/signup",
         signUpData,
       );
       if (res.data.message === "verify email") {
         setSignUpStage("verifyEmail");
+        setIsLoading(false);
       } else {
         setSignUpStage("success");
         setUserData(res.data.rest);
@@ -226,7 +268,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         toast.success("SignUp Successfull");
 
         const emailRes = await axios.post(
-          "http://localhost:2404/api/send-email",
+          "https://keep2-d798.onrender.com/api/send-email",
           {
             email: signUpData.email,
             name: signUpData.name,
@@ -237,10 +279,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         console.log("Email sent successfully:", emailRes.data);
         return res;
       }
-    } catch (error) {
-      console.error("Signup failed:", error);
-      throw error;
-    } finally {
+      //eslint-disable-next-line
+    } catch (err: any) {
+      setError({
+        ...error,
+        signUpError: err.response?.data?.message || "Error during sign up",
+      });
       setIsLoading(false);
     }
   };
@@ -262,6 +306,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setAccessToken,
         SignUpConfirmation,
         MFACodeVerification,
+        error,
       }}
     >
       {children}

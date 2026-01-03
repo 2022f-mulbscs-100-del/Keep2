@@ -51,7 +51,7 @@ const ResetPasswordBlock = () => {
     }
 
     axiosClient
-      .post("http://localhost:2404/api/reset-password", {
+      .post("https://keep2-d798.onrender.com/api/reset-password", {
         currentPassword: formData.currentPassword,
         resetThroughToken: false,
         password: formData.password,
