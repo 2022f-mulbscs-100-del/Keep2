@@ -29,6 +29,7 @@ function Login() {
     SignUpConfirmation,
     MFACodeVerification,
     error,
+    setError,
   } = useAuth();
 
   useEffect(() => {
@@ -72,7 +73,6 @@ function Login() {
   }, [MFAcode, twoFaCode, verificationCode]);
   useEffect(() => {
     if (!TwoFa) {
-      console.log("useEffect called");
       if (loginStage === "success") {
         toast.success("Login successful");
         navigate("/");
@@ -82,7 +82,6 @@ function Login() {
       if (loginStage === "failed") {
         toast.error("Invalid credentials. Please try again.");
         setLoginStage("login");
-        console.log("Invalid credentials. Please try again");
       }
 
       if (loginStage === "2FA") {
@@ -125,6 +124,19 @@ function Login() {
       toast.error(typeof error === "string" ? error : error.loginError);
     }
   }, [error]);
+
+  useEffect(() => {
+    return () => {
+      setError({
+        loginError: null,
+        MFAError: null,
+        twoFaError: null,
+        signUpConfirmationError: null,
+        signUpError: null,
+        refreshError: null,
+      });
+    };
+  }, []);
   const Handle2FASubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     TwoFaLoginHandler(loginData, twoFaCode);
@@ -155,7 +167,6 @@ function Login() {
       ...loginData,
       [name]: value,
     });
-    console.log(loginData);
   };
   const handlePasswordToggle = () => {
     setShowPassword(!showPassword);

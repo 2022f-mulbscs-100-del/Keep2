@@ -1,4 +1,3 @@
-"use client";
 import { useEffect, useState } from "react";
 import { FaRegLightbulb } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";

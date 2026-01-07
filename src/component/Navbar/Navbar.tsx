@@ -27,7 +27,6 @@ const Navbar = () => {
 
   const { isMobile, isTablet } = useScreenSize();
 
-  console.log("Screen size:", isMobile);
   return (
     <>
       <div

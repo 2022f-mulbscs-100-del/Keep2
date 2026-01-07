@@ -20,9 +20,7 @@ const PersonalInfo = () => {
       .then((res) => {
         setProfileData(res.data);
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch(() => {});
   }, []);
 
   const updateProfileData = () => {
@@ -33,8 +31,7 @@ const PersonalInfo = () => {
         setProfileData(res.data);
         setIsLoading(false);
       })
-      .catch((error) => {
-        console.log(error);
+      .catch(() => {
         setIsLoading(false);
       });
   };

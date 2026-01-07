@@ -51,14 +51,13 @@ const ResetPasswordBlock = () => {
     }
 
     axiosClient
-      .post("https://keep2-d798.onrender.com/api/reset-password", {
+      .post(`${import.meta.env.VITE_API_BASE_URL}/api/reset-password`, {
         currentPassword: formData.currentPassword,
         resetThroughToken: false,
         password: formData.password,
         email: profileData?.email,
       })
-      .then((res) => {
-        console.log(res.data);
+      .then(() => {
         toast.success("Password Updated");
         setFormData({
           currentPassword: "",
@@ -66,9 +65,7 @@ const ResetPasswordBlock = () => {
           confirmPassword: "",
         });
       })
-      .catch((err) => {
-        console.log(err.response.data.message);
-        toast.error(err.response.data.message);
+      .catch(() => {
         setFormData({
           currentPassword: "",
           password: "",

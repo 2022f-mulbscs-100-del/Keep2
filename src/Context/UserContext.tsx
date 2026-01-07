@@ -1,28 +1,16 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import axiosClient from "../api/axiosClient";
+import type { ProfileDataType } from "../types/User.types";
 
-type ProfileDataType = {
-  name?: string;
-  email?: string;
-  profileImage?: string;
-  phone?: number | null;
-  isTwoFaEnabled?: boolean;
-  autoLogoutEnabled?: boolean;
-  autoLogoutTime?: number;
-  MfaEnabled?: boolean;
-};
-
-type userContextType = {
+const UserContext = createContext<userContextType | null>(null);
+export type userContextType = {
   profileData: ProfileDataType | null;
   setProfileData: React.Dispatch<React.SetStateAction<ProfileDataType | null>>;
-  fetchUserProfile: () => void;
-  UpdateUserProfile: (profileData: ProfileDataType) => void;
+  fetchUserProfile: () => Promise<void>;
+  UpdateUserProfile: (profileData: ProfileDataType) => Promise<ProfileDataType>;
   error?: string | null;
   isLoading?: boolean;
 };
-
-const UserContext = createContext<userContextType | null>(null);
-
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -34,7 +22,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     isTwoFaEnabled: false,
   });
 
-  const fetchUserProfile = () => {
+  const fetchUserProfile = async (): Promise<void> => {
     setIsLoading(true);
     axiosClient
       .get(`/userProfile`)
@@ -48,19 +36,20 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       });
   };
 
-  const UpdateUserProfile = (profileData: ProfileDataType) => {
-    setIsLoading(true);
-    axiosClient
-      .patch("/updateProfile", { profileData })
-      .then((res) => {
-        setIsLoading(false);
-        setProfileData(res.data);
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        setError(error.message);
-        console.log(error);
-      });
+  const UpdateUserProfile = async (
+    profileData: ProfileDataType,
+  ): Promise<ProfileDataType> => {
+    try {
+      setIsLoading(true);
+      const res = await axiosClient.patch("/updateProfile", profileData);
+      setProfileData(res.data);
+      return res.data;
+      // eslint-disable-next-line
+    } catch (error: string | any) {
+      setIsLoading(false);
+      setError(error.message);
+      throw error;
+    }
   };
 
   useEffect(() => {

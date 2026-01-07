@@ -15,12 +15,14 @@ const TwoFABlock = () => {
     }
   }, [profileData]);
 
-  const handleEnable2FA = () => {
-    // Logic to enable 2FA goes here
-    UpdateUserProfile({
-      isTwoFaEnabled: !enable2FA,
-    });
-    console.log("Enable 2FA clicked");
+  const handleEnable2FA = async () => {
+    try {
+      await UpdateUserProfile({
+        isTwoFaEnabled: !enable2FA,
+      });
+    } catch (error) {
+      toast.error("Error updating 2FA status: " + (error as Error).message);
+    }
   };
 
   useEffect(() => {

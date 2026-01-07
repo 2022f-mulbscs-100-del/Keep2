@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosClient = axios.create({
-  baseURL: "https://keep2-d798.onrender.com/api",
+  baseURL: `${import.meta.env.VITE_API_BASE_URL}/api`,
 });
 
 axiosClient.interceptors.request.use(
@@ -27,10 +27,12 @@ axiosClient.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
-      const res = await axios.get("https://keep2-d798.onrender.com/refresh", {
-        withCredentials: true,
-      });
-      console.log("New access token generated:", res.data.accessToken);
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/refresh`,
+        {
+          withCredentials: true,
+        },
+      );
       sessionStorage.setItem("accessToken", res.data.accessToken);
 
       // Retry original request
@@ -110,7 +112,6 @@ export default axiosClient;
 // axiosClient.interceptors.request.use(
 //     (config) => {
 //         const token = sessionStorage.getItem("accessToken");
-//         console.log(token);
 //         if (token) {
 //             config.headers["Authorization"] = `Bearer ${token}`;
 //         }
@@ -152,7 +153,6 @@ export default axiosClient;
 //                 });
 
 //                 const newToken = res.data.accessToken;
-//                 console.log("New access token generated:", newToken);
 
 //                 sessionStorage.setItem("accessToken", newToken);
 

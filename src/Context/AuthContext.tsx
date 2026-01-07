@@ -1,22 +1,12 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
-import { toast } from "react-toastify";
 
-type UserDataType = {
-  id: number;
-  name: string;
-  email: string;
-  profileImage: string;
-};
-
-type ErrorType = {
-  loginError?: string | null;
-  MFAError?: string | null;
-  twoFaError?: string | null;
-  signUpConfirmationError?: string | null;
-  signUpError?: string | null;
-  refreshError?: string | null;
-};
+import type {
+  LoginDatatype,
+  SignUpDatatype,
+  UserDataType,
+  ErrorType,
+} from "../types/Auth.types";
 
 type AuthContextType = {
   userData: UserDataType | null;
@@ -24,7 +14,8 @@ type AuthContextType = {
   LoginHandler: (loginData: LoginDatatype) => void;
   isDisable: boolean;
   accessToken: string | null;
-  SignUpHandler: (signUpData: SignUpDatatype) => void;
+  //eslint-disable-next-line
+  SignUpHandler: (signUpData: SignUpDatatype) => Promise<UserDataType | any>;
   loginStage: string;
   TwoFaLoginHandler: (loginData: LoginDatatype, twoFaCode: string) => void;
   setLoginStage: (stage: string) => void;
@@ -38,20 +29,12 @@ type AuthContextType = {
   ) => Promise<void>;
   MFACodeVerification: (email: string, mfaCode: string) => Promise<void>;
   error: ErrorType;
+  // ResetErrors: () => void;
+  setError: React.Dispatch<React.SetStateAction<ErrorType>>;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
-type LoginDatatype = {
-  email: string;
-  password: string;
-};
 
-type SignUpDatatype = {
-  name?: string;
-  email?: string;
-  password?: string;
-  code?: string;
-};
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<ErrorType>({
@@ -60,18 +43,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     twoFaError: null,
     signUpConfirmationError: null,
     signUpError: null,
-    refreshError: null,
+    // refreshError: null,
   });
   const [userData, setUserData] = useState<UserDataType | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [loginStage, setLoginStage] = useState("login");
   const [signUpStage, setSignUpStage] = useState("signUp");
   const isDisable = userData === null;
-  console.log("AuthContext userData:", error.MFAError);
+
   useEffect(() => {
     setIsLoading(true);
     axios
-      .get("https://keep2-d798.onrender.com/refresh", { withCredentials: true })
+      .get(`${import.meta.env.VITE_API_BASE_URL}/refresh`, {
+        withCredentials: true,
+      })
       .then((res) => {
         setUserData(res.data.rest);
         setAccessToken(res.data.accessToken);
@@ -92,10 +77,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
   }, []);
 
+  // const ResetErrors = () => {
+  //   setError({
+  //     loginError: null,
+  //     MFAError: null,
+  //     twoFaError: null,
+  //     signUpConfirmationError: null,
+  //     signUpError: null,
+  //     refreshError: null,
+  //   });
+  // }
+
   const LoginHandler = async (loginData: LoginDatatype) => {
     setIsLoading(true);
     axios
-      .post("https://keep2-d798.onrender.com/api/login", loginData, {
+      .post(`${import.meta.env.VITE_API_BASE_URL}/api/login`, loginData, {
         withCredentials: true,
       })
       .then((res) => {
@@ -113,7 +109,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           return;
         } else {
           setLoginStage("success");
-          console.log(loginStage);
+
           setUserData(res.data.rest);
           setAccessToken(res.data.accessToken);
           sessionStorage.setItem("accessToken", res.data.accessToken);
@@ -142,7 +138,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     //     },
     //   );
 
-    //   console.log("Email sent successfully:", response.data);
     // } catch (error) {
     //   console.error(error);
     // }
@@ -152,7 +147,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setIsLoading(true);
     try {
       const res = await axios.post(
-        "https://keep2-d798.onrender.com/api/login-verify-mfa",
+        `${import.meta.env.VITE_API_BASE_URL}/api/login-verify-mfa`,
         {
           email,
           token: mfaCode,
@@ -184,7 +179,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       setIsLoading(true);
       const res = await axios.post(
-        "https://keep2-d798.onrender.com/api/signUpConfirmation",
+        `${import.meta.env.VITE_API_BASE_URL}/api/signUpConfirmation`,
         {
           email,
           code: verificationCode,
@@ -196,16 +191,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       sessionStorage.setItem("accessToken", res.data.accessToken);
       localStorage.setItem("userData", JSON.stringify(res.data.rest));
       setIsLoading(false);
-      const emailRes = await axios.post(
-        "https://keep2-d798.onrender.com/api/send-email",
-        {
-          email: email,
-          name: res.data.rest?.name,
-          templateId: 1,
-          params: { name: res.data.rest?.name },
-        },
-      );
-      console.log("Email sent successfully:", emailRes.data);
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/send-email`, {
+        email: email,
+        name: res.data.rest?.name,
+        templateId: 1,
+        params: { name: res.data.rest?.name },
+      });
+
       //eslint-disable-next-line
     } catch (err: any) {
       setIsLoading(false);
@@ -225,7 +217,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setIsLoading(true);
     try {
       const res = await axios.post(
-        "https://keep2-d798.onrender.com/api/2fa-login",
+        `${import.meta.env.VITE_API_BASE_URL}/api/2fa-login`,
         { email: loginData.email, twoFaCode },
         {
           withCredentials: true,
@@ -253,22 +245,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setIsLoading(true);
 
       const res = await axios.post(
-        "https://keep2-d798.onrender.com/api/signup",
+        `${import.meta.env.VITE_API_BASE_URL}/api/signup`,
         signUpData,
       );
       if (res.data.message === "verify email") {
         setSignUpStage("verifyEmail");
         setIsLoading(false);
-      } else {
+        return res;
+      } else if (res.status === 201) {
         setSignUpStage("success");
         setUserData(res.data.rest);
         setAccessToken(res.data.accessToken);
         sessionStorage.setItem("accessToken", res.data.accessToken);
         localStorage.setItem("userData", JSON.stringify(res.data.rest));
-        toast.success("SignUp Successfull");
+        setIsLoading(false);
 
-        const emailRes = await axios.post(
-          "https://keep2-d798.onrender.com/api/send-email",
+        await axios.post(
+          `${import.meta.env.VITE_API_BASE_URL}/api/send-email`,
           {
             email: signUpData.email,
             name: signUpData.name,
@@ -276,7 +269,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             params: { name: signUpData.name },
           },
         );
-        console.log("Email sent successfully:", emailRes.data);
         return res;
       }
       //eslint-disable-next-line
@@ -286,6 +278,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         signUpError: err.response?.data?.message || "Error during sign up",
       });
       setIsLoading(false);
+      throw err;
     }
   };
   return (
@@ -307,6 +300,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         SignUpConfirmation,
         MFACodeVerification,
         error,
+        setError,
+        // ResetErrors,
       }}
     >
       {children}
