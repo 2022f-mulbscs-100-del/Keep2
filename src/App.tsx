@@ -26,15 +26,14 @@ export const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   const { userData, setUserData } = useAuth();
   const { profileData } = useUser();
   useEffect(() => {
-    console.log("LayoutWrapper - useEffect running");
     const logoutUser = () => {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("userData");
       sessionStorage.removeItem("accessToken");
       setUserData(null);
-      console.log("User has been logged out due to inactivity.");
+
       axiosClient
-        .get("https://keep2-d798.onrender.com/api/logout", {
+        .get(`${import.meta.env.VITE_API_BASE_URL}/api/logout`, {
           withCredentials: true,
         })
         .then(() => {})
@@ -46,12 +45,7 @@ export const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
     const resetTimer = () => {
       if (intervalRef.current) {
         clearTimeout(intervalRef.current);
-        console.log("Timer reset due to user activity.");
-        console.log(
-          "Auto-logout setting:",
-          profileData?.autoLogoutEnabled,
-          profileData?.autoLogoutTime,
-        );
+
         // axios.post("https://keep2-d798.onrender.com/api/auto-logout",{autoLogoutTime: 1}, { withCredentials: true,
         //   headers:
         //     {
@@ -71,11 +65,7 @@ export const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
           ? profileData?.autoLogoutTime * 60 * 1000
           : 7 * 24 * 60 * 60 * 1000,
       );
-      console.log(
-        "Auto-logout timer ",
-        profileData?.autoLogoutTime,
-        "minutes set.",
-      );
+
       // const timestamp = Date.now() + 1000 * 10 * 1;
       // localStorage.setItem("lastActivityTime", timestamp.toString());
     };
@@ -93,7 +83,6 @@ export const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
     ];
 
     if (userData && profileData?.autoLogoutEnabled) {
-      console.log("Setting up auto-logout event listeners.");
       USER_ACTIVITY_EVENTS.forEach((event) =>
         window.addEventListener(event, handleUserActivity as EventListener),
       );

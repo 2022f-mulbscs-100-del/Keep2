@@ -22,15 +22,12 @@ function ForgetPassword() {
   };
 
   const codeCheck = () => {
-    console.log(email, code);
-
     axios
-      .post("https://keep2-d798.onrender.com/api/code-check", {
+      .post(`${import.meta.env.VITE_API_BASE_URL}/api/code-check`, {
         email,
         code,
       })
-      .then((response) => {
-        console.log(response.data);
+      .then(() => {
         setStage("forgetPassword");
       })
       .catch((error) => {
@@ -43,13 +40,11 @@ function ForgetPassword() {
       return;
     }
 
-    console.log(email);
     axios
-      .post("https://keep2-d798.onrender.com/api/forget-password-token", {
+      .post(`${import.meta.env.VITE_API_BASE_URL}/api/forget-password-token`, {
         email,
       })
-      .then((response) => {
-        console.log(response.data);
+      .then(() => {
         setStage("codeConfirmation");
       })
       .catch((error) => {
@@ -66,14 +61,13 @@ function ForgetPassword() {
       return;
     }
     axios
-      .post("https://keep2-d798.onrender.com/api/reset-password", {
+      .post(`${import.meta.env.VITE_API_BASE_URL}/api/reset-password`, {
         email,
         code,
         password,
         resetThroughToken: true,
       })
-      .then((res) => {
-        console.log(res.data);
+      .then(() => {
         navigate("/");
       })
       .catch((error) => {

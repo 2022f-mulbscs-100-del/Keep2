@@ -7,14 +7,12 @@ import Theme from "../Settings/Theme";
 import Logout from "../Settings/Logout";
 import PersonalInfo from "../Settings/PersonalInfo";
 import UserPrefrence from "../Settings/UserPrefrences/UserPrefrence";
-import SubscriptionPage from "../Settings/SubscriptionPage";
+import SubscriptionPage from "../Settings/SubscriptionPage/SubscriptionPage";
 import { useScreenSize } from "../../component/CustomHooks/useScreenSize";
 
 const SettingLayout = ({ children }: { children: React.ReactNode }) => {
   const { id } = useParams();
   const { isMobile, isTablet, size } = useScreenSize();
-  console.log("isMobile:", isMobile, "isTablet:", isTablet);
-  console.log("size", size);
   return (
     <div className="flex  ">
       <div className={`${!isMobile && !isTablet ? "flex-1" : "w-full"}  `}>

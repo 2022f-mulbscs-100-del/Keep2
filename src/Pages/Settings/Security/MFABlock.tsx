@@ -45,22 +45,26 @@ const MFABlock = () => {
         email: profileData?.email,
         token: MFAcode,
       })
-      .then((response) => {
+      .then(() => {
         setEnableMFA(true);
         fetchUserProfile();
-        console.log("MFA Verified:", response.data);
       })
       .catch((error) => {
         console.error("Error verifying MFA:", error);
       });
   };
 
-  const HandleDisableMFa = () => {
-    UpdateUserProfile({
-      MfaEnabled: false,
-    });
-    setQrCode("");
-    setEnableMFA(false);
+  const HandleDisableMFa = async () => {
+    try {
+      await UpdateUserProfile({
+        MfaEnabled: false,
+      });
+      setQrCode("");
+      setEnableMFA(false);
+      //eslint-disable-next-line
+    } catch (error: any) {
+      toast.error(error.message || "Error disabling MFA");
+    }
   };
 
   useEffect(() => {

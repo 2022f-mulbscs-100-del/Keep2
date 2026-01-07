@@ -7,7 +7,7 @@ const EmptyBin = () => {
 
   const EmptyBin = () => {
     axiosClient
-      .delete("https://keep2-d798.onrender.com/api/deleteNotes")
+      .delete(`${import.meta.env.VITE_API_BASE_URL}/api/deleteNotes`)
       .then(() => {
         toast.success("Bin empty successfully");
         DeletedNotes();

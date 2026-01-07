@@ -45,7 +45,7 @@ const Note = ({ title, description, NotePinned, id, image }: NoteProps) => {
 
   const HandlePinned = () => {
     axiosClient
-      .patch(`https://keep2-d798.onrender.com/api/pinnedNotes/${id}`, {
+      .patch(`${import.meta.env.VITE_API_BASE_URL}/api/pinnedNotes/${id}`, {
         pinned: !NotePinned,
       })
       .then(() => {

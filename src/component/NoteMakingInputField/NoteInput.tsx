@@ -82,7 +82,7 @@ export const NoteInput = () => {
 
     try {
       axiosClient
-        .post("https://keep2-d798.onrender.com/api/addnotes", sendNotwe)
+        .post(`${import.meta.env.VITE_API_BASE_URL}/api/addnotes`, sendNotwe)
         .then(() => {
           fetchApiData();
         })

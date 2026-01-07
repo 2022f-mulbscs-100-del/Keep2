@@ -7,7 +7,7 @@ import TurnstileWidget from "../../component/turnstile/Turnstile";
 import axios from "axios";
 
 function SignUp() {
-  const { SignUpHandler, isLoading, signUpStage, error } = useAuth();
+  const { SignUpHandler, isLoading, signUpStage, error, setError } = useAuth();
   const [stage, setStage] = useState("signUp");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -36,6 +36,19 @@ function SignUp() {
       toast.error(error.signUpError);
     }
   }, [error]);
+
+  useEffect(() => {
+    return () => {
+      setError({
+        loginError: null,
+        MFAError: null,
+        twoFaError: null,
+        signUpConfirmationError: null,
+        signUpError: null,
+        refreshError: null,
+      });
+    };
+  }, []);
 
   useEffect(() => {
     if (stage === "verifyEmail") {
@@ -83,16 +96,14 @@ function SignUp() {
     };
 
     if (!token) {
-      alert("Please complete the CAPTCHA");
+      toast.error("Please complete the CAPTCHA");
       return;
     }
-    console.log(signupFormData);
-    try {
-      SignUpHandler(signupFormData);
 
+    try {
+      await SignUpHandler(signupFormData);
       setStage("verifyEmail");
     } catch (error) {
-      toast.error("Signup failed. Please try again.");
       console.error(error);
     }
   };
@@ -112,7 +123,7 @@ function SignUp() {
         name: signUpForm.name,
       };
 
-      SignUpHandler(signUpData);
+      await SignUpHandler(signUpData);
       if (signUpStage === "success") {
         toast.success("Signup successful");
         navigate("/");
@@ -125,13 +136,13 @@ function SignUp() {
 
   const handleVerify = (token: string) => {
     setToken(token);
-    console.log("Turnstile token:", token);
+
     if (token) {
       axios
-        .post("https://keep2-d798.onrender.com/api/turnstile-verify", { token })
-        .then((response) => {
-          console.log("Turnstile verification response:", response.data);
-
+        .post(`${import.meta.env.VITE_API_BASE_URL}/api/turnstile-verify`, {
+          token,
+        })
+        .then(() => {
           setTurnstileVerified(true);
           toast.success("CAPTCHA verified successfully");
         })
@@ -164,99 +175,103 @@ function SignUp() {
     <>
       {stage === "signUp" && (
         <div className="flex justify-center items-center h-full mt-10">
-          <div className="">
-            <div className="flex flex-col items-center mb-4">
-              <h1 className="font-bold text-2xl">Sign Up</h1>
-              <p>to continue to Keeper</p>
-            </div>
-
-            <div className="flex flex-col gap-4 ">
-              <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-[#525355] ">
-                <input
-                  className="outline-none w-full"
-                  type="text"
-                  placeholder="Name"
-                  name="name"
-                  value={signUpForm.name}
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-[#525355] ">
-                <input
-                  className="outline-none w-full"
-                  type="text"
-                  placeholder="Email"
-                  name="email"
-                  value={signUpForm.email}
-                  onChange={handleChange}
-                />
+          <form onSubmit={SignUpHandleFunction}>
+            <div className="">
+              <div className="flex flex-col items-center mb-4">
+                <h1 className="font-bold text-2xl">Sign Up</h1>
+                <p>to continue to Keeper</p>
               </div>
 
-              <div>
-                <div className="flex items-center gap-4  px-4 min-w-[400px]  py-2 rounded-[8px] bg-transparent border border-[#525355] ">
+              <div className="flex flex-col gap-4 ">
+                <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-[#525355] ">
                   <input
                     className="outline-none w-full"
-                    type={`${showPassword ? "text" : "password"}`}
-                    placeholder="Password"
-                    name="password"
-                    value={signUpForm.password}
+                    type="text"
+                    placeholder="Name"
+                    name="name"
+                    value={signUpForm.name}
                     onChange={handleChange}
                   />
-
-                  {!showPassword ? (
-                    <FaRegEyeSlash
-                      className="cursor-pointer"
-                      onClick={() => handlePasswordToggle(1)}
-                    />
-                  ) : (
-                    <FaRegEye
-                      className="cursor-pointer"
-                      onClick={() => handlePasswordToggle(1)}
-                    />
-                  )}
                 </div>
-                <div className="flex items-center gap-4  px-4 min-w-[400px]  py-2 rounded-[8px] bg-transparent border border-[#525355] mt-4">
+                <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-[#525355] ">
                   <input
                     className="outline-none w-full"
-                    type={`${showConfirmPassword ? "text" : "password"}`}
-                    placeholder="Confirm Password"
-                    name="confirmPassword"
-                    value={signUpForm.confirmPassword}
+                    type="text"
+                    placeholder="Email"
+                    name="email"
+                    value={signUpForm.email}
                     onChange={handleChange}
                   />
-
-                  {!showConfirmPassword ? (
-                    <FaRegEyeSlash
-                      className="cursor-pointer"
-                      onClick={() => handlePasswordToggle(2)}
-                    />
-                  ) : (
-                    <FaRegEye
-                      className="cursor-pointer"
-                      onClick={() => handlePasswordToggle(2)}
-                    />
-                  )}
                 </div>
-                <div
-                  className="text-[12px] ml-2 mt-2 cursor-pointer"
-                  onClick={() => {
-                    navigate("/login");
-                  }}
-                >
-                  Already have account?
+
+                <div>
+                  <div className="flex items-center gap-4  px-4 min-w-[400px]  py-2 rounded-[8px] bg-transparent border border-[#525355] ">
+                    <input
+                      className="outline-none w-full"
+                      type={`${showPassword ? "text" : "password"}`}
+                      placeholder="Password"
+                      name="password"
+                      value={signUpForm.password}
+                      onChange={handleChange}
+                    />
+
+                    {!showPassword ? (
+                      <FaRegEyeSlash
+                        className="cursor-pointer"
+                        onClick={() => handlePasswordToggle(1)}
+                      />
+                    ) : (
+                      <FaRegEye
+                        className="cursor-pointer"
+                        onClick={() => handlePasswordToggle(1)}
+                      />
+                    )}
+                  </div>
+                  <div className="flex items-center gap-4  px-4 min-w-[400px]  py-2 rounded-[8px] bg-transparent border border-[#525355] mt-4">
+                    <input
+                      className="outline-none w-full"
+                      type={`${showConfirmPassword ? "text" : "password"}`}
+                      placeholder="Confirm Password"
+                      name="confirmPassword"
+                      value={signUpForm.confirmPassword}
+                      onChange={handleChange}
+                    />
+
+                    {!showConfirmPassword ? (
+                      <FaRegEyeSlash
+                        className="cursor-pointer"
+                        onClick={() => handlePasswordToggle(2)}
+                      />
+                    ) : (
+                      <FaRegEye
+                        className="cursor-pointer"
+                        onClick={() => handlePasswordToggle(2)}
+                      />
+                    )}
+                  </div>
+                  <div
+                    className="text-[12px] ml-2 mt-2 cursor-pointer"
+                    onClick={() => {
+                      navigate("/login");
+                    }}
+                  >
+                    Already have account?
+                  </div>
                 </div>
               </div>
+              <div className="mt-2 ">
+                <TurnstileWidget onVerify={handleVerify} />
+              </div>
+              <div
+                className="hover:bg-[#52535596] cursor-pointer flex justify-center p-2 mt-4 rounded-lg"
+                onClick={SignUpHandleFunction}
+              >
+                <button disabled={isLoading} className="cursor-pointer">
+                  {isLoading ? "Loading..." : "SignUp"}
+                </button>
+              </div>
             </div>
-            <div className="mt-2 ">
-              <TurnstileWidget onVerify={handleVerify} />
-            </div>
-            <div
-              className="hover:bg-[#52535596] cursor-pointer flex justify-center p-2 mt-4 rounded-lg"
-              onClick={SignUpHandleFunction}
-            >
-              <button className="cursor-pointer">SignUp</button>
-            </div>
-          </div>
+          </form>
         </div>
       )}
 

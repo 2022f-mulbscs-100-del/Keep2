@@ -7,6 +7,7 @@ import Input from "../../component/InputFields/Input";
 import Pills from "../../component/Pills/Pill";
 import ProfileLowerSidebar from "./ProfileLowerSIdebar";
 import { useScreenSize } from "../../component/CustomHooks/useScreenSize";
+import { toast } from "react-toastify";
 
 const Profile = () => {
   const { size } = useScreenSize();
@@ -23,11 +24,18 @@ const Profile = () => {
   // };
 
   useEffect(() => {
-    fetchUserProfile();
+    const fetchData = async () => {
+      try {
+        await fetchUserProfile();
+        //eslint-disable-next-line
+      } catch (error: any) {
+        toast.error(error.message);
+      }
+    };
+    fetchData();
   }, []);
 
   const UploadToCloudinary = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.files?.[0]);
     const data = new FormData();
     //eslint-disable-next-line
     data.append("file", e.target.files?.[0] as any);
@@ -42,20 +50,23 @@ const Profile = () => {
             ...profileData!, // tells to TypeScript: "Trust me, profileData is not null or undefined here." non-null assertion operator.
             profileImage: res.data.url,
           });
-          console.log(res.data.url);
-          UpdateBackend();
+          UpdateBackend(res.data.url);
         })
         .catch((err) => console.error(err));
-    } catch (error) {
-      console.log(error);
+    } catch {
+      toast.error("Error uploading image");
     }
   };
 
-  const UpdateBackend = () => {
+  const UpdateBackend = (url: string) => {
+    const latestProfile = {
+      ...profileData!,
+      profileImage: url,
+    };
     axiosClient
-      .patch("/updateProfile", { profileData })
+      .patch("/updateProfile", { profileData: latestProfile })
       .then((res) => setProfileData(res.data))
-      .catch((error) => console.log(error));
+      .catch((error) => toast.error(error.message));
   };
 
   return (

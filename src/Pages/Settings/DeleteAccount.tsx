@@ -29,8 +29,7 @@ const DeleteAccount = () => {
           password: formData.password,
         },
       })
-      .then((response) => {
-        console.log(response.data);
+      .then(() => {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("userData");
         sessionStorage.removeItem("accessToken");
@@ -40,10 +39,7 @@ const DeleteAccount = () => {
       .catch((error) => {
         setLoading(false);
         toast.error(error.response?.data?.message || "Error deleting account");
-        console.log(error);
       });
-
-    console.log("Account deleted");
   };
 
   const HandleLoginFormData = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,8 +48,6 @@ const DeleteAccount = () => {
       ...formData,
       [name]: value,
     });
-
-    console.log({ [name]: value });
   };
 
   return (

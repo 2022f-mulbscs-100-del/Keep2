@@ -5,8 +5,8 @@ import {
 } from "@stripe/react-stripe-js";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import Placeholder from "../../component/Placeholder/Placeholder";
-import SettingHeader from "../../component/settingHeader/SettingHeader";
+import Placeholder from "../../../component/Placeholder/Placeholder";
+import { useUser } from "../../../Context/UserContext";
 
 type Status = string;
 
@@ -18,27 +18,32 @@ export default function CheckoutForm() {
 
   const stripe = useStripe();
   const elements = useElements();
+  const { setProfileData, profileData } = useUser();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!stripe || !elements) return;
+    let result;
+    try {
+      result = await stripe.confirmPayment({
+        elements,
+        redirect: "if_required",
+      });
 
-    const result = await stripe.confirmPayment({
-      elements,
-      redirect: "if_required",
-      confirmParams: {
-        return_url: window.location.origin + "/settings/subscription",
-      },
-    });
+      console.log("Payment confirmation result:", result);
+      setPaymentStatus(result?.paymentIntent?.status);
+      setProfileData({
+        ...profileData!,
+        subscriptionStatus: "active",
+      });
+      toast.success("Payment successful");
+    } catch (error) {
+      toast.error(error as string);
+      console.error("Error during payment confirmation:", error);
+    }
 
-    setPaymentStatus(result?.paymentIntent?.status);
-    console.log("Payment result:", result?.paymentIntent?.status);
-    console.log(result);
-
-    if (result.error) {
-      toast(result.error.message);
-    } else {
-      toast("Payment Successful!");
+    if (result?.paymentIntent?.status === "succeeded") {
+      console.log("User profile updated after payment.");
     }
   };
 
@@ -46,10 +51,9 @@ export default function CheckoutForm() {
     return (
       <div
         className="m-auto w-full 
-          md:p-10
-    xsm:p-4"
+          md:px-10
+    xsm:px-4"
       >
-        <SettingHeader title="Subscription" />
         <Placeholder height="250px" borderRadius="8px" />
       </div>
     );
@@ -57,13 +61,12 @@ export default function CheckoutForm() {
 
   return (
     <>
-      {!paymentStatus ? (
+      {!paymentStatus && (
         <div
           className="m-auto w-full 
-          md:p-10
-          xsm:p-4"
+          md:px-10
+          xsm:px-4"
         >
-          <SettingHeader title="Subscription" />
           <form onSubmit={handleSubmit} style={{ margin: "auto" }}>
             <div
               className="height-[250px]"
@@ -95,22 +98,14 @@ export default function CheckoutForm() {
               </div>
             </div>
 
-            <div className="hover:bg-[#52535596] cursor-pointer flex justify-center p-2 rounded-lg mt-4 ">
-              <button
-                disabled={!stripe || isLoading}
-                type="submit"
-                className="cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isLoading ? "Loading..." : "Pay $10"}
-              </button>
-            </div>
+            <button
+              disabled={!stripe || isLoading}
+              type="submit"
+              className=" w-full hover:bg-[#52535596] cursor-pointer flex justify-center p-2 rounded-lg mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading ? "Loading..." : "Subscribe"}
+            </button>
           </form>
-        </div>
-      ) : (
-        <div className="m-auto w-full p-10 text-center">
-          <h1 className="text-3xl font-bold text-green-500">
-            You are now a pro user! 🎉
-          </h1>
         </div>
       )}
     </>

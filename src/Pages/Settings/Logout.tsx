@@ -1,30 +1,26 @@
 import { IoExitOutline } from "react-icons/io5";
-import { useNavigate } from "react-router-dom";
 import SettingHeader from "../../component/settingHeader/SettingHeader";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 const Logout = () => {
-  const navigate = useNavigate();
-
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleLogout = () => {
     setIsLoading(true);
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("userData");
-    sessionStorage.removeItem("accessToken");
-    navigate("/login");
 
     axios
-      .get("https://keep2-d798.onrender.com/api/logout", {
+      .get(`${import.meta.env.VITE_API_BASE_URL}/api/logout`, {
         withCredentials: true,
       })
-      .then((response) => {
-        setIsLoading(false);
-        console.log("Logged out from server:", response.data);
+      .then(() => {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("userData");
+        sessionStorage.removeItem("accessToken");
+        window.location.href = "/login";
+        // setIsLoading(false);
       })
       .catch((error) => {
         setIsLoading(false);

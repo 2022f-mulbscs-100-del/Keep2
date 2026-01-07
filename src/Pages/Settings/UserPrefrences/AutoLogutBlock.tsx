@@ -14,7 +14,6 @@ const AutoLogoutBlock = () => {
   );
 
   useEffect(() => {
-    console.log("Auto logout enabled", profileData?.autoLogoutEnabled);
     if (profileData?.autoLogoutEnabled === true) {
       setAutoLogout(true);
     } else {
@@ -22,20 +21,29 @@ const AutoLogoutBlock = () => {
     }
   }, [profileData]);
 
-  const handleEnableAutoLogout = () => {
-    UpdateUserProfile({
-      autoLogoutEnabled: !autoLogout,
-    });
-    setAutoLogout(!autoLogout);
-    console.log("Enable Auto Logout clicked");
+  const handleEnableAutoLogout = async () => {
+    try {
+      await UpdateUserProfile({
+        autoLogoutEnabled: !autoLogout,
+      });
+      setAutoLogout(!autoLogout);
+      //eslint-disable-next-line
+    } catch (error: any) {
+      toast.error(error.message || "Error updating auto logout status");
+    }
   };
 
-  const HandlerAutoLogoutTime = () => {
+  const HandlerAutoLogoutTime = async () => {
     if (autoLogoutTime === profileData?.autoLogoutTime) return;
-    UpdateUserProfile({
-      autoLogoutTime: autoLogoutTime,
-    });
-    toast.success(`Auto logout time updated to ${autoLogoutTime} minutes`);
+    try {
+      await UpdateUserProfile({
+        autoLogoutTime: autoLogoutTime,
+      });
+      toast.success(`Auto logout time updated to ${autoLogoutTime} minutes`);
+      //eslint-disable-next-line
+    } catch (error: any) {
+      toast.error(error.message || "Error updating auto logout time");
+    }
   };
 
   useEffect(() => {

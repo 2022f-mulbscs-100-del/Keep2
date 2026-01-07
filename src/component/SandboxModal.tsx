@@ -28,7 +28,7 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
     }
     setIsLoading(true);
     axiosClient
-      .post("https://keep2-d798.onrender.com/api/generateSandbox", {
+      .post(`${import.meta.env.VITE_API_BASE_URL}/api/generateSandbox`, {
         numNotes,
         useRandomData,
         useRandomImages,
@@ -49,7 +49,7 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
   const deletedData = () => {
     setIsLoading(true);
     axiosClient
-      .delete("https://keep2-d798.onrender.com/api/deleteSandbox")
+      .delete(`${import.meta.env.VITE_API_BASE_URL}/api/deleteSandbox`)
       .then(() => {
         fetchApiData();
         setIsLoading(false);
