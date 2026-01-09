@@ -44,7 +44,7 @@ export default function SubscriptionPage() {
           setLoading(false);
         });
     }
-  }, [plan]);
+  }, [plan, profileData?.subscriptionStatus]);
 
   const appearance = {
     theme: "night", // dark theme
@@ -251,7 +251,7 @@ export default function SubscriptionPage() {
             // eslint-disable-next-line
             options={{ clientSecret, appearance } as any}
           >
-            <CheckoutForm />
+            <CheckoutForm choosePlan={choosePlan} />
           </Elements>
         ))}
 

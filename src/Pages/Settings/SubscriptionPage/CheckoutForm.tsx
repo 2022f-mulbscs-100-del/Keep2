@@ -10,7 +10,7 @@ import { useUser } from "../../../Context/UserContext";
 
 type Status = string;
 
-export default function CheckoutForm() {
+export default function CheckoutForm({ choosePlan }: { choosePlan: string }) {
   const [paymentStatus, setPaymentStatus] = useState<Status | undefined | null>(
     null,
   );
@@ -29,21 +29,19 @@ export default function CheckoutForm() {
         elements,
         redirect: "if_required",
       });
-
-      console.log("Payment confirmation result:", result);
-      setPaymentStatus(result?.paymentIntent?.status);
-      setProfileData({
-        ...profileData!,
-        subscriptionStatus: "active",
-      });
-      toast.success("Payment successful");
     } catch (error) {
       toast.error(error as string);
       console.error("Error during payment confirmation:", error);
     }
 
     if (result?.paymentIntent?.status === "succeeded") {
-      console.log("User profile updated after payment.");
+      setPaymentStatus(result?.paymentIntent?.status);
+      setProfileData({
+        ...profileData!,
+        subscriptionStatus: "active",
+        subscriptionPlan: choosePlan,
+      });
+      toast.success("Payment successful");
     }
   };
 

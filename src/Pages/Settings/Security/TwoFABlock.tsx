@@ -4,7 +4,12 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 const TwoFABlock = () => {
-  const { UpdateUserProfile, profileData, error: userError } = useUser();
+  const {
+    UpdateUserProfile,
+    profileData,
+    error: profileError,
+    setError,
+  } = useUser();
   const [enable2FA, setEnable2FA] = useState(false);
 
   useEffect(() => {
@@ -26,10 +31,16 @@ const TwoFABlock = () => {
   };
 
   useEffect(() => {
-    if (userError) {
-      toast.error(userError);
+    if (profileError) {
+      toast.error(profileError.ProfileError);
     }
-  }, [userError]);
+  }, [profileError]);
+
+  useEffect(() => {
+    return () => {
+      setError!({ ...profileError, ProfileError: null });
+    };
+  }, []);
   return (
     <>
       <div className="mx-auto border border-[#525355] rounded-[10px] p-6 mb-4">

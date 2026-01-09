@@ -15,6 +15,7 @@ function SignUp() {
   const [turnstileVerified, setTurnstileVerified] = useState(false);
   const [SignUpCode, setSignUpCode] = useState("");
   const formRef = useRef<HTMLFormElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const [signUpForm, setSignUpForm] = useState({
     name: "",
     email: "",
@@ -57,6 +58,10 @@ function SignUp() {
         navigate("/");
       }
     }
+  }, [signUpStage]);
+
+  useEffect(() => {
+    inputRef?.current?.focus();
   }, [signUpStage]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -185,6 +190,7 @@ function SignUp() {
               <div className="flex flex-col gap-4 ">
                 <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-[#525355] ">
                   <input
+                    ref={inputRef}
                     className="outline-none w-full"
                     type="text"
                     placeholder="Name"
@@ -288,6 +294,7 @@ function SignUp() {
               <div className="flex flex-col gap-4 ">
                 <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-[#525355] ">
                   <input
+                    ref={inputRef}
                     className="outline-none w-full"
                     type="number"
                     placeholder="Enter Security Code"

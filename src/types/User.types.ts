@@ -5,7 +5,7 @@ export type ProfileDataType = {
   phone?: number | null;
   isTwoFaEnabled?: boolean;
   autoLogoutEnabled?: boolean;
-  autoLogoutTime?: number;
+  autoLogoutTime?: number | null;
   MfaEnabled?: boolean;
   subscriptionStatus?: string;
   subscriptionPlan?: string;

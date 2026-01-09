@@ -14,7 +14,13 @@ const Profile = () => {
   const imageRef = useRef<HTMLInputElement>(null);
   //   const { userData } = useAuth();
 
-  const { profileData, setProfileData, fetchUserProfile } = useUser();
+  const {
+    profileData,
+    setProfileData,
+    fetchUserProfile,
+    setError,
+    error: ProfileError,
+  } = useUser();
   // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   //     const { name, value } = e.target;
   //     setProfileData({
@@ -35,6 +41,11 @@ const Profile = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    return () => {
+      setError!({ ...ProfileError, ProfileError: null });
+    };
+  }, []);
   const UploadToCloudinary = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const data = new FormData();
     //eslint-disable-next-line

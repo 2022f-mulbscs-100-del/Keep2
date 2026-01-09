@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -11,7 +11,11 @@ function ForgetPassword() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
+  useEffect(() => {
+    inputRef?.current?.focus();
+  }, [stage]);
   const handlePasswordToggle = (id: number) => {
     if (id === 1) {
       setShowPassword(!showPassword);
@@ -92,6 +96,7 @@ function ForgetPassword() {
             <div className="flex flex-col gap-4 ">
               <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-[#525355] ">
                 <input
+                  ref={inputRef}
                   className="outline-none w-full"
                   type="text"
                   placeholder="Email"
@@ -123,6 +128,7 @@ function ForgetPassword() {
             <div className="flex flex-col gap-4 ">
               <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-[#525355] ">
                 <input
+                  ref={inputRef}
                   className="outline-none w-full"
                   type="text"
                   placeholder="Enter the code"
@@ -153,6 +159,7 @@ function ForgetPassword() {
             <div className="flex flex-col gap-4 ">
               <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-[#525355] ">
                 <input
+                  ref={inputRef}
                   className="outline-none w-full"
                   type={`${showPassword ? "text" : "password"}`}
                   placeholder="Enter your new password"

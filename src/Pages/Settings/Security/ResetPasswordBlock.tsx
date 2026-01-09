@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import { toast } from "react-toastify";
@@ -16,7 +16,13 @@ const ResetPasswordBlock = () => {
     confirmPassword: "",
   });
 
-  const { profileData } = useUser();
+  const { profileData, setError, error: profileError } = useUser();
+
+  useEffect(() => {
+    return () => {
+      setError!({ ...profileError, ProfileError: null });
+    };
+  }, []);
 
   const handlePasswordToggle = (id: number) => {
     if (id === 1) {
