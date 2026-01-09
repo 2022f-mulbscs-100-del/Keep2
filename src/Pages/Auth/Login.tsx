@@ -15,6 +15,7 @@ function Login() {
   const [MFAcode, setMFAcode] = useState("");
   const [MFA, setMFA] = useState(false);
   const formRef = useRef<HTMLFormElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
@@ -137,6 +138,11 @@ function Login() {
       });
     };
   }, []);
+
+  useEffect(() => {
+    inputRef?.current?.focus();
+  }, [loginStage, TwoFa]);
+
   const Handle2FASubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     TwoFaLoginHandler(loginData, twoFaCode);
@@ -199,6 +205,7 @@ function Login() {
             <div className="flex flex-col gap-4 ">
               <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-[#525355] ">
                 <input
+                  ref={inputRef}
                   className="outline-none w-full"
                   type="text"
                   placeholder="Email"
@@ -265,6 +272,7 @@ function Login() {
               <div className="flex flex-col gap-4 ">
                 <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-[#525355] ">
                   <input
+                    ref={inputRef}
                     className="outline-none w-full"
                     type="number"
                     placeholder="Enter 2FA Code"
@@ -301,6 +309,7 @@ function Login() {
               <div className="flex flex-col gap-4 ">
                 <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-[#525355] ">
                   <input
+                    ref={inputRef}
                     className="outline-none w-full"
                     type="number"
                     placeholder="Enter Verification Code"
@@ -335,6 +344,7 @@ function Login() {
               <div className="flex flex-col gap-4 ">
                 <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-[#525355] ">
                   <input
+                    ref={inputRef}
                     className="outline-none w-full"
                     type="number"
                     placeholder="Enter MFA Code"

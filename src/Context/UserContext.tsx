@@ -8,11 +8,16 @@ export type userContextType = {
   setProfileData: React.Dispatch<React.SetStateAction<ProfileDataType | null>>;
   fetchUserProfile: () => Promise<void>;
   UpdateUserProfile: (profileData: ProfileDataType) => Promise<ProfileDataType>;
-  error?: string | null;
+  error?: { ProfileError: string | null };
   isLoading?: boolean;
+  setError?: React.Dispatch<
+    React.SetStateAction<{ ProfileError: string | null }>
+  >;
 };
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<{ ProfileError: string | null }>({
+    ProfileError: null,
+  });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [profileData, setProfileData] = useState<ProfileDataType | null>({
     name: "",
@@ -20,6 +25,10 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     profileImage: "",
     phone: null,
     isTwoFaEnabled: false,
+    autoLogoutEnabled: false,
+    autoLogoutTime: null,
+    subscriptionPlan: "free",
+    subscriptionStatus: "inactive",
   });
 
   const fetchUserProfile = async (): Promise<void> => {
@@ -32,7 +41,10 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       })
       .catch((error) => {
         setIsLoading(false);
-        setError(error.message);
+        setError({
+          ...error,
+          ProfileError: error.message || "Error fetching user profile",
+        });
       });
   };
 
@@ -41,13 +53,16 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   ): Promise<ProfileDataType> => {
     try {
       setIsLoading(true);
-      const res = await axiosClient.patch("/updateProfile", profileData);
+      const res = await axiosClient.patch("/updateProfile", { profileData });
       setProfileData(res.data);
       return res.data;
       // eslint-disable-next-line
     } catch (error: string | any) {
       setIsLoading(false);
-      setError(error.message);
+      setError({
+        ...error,
+        ProfileError: error.message || "Error updating profile",
+      });
       throw error;
     }
   };
@@ -64,6 +79,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         UpdateUserProfile,
         error,
         isLoading,
+        setError,
       }}
     >
       {children}

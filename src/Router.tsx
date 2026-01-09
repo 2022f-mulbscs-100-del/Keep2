@@ -15,6 +15,7 @@ import Profile from "./Pages/Profile/Profile";
 import Setting from "./Pages/Settings/Setting";
 import SettingLayout from "./Pages/Profile/SettingLayout";
 import PersonalInfo from "./Pages/Settings/PersonalInfo";
+import PublicRoute from "./PublicRoute";
 
 interface ProviderWrapperProps {
   children: React.ReactNode;
@@ -92,15 +93,27 @@ const router = createBrowserRouter([
       },
       {
         path: "/login",
-        element: <Login />,
+        element: (
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
+        ),
       },
       {
         path: "/sign-up",
-        element: <SignUp />,
+        element: (
+          <PublicRoute>
+            <SignUp />
+          </PublicRoute>
+        ),
       },
       {
         path: "/forget-password",
-        element: <ForgetPassword />,
+        element: (
+          <PublicRoute>
+            <ForgetPassword />
+          </PublicRoute>
+        ),
       },
       {
         path: "/setting",

@@ -2,9 +2,13 @@ import { useEffect, useState } from "react";
 import { IoTimerOutline } from "react-icons/io5";
 import { useUser } from "../../../Context/UserContext";
 import { toast } from "react-toastify";
-
 const AutoLogoutBlock = () => {
-  const { UpdateUserProfile, profileData, error } = useUser();
+  const {
+    UpdateUserProfile,
+    profileData,
+    error: profileError,
+    setError,
+  } = useUser();
 
   const [autoLogout, setAutoLogout] = useState(
     profileData?.autoLogoutEnabled || false,
@@ -33,6 +37,12 @@ const AutoLogoutBlock = () => {
     }
   };
 
+  useEffect(() => {
+    return () => {
+      setError!({ ...profileError, ProfileError: null });
+    };
+  }, []);
+
   const HandlerAutoLogoutTime = async () => {
     if (autoLogoutTime === profileData?.autoLogoutTime) return;
     try {
@@ -47,10 +57,10 @@ const AutoLogoutBlock = () => {
   };
 
   useEffect(() => {
-    if (error) {
-      toast.error(typeof error === "string" ? error : "An error occurred");
+    if (profileError) {
+      toast.error(profileError.ProfileError);
     }
-  }, [error]);
+  }, [profileError]);
   return (
     <>
       <div className="border border-[#525355] rounded-[10px] p-6 flex items-center justify-between">
@@ -72,7 +82,7 @@ const AutoLogoutBlock = () => {
               type="number"
               placeholder="Enter value in minutes"
               name="value"
-              value={autoLogoutTime}
+              value={autoLogoutTime || ""}
               disabled={autoLogout === false}
               onChange={(e) => setAutoLogoutTime(Number(e.target.value))}
               onBlur={HandlerAutoLogoutTime}

@@ -1,7 +1,9 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import Placeholder from "../../../component/Placeholder/Placeholder";
 import { useUser } from "../../../Context/UserContext";
+import axiosClient from "../../../api/axiosClient";
+import { toast } from "react-toastify";
 
 type changeSubscriptionModalProps = {
   onClose: () => void;
@@ -9,7 +11,55 @@ type changeSubscriptionModalProps = {
 
 const ChangeSubscriptionModal = ({ onClose }: changeSubscriptionModalProps) => {
   const [isLoading] = useState(false);
-  const { profileData } = useUser();
+  const {
+    profileData,
+    fetchUserProfile,
+    setProfileData,
+    error: profileError,
+    setError,
+  } = useUser();
+
+  useEffect(() => {
+    return () => {
+      setError!({ ...profileError, ProfileError: null });
+    };
+  }, []);
+
+  const handleChangeSubscription = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const res = await axiosClient.get("/cancel-subscription");
+      onClose();
+      fetchUserProfile();
+      toast.success(res?.data?.message);
+    } catch (error) {
+      toast.error((error as Error).message);
+    }
+  };
+
+  const HandleMontlySubscriptionSwitchToYearly = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const res = await axiosClient.get("/upgrade-subscription");
+      onClose();
+      fetchUserProfile();
+      setProfileData({
+        ...profileData!,
+        subscriptionStatus: "active",
+        subscriptionPlan: "yearly",
+      });
+      toast.success(res?.data?.message);
+    } catch (error) {
+      toast.error((error as Error).message);
+    }
+  };
+
+  const handleChangeSubscriptionToMonthly = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    toast.info("Switching to Monthly plan is not supported at the moment.");
+    onClose();
+  };
   return (
     <>
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -45,7 +95,7 @@ const ChangeSubscriptionModal = ({ onClose }: changeSubscriptionModalProps) => {
                 </h1>
               </div>
             </div>
-            <form style={{ margin: "auto" }}>
+            <div style={{ margin: "auto" }}>
               <div
                 className="height-[250px]"
                 style={{ height: isLoading ? "250px" : "" }}
@@ -66,6 +116,7 @@ const ChangeSubscriptionModal = ({ onClose }: changeSubscriptionModalProps) => {
 
               <div className="flex items-center  gap-4">
                 <button
+                  onClick={handleChangeSubscription}
                   disabled={isLoading}
                   type="submit"
                   className=" disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#52535596] cursor-pointer flex justify-center p-2 rounded-lg mt-4 w-full"
@@ -76,14 +127,19 @@ const ChangeSubscriptionModal = ({ onClose }: changeSubscriptionModalProps) => {
                 <button
                   disabled={isLoading}
                   type="submit"
+                  onClick={
+                    profileData?.subscriptionPlan === "monthly"
+                      ? HandleMontlySubscriptionSwitchToYearly
+                      : handleChangeSubscriptionToMonthly
+                  }
                   className=" disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#52535596] cursor-pointer flex justify-center p-2 rounded-lg mt-4 w-full"
                 >
                   {isLoading
                     ? "Loading..."
-                    : `Change to ${profileData?.subscriptionStatus === "monthly" ? "Yearly" : "Monthly"} Plan`}
+                    : `Change to ${profileData?.subscriptionPlan === "monthly" ? "Yearly" : "Monthly"} Plan`}
                 </button>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       </div>

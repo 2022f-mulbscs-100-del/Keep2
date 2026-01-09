@@ -10,6 +10,7 @@ const MFABlock = () => {
     UpdateUserProfile,
     fetchUserProfile,
     error: userError,
+    setError,
   } = useUser();
   const [enableMFA, setEnableMFA] = useState(false);
   const [MFAcode, setMFAcode] = useState("");
@@ -85,11 +86,15 @@ const MFABlock = () => {
   }, [MFAcode]);
 
   useEffect(() => {
-    if (!userError) return;
-    toast.error(userError);
-    console.error(userError);
+    if (!userError?.ProfileError) return;
+    toast.error(userError.ProfileError || "An error occurred");
   }, [userError]);
 
+  useEffect(() => {
+    return () => {
+      setError!({ ...userError, ProfileError: null });
+    };
+  }, []);
   return (
     <>
       <div className="mx-auto border border-[#525355] rounded-[10px] p-6 mb-4">
