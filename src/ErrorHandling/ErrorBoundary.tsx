@@ -20,7 +20,9 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
-  Logger("ErrorBoundary caught an error:", error);
+    if(import.meta.env.MODE !== "production")
+    console.log("ErrorBoundary caught an error:", error, errorInfo);
+  Logger("ErrorBoundary caught an error:", error,);
   }
 
   render() {
