@@ -11,6 +11,29 @@ import { ThemeSwitcherProvider } from "./Context/themeSwitcherContext";
 import { AuthProvider, useAuth } from "./Context/AuthContext";
 import { UserProvider, useUser } from "./Context/UserContext";
 import axiosClient from "./api/axiosClient";
+import * as Sentry from "@sentry/react";
+import { Logger } from "./utils/Logger";
+
+Sentry.init({
+  dsn: "https://02c6d0261dc131e71370a5eb212bcf8f@o4510685752655872.ingest.us.sentry.io/4510685763141632",
+
+  integrations: [
+    Sentry.browserTracingIntegration(),
+    Sentry.replayIntegration({
+      maskAllText: true,
+      maskAllInputs: true,
+    }),
+  ],
+
+  sendDefaultPii: true,
+
+  // 🔥 Performance
+  tracesSampleRate: 1.0,
+
+  // 🎥 Session Replay
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1.0,
+});
 
 export const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   const { theme } = useTheme();
@@ -38,7 +61,7 @@ export const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
         })
         .then(() => {})
         .catch((error) => {
-          console.error("Error during logout:", error);
+        Logger("Error during logout:", error);
         });
       window.location.reload();
     };
@@ -53,7 +76,7 @@ export const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
         //     }.
 
         //  }).then(() => {}).catch((error) => {
-        //   console.error("Error refreshing token:", error);
+        //   Logger("Error updating auto-logout time:", error);
         // });
       }
 

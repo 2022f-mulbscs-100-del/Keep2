@@ -4,6 +4,7 @@ import { useNote } from "../../Context/noteContext";
 import { useTheme } from "../../Context/themeSwitcherContext";
 import ActionIcons from "./ActionIcons";
 import axiosClient from "../../api/axiosClient";
+import { Logger } from "../../utils/Logger";
 
 interface NoteType {
   id: number;
@@ -40,7 +41,7 @@ export default function NoteModal() {
       try {
         axiosClient.get(`/notes/${id}`).then((res) => setValue(res.data));
       } catch (error) {
-        console.error("Error fetching note:", error);
+      Logger("Error fetching note:", error); 
       }
     };
     fetchNote();
@@ -71,7 +72,7 @@ export default function NoteModal() {
       axiosClient.put(`/notes/${id}`, updatedNote);
       fetchApiData();
     } catch (error) {
-      console.error("Error updating note:", error);
+    Logger("Error updating note:", error);
     }
   };
 

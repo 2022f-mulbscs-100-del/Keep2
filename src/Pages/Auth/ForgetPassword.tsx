@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { Logger } from "../../utils/Logger";
 
 function ForgetPassword() {
   const [stage, setStage] = useState("codeToEmail");
@@ -35,7 +36,7 @@ function ForgetPassword() {
         setStage("forgetPassword");
       })
       .catch((error) => {
-        console.error("There was an error!", error);
+      Logger("There was an error!", error);
       });
   };
 
@@ -52,7 +53,7 @@ function ForgetPassword() {
         setStage("codeConfirmation");
       })
       .catch((error) => {
-        console.error("There was an error!", error);
+        Logger("There was an error!", error);
       });
   };
 
@@ -75,7 +76,7 @@ function ForgetPassword() {
         navigate("/");
       })
       .catch((error) => {
-        console.error("There was an error!", error);
+       Logger("There was an error!", error);
       });
   };
 

@@ -10,6 +10,7 @@ import { useNote } from "../../Context/noteContext";
 import "react-tooltip/dist/react-tooltip.css";
 import { Tooltip } from "react-tooltip";
 import axiosClient from "../../api/axiosClient";
+import { Logger } from "../../utils/Logger";
 type NoteProps = {
   id: number;
   title: string;
@@ -55,7 +56,7 @@ const Note = ({ title, description, NotePinned, id, image }: NoteProps) => {
         setLocalIsPinned(!NotePinned);
       })
       .catch((error) => {
-        console.error("Error updating note pin status:", error);
+       Logger("Error pinning/unpinning note:", error); 
       });
   };
 

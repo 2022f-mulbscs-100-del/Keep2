@@ -1,5 +1,6 @@
 import React, { useContext, useState, createContext, useEffect } from "react";
 import axiosClient from "../api/axiosClient";
+import { Logger } from "../utils/Logger";
 type NoteType = {
   id: number;
   title: string;
@@ -36,7 +37,7 @@ export const NoteContext = ({ children }: { children: React.ReactNode }) => {
         setItems(res.data);
       })
       .catch((error) => {
-        console.error("Error fetching notes:", error);
+       Logger("Error fetching notes:", error);
       });
   };
 
@@ -47,7 +48,7 @@ export const NoteContext = ({ children }: { children: React.ReactNode }) => {
         setDeletedNotes(res.data);
       })
       .catch((error) => {
-        console.error("Error fetching deleted notes:", error);
+        Logger("Error fetching deleted notes:", error);
       });
   };
 
@@ -58,7 +59,7 @@ export const NoteContext = ({ children }: { children: React.ReactNode }) => {
         setArchieveNote(res.data);
       })
       .catch((error) => {
-        console.error("Error fetching archived notes:", error);
+        Logger("Error fetching archived notes:", error);
       });
   };
 

@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
 import { useNote } from "../../Context/noteContext";
 import axiosClient from "../../api/axiosClient";
+import { Logger } from "../../utils/Logger";
 
 const EmptyBin = () => {
   const { DeletedNotes } = useNote();
@@ -13,7 +14,7 @@ const EmptyBin = () => {
         DeletedNotes();
       })
       .catch((error) => {
-        console.error("Error emptying bin:", error);
+      Logger("Error emptying bin:", error);
       });
   };
 

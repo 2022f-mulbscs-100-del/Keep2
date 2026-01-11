@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import Placeholder from "../../../component/Placeholder/Placeholder";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import axiosClient from "../../../api/axiosClient";
+import { Logger } from "../../../utils/Logger";
 // import axiosClient from "../../api/axiosClient";
 
 // type Status = string;
@@ -89,12 +90,14 @@ export default function UpdateForm({
               onClose();
             })
             .catch((error) => {
-              console.error("Error updating payment method on server:", error);
+            Logger("Error in updating payment method:", error);
+              onClose();
               toast.error("Failed to update payment method on server.");
             });
         } catch (error) {
           onClose();
-          console.error("Error in updating payment method:", error);
+        Logger("Error in updating payment method:", error);
+          toast.error("Failed to update payment method on server.");
         }
       }
     } catch (error) {
@@ -195,7 +198,7 @@ export default function UpdateForm({
                   setTimeout(() => setIsLoading(false), 100);
                 }}
                 onLoadError={(error) => {
-                  console.error("PaymentElement load error:", error);
+                 Logger("Error loading payment form:", error);
                   setIsLoading(false);
                   toast.error("Failed to load payment form");
                 }}

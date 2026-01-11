@@ -7,6 +7,7 @@ import type {
   UserDataType,
   ErrorType,
 } from "../types/Auth.types";
+import { Logger } from "../utils/Logger";
 
 type AuthContextType = {
   userData: UserDataType | null;
@@ -65,6 +66,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setIsLoading(false);
       })
       .catch((err) => {
+        Logger("Error refreshing token",err)
         setError({
           ...error,
           refreshError: err.response?.data?.message || "Error refreshing token",
@@ -118,6 +120,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
       })
       .catch((err) => {
+        Logger("Error during login",err)
         setError({
           ...error,
           loginError: err.response?.data?.message || "Login error",
@@ -139,7 +142,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     //   );
 
     // } catch (error) {
-    //   console.error(error);
+    //   Logger("Error sending login email:", error);
     // }
   };
 
@@ -165,6 +168,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       //eslint-disable-next-line
     } catch (err: any) {
       setLoginStage("failed");
+      Logger("Error verifying MFA code",err)
       setError({
         ...error,
         MFAError: err.response?.data?.message || "MFA Verification error",
@@ -202,6 +206,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } catch (err: any) {
       setIsLoading(false);
       setLoginStage("Invalid verification code");
+      Logger("Error during sign up confirmation",err)
       setError({
         ...error,
         signUpConfirmationError:
@@ -232,6 +237,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       //eslint-disable-next-line
     } catch (err: any) {
       setLoginStage("failed");
+      Logger("Error during 2FA login",err)
       setError({
         ...error,
         twoFaError: err.response?.data?.message || "2FA Login error",
@@ -273,6 +279,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
       //eslint-disable-next-line
     } catch (err: any) {
+      Logger("Error during sign up",err)
       setError({
         ...error,
         signUpError: err.response?.data?.message || "Error during sign up",

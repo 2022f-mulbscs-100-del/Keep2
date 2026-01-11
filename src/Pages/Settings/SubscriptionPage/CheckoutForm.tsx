@@ -7,6 +7,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import Placeholder from "../../../component/Placeholder/Placeholder";
 import { useUser } from "../../../Context/UserContext";
+import { Logger } from "../../../utils/Logger";
 
 type Status = string;
 
@@ -31,7 +32,8 @@ export default function CheckoutForm({ choosePlan }: { choosePlan: string }) {
       });
     } catch (error) {
       toast.error(error as string);
-      console.error("Error during payment confirmation:", error);
+     Logger("Error confirming payment:", error);
+      return;
     }
 
     if (result?.paymentIntent?.status === "succeeded") {
@@ -88,7 +90,7 @@ export default function CheckoutForm({ choosePlan }: { choosePlan: string }) {
                     setTimeout(() => setIsLoading(false), 100);
                   }}
                   onLoadError={(error) => {
-                    console.error("PaymentElement load error:", error);
+                    Logger("Error loading payment form:", error);
                     setIsLoading(false);
                     toast.error("Failed to load payment form");
                   }}

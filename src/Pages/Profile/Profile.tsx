@@ -8,6 +8,7 @@ import Pills from "../../component/Pills/Pill";
 import ProfileLowerSidebar from "./ProfileLowerSIdebar";
 import { useScreenSize } from "../../component/CustomHooks/useScreenSize";
 import { toast } from "react-toastify";
+import { Logger } from "../../utils/Logger";
 
 const Profile = () => {
   const { size } = useScreenSize();
@@ -63,7 +64,9 @@ const Profile = () => {
           });
           UpdateBackend(res.data.url);
         })
-        .catch((err) => console.error(err));
+        .catch((err) => {
+          Logger("Error uploading image to Cloudinary:", err);
+        });
     } catch {
       toast.error("Error uploading image");
     }

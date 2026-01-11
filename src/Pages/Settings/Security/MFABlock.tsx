@@ -3,6 +3,7 @@ import { useUser } from "../../../Context/UserContext";
 import { useEffect, useRef, useState } from "react";
 import axiosClient from "../../../api/axiosClient";
 import { toast } from "react-toastify";
+import { Logger } from "../../../utils/Logger";
 
 const MFABlock = () => {
   const {
@@ -32,13 +33,13 @@ const MFABlock = () => {
         setQrCode(response.data.qrCode);
       })
       .catch((error) => {
-        console.error("Error generating MFA:", error);
+      Logger("Error generating MFA QR code:", error);
       });
   };
 
   const CodeVerification = () => {
     if (MFAcode.length !== 6) {
-      console.error("MFA code must be 6 digits");
+    Logger("MFA code must be 6 digits long");
       return;
     }
     axiosClient
@@ -51,7 +52,7 @@ const MFABlock = () => {
         fetchUserProfile();
       })
       .catch((error) => {
-        console.error("Error verifying MFA:", error);
+        Logger("Error verifying MFA code:", error);
       });
   };
 
