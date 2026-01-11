@@ -10,7 +10,7 @@ import { useNote } from "../../Context/noteContext";
 import "react-tooltip/dist/react-tooltip.css";
 import { Tooltip } from "react-tooltip";
 import axiosClient from "../../api/axiosClient";
-import { Logger } from "../../utils/Logger";
+
 type NoteProps = {
   id: number;
   title: string;
@@ -18,17 +18,18 @@ type NoteProps = {
   NotePinned: boolean;
   image?: string[];
 };
-const Note = ({ title, description, NotePinned, id, image }: NoteProps) => {
-  // LOCAL STATES
 
+const Note = ({ title, description, NotePinned, id, image }: NoteProps) => {
   const [LocalIsPinned, setLocalIsPinned] = useState(false);
   const [IsHover, setIsHover] = useState<boolean>(false);
   const NoteRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { fetchApiData, DeletedNotes } = useNote();
+
   useEffect(() => {
     setLocalIsPinned(NotePinned);
-  }, []);
+  }, [NotePinned]);
+
   useEffect(() => {
     const HandleHover = (e: MouseEvent) => {
       if (NoteRef.current && NoteRef.current.contains(e.target as Node)) {
@@ -52,11 +53,10 @@ const Note = ({ title, description, NotePinned, id, image }: NoteProps) => {
       .then(() => {
         fetchApiData();
         DeletedNotes();
-
         setLocalIsPinned(!NotePinned);
       })
       .catch((error) => {
-       Logger("Error pinning/unpinning note:", error); 
+        console.error("Error updating note pin status:", error);
       });
   };
 
@@ -65,66 +65,67 @@ const Note = ({ title, description, NotePinned, id, image }: NoteProps) => {
   };
 
   return (
-    <>
-      <div
-        ref={NoteRef}
-        className={`relative w-[280px] h-min-[100px] overflow-hidden  shadow-lg   border rounded-[8px] border-[#5F6368] break-words cursor-pointer `}
-      >
-        {/* Select Icon for selecting the note */}
-
-        <div className="absolute top-0">
-          <SelectIcon IsHover={IsHover} />
-        </div>
-        <div className="flex justify-end mr-2 absolute top-0 right-0">
-          <div
-            data-tooltip-id={`pin-tooltip${id}`}
-            data-tooltip-content={LocalIsPinned ? "Pinned" : "Unpinned"}
-            onClick={HandlePinned}
-            className="rounded-full flex justify-center  items-center  cursor-pointer w-[35px] h-[35px]   hover:bg-[#52535596] "
-          >
-            {LocalIsPinned ? (
-              <TiPin className="size-6" />
-            ) : (
-              <TiPinOutline className="size-6" />
-            )}
-            <Tooltip id={`pin-tooltip${id}`} place="top" />
-          </div>
-        </div>
-        <div>
-          {image && image.length > 0 && (
-            <div
-              className={`grid max-h-[400px]  ${
-                image.length <= 2
-                  ? "grid-cols-2 grid-rows-1"
-                  : "grid-cols-2 grid-rows-" + image.length
-              }`}
-            >
-              {image.map((item, index) => (
-                <img
-                  key={index}
-                  className="object-cover max-h-[100px] w-full"
-                  src={item}
-                  alt=""
-                />
-              ))}
-            </div>
-          )}
-        </div>
-        {/* title and description of the note */}
-        <div className="p-4" onClick={HandleClick}>
-          {/* title of the note */}
-
-          <NoteTitle title={title} IsHover={IsHover} />
-
-          {/* description of the note */}
-          <NoteDescription description={description} />
-        </div>
-
-        {/* Icons for note actions */}
-
-        <ActionIcons IsHover={IsHover} id={id} />
+    <div
+      ref={NoteRef}
+      className="relative w-full bg-white dark:bg-gray-800 shadow-md hover:shadow-xl transition-shadow duration-200 border rounded-lg border-gray-300 dark:border-gray-600 break-words cursor-pointer overflow-hidden"
+    >
+      {/* Select Icon for selecting the note */}
+      <div className="absolute top-0 left-0 z-10">
+        <SelectIcon IsHover={IsHover} />
       </div>
-    </>
+
+      {/* Pin Icon */}
+      <div className="absolute top-0 right-0 z-10">
+        <div
+          data-tooltip-id={`pin-tooltip${id}`}
+          data-tooltip-content={LocalIsPinned ? "Unpin note" : "Pin note"}
+          onClick={HandlePinned}
+          className={`rounded-full flex justify-center items-center cursor-pointer w-9 h-9 m-1 transition-opacity duration-200 ${
+            IsHover || LocalIsPinned ? "opacity-100" : "opacity-0"
+          } hover:bg-gray-200 dark:hover:bg-gray-700`}
+        >
+          {LocalIsPinned ? (
+            <TiPin className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+          ) : (
+            <TiPinOutline className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+          )}
+          <Tooltip id={`pin-tooltip${id}`} place="bottom" />
+        </div>
+      </div>
+
+      {/* Images */}
+      {image && image.length > 0 && (
+        <div
+          className={`grid gap-1 ${
+            image.length === 1
+              ? "grid-cols-1"
+              : image.length === 2
+                ? "grid-cols-2"
+                : "grid-cols-2"
+          }`}
+        >
+          {image.map((item, index) => (
+            <img
+              key={index}
+              className={`object-cover w-full ${
+                image.length === 1 ? "max-h-[300px]" : "max-h-[150px]"
+              }`}
+              src={item}
+              alt=""
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Title and Description */}
+      <div className="p-4" onClick={HandleClick}>
+        <NoteTitle title={title} IsHover={IsHover} />
+        <NoteDescription description={description} />
+      </div>
+
+      {/* Action Icons */}
+      <ActionIcons IsHover={IsHover} id={id} />
+    </div>
   );
 };
 

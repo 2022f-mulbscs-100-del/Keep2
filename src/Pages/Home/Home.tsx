@@ -1,5 +1,4 @@
-import Masonry from "react-masonry-css";
-// import NoteInput from "../../component/NoteMakingInputField/NoteInput";
+import NoteInput from "../../component/NoteMakingInputField/NoteInput";
 import Note from "../../component/Note/Note";
 import { useNote } from "../../Context/noteContext";
 import { useEffect } from "react";
@@ -19,43 +18,66 @@ export default function Home() {
     fetchApiData();
   }, []);
 
-  // Define breakpoints for responsive columns
-  const breakpointColumns = {
-    default: 5, // 5 columns on large screens
-    1400: 4, // 4 columns on medium-large
-    1100: 3,
-    700: 2,
-    500: 1,
-  };
+  // Separate pinned and unpinned notes
+  const pinnedNotes = items.filter((item: NoteType) => item.pinned);
+  const unpinnedNotes = items.filter((item: NoteType) => !item.pinned);
 
   return (
     <>
-      <div className="p-4">{/* <NoteInput /> */}</div>
+      <div className="p-4">
+        <NoteInput />
+      </div>
 
       <div className="px-4 mt-10">
-        <div className="flex pl-11 text-[10px]">
-          <h1>PINNED</h1>
-        </div>
+        {/* Pinned Notes Section */}
+        {pinnedNotes.length > 0 && (
+          <div className="mb-8">
+            <div className="flex pl-3 mb-4">
+              <h1 className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                Pinned
+              </h1>
+            </div>
+            <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 2xl:columns-5 gap-4 space-y-4">
+              {pinnedNotes.map((item: NoteType) => (
+                <div key={item.id} className="break-inside-avoid">
+                  <Note
+                    id={item.id}
+                    title={item.title}
+                    description={item.description}
+                    NotePinned={item.pinned}
+                    image={JSON.parse(item.image)}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
-        <Masonry
-          breakpointCols={breakpointColumns}
-          className="flex -ml-4 w-auto"
-          columnClassName="pl-4 bg-clip-padding"
-        >
-          {items.length > 0 &&
-            items.map((item: NoteType) => {
-              return (
-                <Note
-                  key={item.id} // Use id instead of index for better performance
-                  id={item?.id}
-                  title={item?.title}
-                  description={item?.description}
-                  NotePinned={item?.pinned}
-                  image={JSON.parse(item?.image)}
-                />
-              );
-            })}
-        </Masonry>
+        {/* Unpinned Notes Section */}
+        {unpinnedNotes.length > 0 && (
+          <div>
+            {pinnedNotes.length > 0 && (
+              <div className="flex pl-3 mb-4">
+                <h1 className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                  Others
+                </h1>
+              </div>
+            )}
+            <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 2xl:columns-5 gap-4 space-y-4">
+              {unpinnedNotes.map((item: NoteType) => (
+                <div key={item.id} className="break-inside-avoid">
+                  <Note
+                    id={item.id}
+                    title={item.title}
+                    description={item.description}
+                    NotePinned={item.pinned}
+                    image={JSON.parse(item.image)}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </>
   );
