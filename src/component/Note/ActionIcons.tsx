@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { useRef, type ChangeEvent } from "react";
 import axiosClient from "../../api/axiosClient.js";
 import axios from "axios";
+import { Logger } from "../../utils/Logger.js";
 
 type ActionIconsProps = {
   IsHover: boolean;
@@ -31,7 +32,7 @@ const ActionIcons = ({ IsHover, id, onClick }: ActionIconsProps) => {
         toast.success("Note trashed");
       })
       .catch((error) => {
-        console.error("Error deleting note:", error);
+        Logger("Error deleting note:", error);
       });
   };
 
@@ -46,7 +47,7 @@ const ActionIcons = ({ IsHover, id, onClick }: ActionIconsProps) => {
         toast.success("Note restored");
       })
       .catch((error) => {
-        console.error("Error deleting note:", error);
+        Logger("Error restoring note:", error);
       });
   };
 
@@ -66,7 +67,7 @@ const ActionIcons = ({ IsHover, id, onClick }: ActionIconsProps) => {
         toast.success("Note deleted permanently");
       })
       .catch((error) => {
-        console.error("Error deleting note:", error);
+      Logger("Error permanently deleting note:", error);
       });
   };
 
@@ -81,7 +82,7 @@ const ActionIcons = ({ IsHover, id, onClick }: ActionIconsProps) => {
         toast.success("Note archived successfully");
       })
       .catch((error) => {
-        console.error("Error archiving note:", error);
+      Logger("Error archiving note:", error);
       });
   };
 
@@ -104,7 +105,7 @@ const ActionIcons = ({ IsHover, id, onClick }: ActionIconsProps) => {
 
     //     })
     //     .catch((error) => {
-    //       console.error("Error uploading file:", error);
+    //     Logger("Error uploading file:", error);
     //     });
 
     // })
@@ -126,8 +127,8 @@ const ActionIcons = ({ IsHover, id, onClick }: ActionIconsProps) => {
           data,
         );
         return response.data.url;
-      } catch (error) {
-        console.error("Error uploading file:", error);
+        } catch (error) {
+          Logger("Error uploading file:", error);
         return null;
       }
     });
@@ -148,7 +149,7 @@ const ActionIcons = ({ IsHover, id, onClick }: ActionIconsProps) => {
         toast.success("Image uploaded to note successfully");
       })
       .catch((error) => {
-        console.error("Error uploading image to note:", error);
+        Logger("Error uploading image to note:", error);
       });
   };
   const UnarchievedNote = (id: number) => {
@@ -162,7 +163,7 @@ const ActionIcons = ({ IsHover, id, onClick }: ActionIconsProps) => {
         toast.success("Note unarchived successfully");
       })
       .catch((error) => {
-        console.error("Error unarchiving note:", error);
+      Logger("Error unarchiving note:", error);
       });
   };
 

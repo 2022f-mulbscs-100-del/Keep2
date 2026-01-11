@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import axiosClient from "../api/axiosClient";
 import type { ProfileDataType } from "../types/User.types";
+import { Logger } from "../utils/Logger";
 
 const UserContext = createContext<userContextType | null>(null);
 export type userContextType = {
@@ -41,6 +42,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       })
       .catch((error) => {
         setIsLoading(false);
+        Logger("error fetching user profile",error)
         setError({
           ...error,
           ProfileError: error.message || "Error fetching user profile",
@@ -59,6 +61,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       // eslint-disable-next-line
     } catch (error: string | any) {
       setIsLoading(false);
+      Logger("Error updating profile",error)
       setError({
         ...error,
         ProfileError: error.message || "Error updating profile",

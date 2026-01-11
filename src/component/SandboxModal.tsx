@@ -3,6 +3,7 @@ import { PiCodesandboxLogo } from "react-icons/pi";
 import { useNote } from "../Context/noteContext";
 import { toast } from "react-toastify";
 import axiosClient from "../api/axiosClient";
+import { Logger } from "../utils/Logger";
 
 interface SandboxMoadlProps {
   onclose: () => void;
@@ -41,7 +42,7 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
         toast.success("Sandbox data generated successfully");
       })
       .catch((error) => {
-        console.error("Error generating sandbox data:", error);
+       Logger("Error generating sandbox data:", error);
         setIsLoading(false);
       });
   };
@@ -56,7 +57,7 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
         onclose();
       })
       .catch((error) => {
-        console.error("Error deleting all notes:", error);
+       Logger("Error deleting sandbox data:", error);
         setIsLoading(false);
       });
   };

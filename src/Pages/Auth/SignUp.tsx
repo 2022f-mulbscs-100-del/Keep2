@@ -5,6 +5,7 @@ import { useAuth } from "../../Context/AuthContext";
 import { toast } from "react-toastify";
 import TurnstileWidget from "../../component/turnstile/Turnstile";
 import axios from "axios";
+import { Logger } from "../../utils/Logger";
 
 function SignUp() {
   const { SignUpHandler, isLoading, signUpStage, error, setError } = useAuth();
@@ -109,7 +110,8 @@ function SignUp() {
       await SignUpHandler(signupFormData);
       setStage("verifyEmail");
     } catch (error) {
-      console.error(error);
+    Logger("Error during signup:", error);
+      toast.error("Signup failed. Please try again.");
     }
   };
 
@@ -135,7 +137,7 @@ function SignUp() {
       }
     } catch (error) {
       toast.error("Invalid 2FA code. Please try again.");
-      console.error(error);
+    Logger("Error during email verification:", error);
     }
   };
 
@@ -152,7 +154,7 @@ function SignUp() {
           toast.success("CAPTCHA verified successfully");
         })
         .catch((error) => {
-          console.error("Error verifying Turnstile token:", error);
+        Logger("CAPTCHA verification failed:", error);
           setTurnstileVerified(false);
           toast.error("CAPTCHA verification failed");
         });

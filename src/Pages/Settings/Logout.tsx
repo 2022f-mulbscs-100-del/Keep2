@@ -3,6 +3,7 @@ import SettingHeader from "../../component/settingHeader/SettingHeader";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { Logger } from "../../utils/Logger";
 
 const Logout = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -24,8 +25,8 @@ const Logout = () => {
       })
       .catch((error) => {
         setIsLoading(false);
+        Logger("Error logging out from server",error)
         setError(`Error logging out from server: ${error.message}`);
-        console.error("Error logging out from server:", error);
       });
   };
 

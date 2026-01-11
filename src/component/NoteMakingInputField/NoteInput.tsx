@@ -8,6 +8,7 @@ import { InputList } from "./InputList";
 import IconsArray from "../../../public/Data";
 import { useNote } from "../../Context/noteContext";
 import axiosClient from "../../api/axiosClient";
+import { Logger } from "../../utils/Logger";
 
 export const NoteInput = () => {
   interface NoteType {
@@ -87,7 +88,7 @@ export const NoteInput = () => {
           fetchApiData();
         })
         .catch((error) => {
-          console.error("Error adding note:", error);
+        Logger("Error adding note:", error);
         });
 
       setNotesData({
@@ -100,7 +101,7 @@ export const NoteInput = () => {
       setLocalIsPinned(false);
       setListClick(false);
     } catch (error) {
-      console.error(error);
+      Logger("Error in apiCall:", error);
     }
   };
 
