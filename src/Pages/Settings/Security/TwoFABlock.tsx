@@ -43,19 +43,19 @@ const TwoFABlock = () => {
   }, []);
   return (
     <>
-      <div className="mx-auto border border-[#525355] rounded-[10px] p-6 mb-4">
+      <div className="mx-auto border border-borderColor rounded-[10px] p-6 mb-4">
         <div className="flex items-center gap-4 mb-4">
-          <IoShieldCheckmarkOutline className="text-2xl text-gray-400" />
-          <h2 className="text-xl font-semibold">Two-Factor Authentication</h2>
+          <IoShieldCheckmarkOutline className="text-subheading2 text-gray-400" />
+          <h2 className="text-subheading2 font-semibold">Two-Factor Authentication</h2>
         </div>
 
-        <p className="text-sm text-gray-400 mb-6">
+        <p className="text-body text-gray-400 mb-6">
           Add an extra layer of protection to your account by enabling
           two-factor authentication (2FA).
         </p>
 
         <button
-          className="cursor-pointer hover:bg-[#52535596]  flex justify-center p-2 rounded-lg w-full"
+          className="cursor-pointer hover:bg-[#52535596] text-body  flex justify-center p-2 rounded-lg w-full"
           onClick={handleEnable2FA}
         >
           {enable2FA ? "Disable 2FA" : "Enable 2FA"}

@@ -105,7 +105,7 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
             <div>
               <button
                 disabled={isLoading}
-                className="w-fit rounded-md p-3 text-sm hover:bg-[#41331C] cursor-pointer"
+                className="w-fit rounded-md p-3 text-sm hover:bg-primary cursor-pointer"
                 onClick={deletedData}
               >
                 Delete All notes
@@ -119,7 +119,7 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
 
           <div className="flex flex-col gap-4 p-4">
             <p className="text-sm">Enter number of notes want to generate!!</p>
-            <div className="flex items-center gap-4  p-1 rounded-[4px] bg-transparent border border-[#525355] ">
+            <div className="flex items-center gap-4  p-1 rounded-[4px] bg-transparent border border-borderColor ">
               <input
                 className="outline-none w-full"
                 type="number"
@@ -135,7 +135,7 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
                 <p className="text-sm">
                   Enter number of notes you want to Archive
                 </p>
-                <div className="flex items-center gap-4  p-1 rounded-[4px] bg-transparent border border-[#525355] ">
+                <div className="flex items-center gap-4  p-1 rounded-[4px] bg-transparent border border-borderColor ">
                   <input
                     className="outline-none w-full"
                     type="number"
@@ -172,7 +172,7 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
               </label>
             </div>
             <button
-              className="w-full cursor-pointer rounded-lg p-2 hover:bg-[#41331C]"
+              className="w-full cursor-pointer rounded-lg p-2 hover:bg-primary"
               onClick={() => {
                 generateData();
               }}

@@ -203,7 +203,7 @@ function Login() {
               </button>
             </div>
             <div className="flex flex-col gap-4 ">
-              <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-[#525355] ">
+              <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
                 <input
                   ref={inputRef}
                   className="outline-none w-full"
@@ -215,7 +215,7 @@ function Login() {
               </div>
 
               <div>
-                <div className="flex items-center gap-4  px-4 min-w-[400px]  py-2 rounded-[8px] bg-transparent border border-[#525355] ">
+                <div className="flex items-center gap-4  px-4 min-w-[400px]  py-2 rounded-[8px] bg-transparent border border-borderColor ">
                   <input
                     className="outline-none w-full"
                     type={`${showPassword ? "text" : "password"}`}
@@ -270,7 +270,7 @@ function Login() {
                 <p>Enter the 2FA code sent to your email to continue</p>
               </div>
               <div className="flex flex-col gap-4 ">
-                <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-[#525355] ">
+                <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
                   <input
                     ref={inputRef}
                     className="outline-none w-full"
@@ -307,7 +307,7 @@ function Login() {
                 </p>
               </div>
               <div className="flex flex-col gap-4 ">
-                <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-[#525355] ">
+                <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
                   <input
                     ref={inputRef}
                     className="outline-none w-full"
@@ -342,7 +342,7 @@ function Login() {
                 <p>Enter the MFA code to continue</p>
               </div>
               <div className="flex flex-col gap-4 ">
-                <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-[#525355] ">
+                <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
                   <input
                     ref={inputRef}
                     className="outline-none w-full"

@@ -29,7 +29,9 @@ const SettingHeader = ({ title }: SettingHeaderProps) => {
         </div>
 
         <div className="sm:flex-1   ">
-          <h1 className="sm:text-3xl xs:text-[24px] font-bold text-nowrap text-center">
+          <h1 className=" font-bold text-nowrap text-center
+          text-subheading
+          ">
             {title}
           </h1>
         </div>

@@ -121,7 +121,7 @@ export default function SubscriptionPage() {
       {ACTIVE_SUBSCRIPTION && (
         <div className="space-y-4 md:px-10 ">
           {/* Pro Status Card */}
-          <div className="border border-[#525355] rounded-lg p-6 ">
+          <div className="border border-borderColor rounded-lg p-6 ">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <IoShieldCheckmarkOutline className="text-2xl text-green-500" />
@@ -144,15 +144,15 @@ export default function SubscriptionPage() {
           </div>
 
           {/* Subscription Details */}
-          <div className="border border-[#525355] rounded-lg overflow-hidden ">
-            <div className="flex justify-between items-center p-4 border-b border-[#525355]">
+          <div className="border border-borderColor rounded-lg overflow-hidden ">
+            <div className="flex justify-between items-center p-4 border-b border-borderColor">
               <span className="text-gray-400">Plan</span>
               <span className="text-white font-medium capitalize">
                 {profileData?.subscriptionPlan}
               </span>
             </div>
 
-            <div className="flex justify-between items-center p-4 border-b border-[#525355]">
+            <div className="flex justify-between items-center p-4 border-b border-borderColor">
               <span className="text-gray-400">Amount</span>
               <span className="text-white font-medium">
                 ${profileData?.subscriptionPlan === "monthly" ? "10" : "100"} /{" "}
@@ -160,7 +160,7 @@ export default function SubscriptionPage() {
               </span>
             </div>
 
-            <div className="flex justify-between items-center p-4 border-b border-[#525355]">
+            <div className="flex justify-between items-center p-4 border-b border-borderColor">
               <span className="text-gray-400">Status</span>
               <span className="text-white font-medium capitalize">
                 {profileData?.subscriptionStatus}
@@ -198,7 +198,7 @@ export default function SubscriptionPage() {
                 }}
                 className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all cursor-pointer ${
                   !plan
-                    ? "bg-[#41331C] text-white"
+                    ? "bg-primary text-white"
                     : "text-gray-400 hover:text-white hover:bg-[#525355]"
                 }`}
               >
@@ -213,7 +213,7 @@ export default function SubscriptionPage() {
                 }}
                 className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all cursor-pointer ${
                   plan
-                    ? "bg-[#41331C] text-white"
+                    ? "bg-primary text-white"
                     : "text-gray-400 hover:text-white hover:bg-[#525355]"
                 }`}
               >
@@ -223,7 +223,7 @@ export default function SubscriptionPage() {
           </div>
 
           {/* Price Card */}
-          <div className="bg-black-800 bg-opacity-50  p-6 border border-[#525355] rounded-[10px] flex justify-between items-center mb-6">
+          <div className="bg-black-800 bg-opacity-50  p-6 border border-borderColor rounded-[10px] flex justify-between items-center mb-6">
             <div>
               <span className="text-1xl font-bold flex  items-baseline gap-1">
                 {plan

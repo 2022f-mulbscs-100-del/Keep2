@@ -58,18 +58,18 @@ const DeleteAccount = () => {
     >
       <SettingHeader title="Delete Account" />
 
-      <div className="mx-auto border border-[#525355] rounded-[10px] p-6">
+      <div className="mx-auto border border-borderColor rounded-[10px] p-6">
         <div className="flex items-center gap-4 mb-4">
-          <IoTrashOutline className="text-2xl text-red-400" />
-          <h2 className="text-xl font-semibold text-red-400">Delete Account</h2>
+          <IoTrashOutline className="text-subheading2 text-red-400" />
+          <h2 className="text-subheading2 font-semibold text-red-400">Delete Account</h2>
         </div>
 
-        <p className="text-sm text-gray-400 mb-6">
+        <p className="text-body text-gray-400 mb-6">
           Permanently delete your account and all associated data. This action
           cannot be undone.
         </p>
         {stage === "accountDeleted" && (
-          <div className="flex items-center gap-4  px-4 min-w-[400px]  py-2 rounded-[8px] bg-transparent border border-[#525355] mb-4">
+          <div className="flex items-center gap-4  px-4 min-w-[400px]  py-2 rounded-[8px] bg-transparent border border-borderColor mb-4">
             <input
               className="outline-none w-full"
               type={`${showPassword ? "text" : "password"}`}
@@ -93,22 +93,21 @@ const DeleteAccount = () => {
           </div>
         )}
 
-        <div
-          onClick={
+    
+          <button className="w-full text-red-400 text-body  hover:bg-red-500/10 cursor-pointer flex justify-center p-2 rounded-lg" disabled={Loading}
+           onClick={
             stage === "deleteConfirmation"
               ? () => setStage("accountDeleted")
               : handleDelete
-          }
-          className="hover:bg-red-500/10 cursor-pointer flex justify-center p-2 rounded-lg"
-        >
-          <button className="cursor-pointer text-red-400" disabled={Loading}>
+          }>
             {!Loading
               ? stage === "deleteConfirmation"
                 ? "Delete My Account"
                 : "Confirm Account Deletion"
               : "Deleting Account..."}
+              
           </button>
-        </div>
+   
       </div>
     </div>
   );

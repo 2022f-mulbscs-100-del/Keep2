@@ -89,19 +89,19 @@ const ResetPasswordBlock = () => {
 
   return (
     <form onSubmit={resetPassword}>
-      <div className="mx-auto border border-[#525355] rounded-[10px] p-6 mb-4">
+      <div className="mx-auto border border-borderColor rounded-[10px] p-6 mb-4">
         <div className="flex items-center gap-4 mb-4">
-          <IoShieldCheckmarkOutline className="text-2xl text-gray-400" />
-          <h2 className="text-xl font-semibold">Reset Password</h2>
+          <IoShieldCheckmarkOutline className="text-subheading2 text-gray-400" />
+          <h2 className="text-subheading2 font-semibold">Reset Password</h2>
         </div>
 
-        <p className="text-sm text-gray-400 mb-6">
+        <p className="text-body text-gray-400 mb-6">
           It's a good practice to change your password regularly to keep your
           account secure.
         </p>
-        <div className="flex items-center gap-4  px-4 min-w-[400px]  py-2 rounded-[8px] bg-transparent border border-[#525355] mb-4 ">
+        <div className="flex items-center gap-4  px-4 min-w-[400px]  py-2 rounded-[8px] bg-transparent border border-borderColor mb-4 ">
           <input
-            className="outline-none w-full"
+            className="outline-none w-full  text-body2"
             type={`${currentPassword ? "text" : "password"}`}
             placeholder="Your Current Password"
             name="currentPassword"
@@ -120,9 +120,9 @@ const ResetPasswordBlock = () => {
             />
           )}
         </div>
-        <div className="flex items-center gap-4  px-4 min-w-[400px]  py-2 rounded-[8px] bg-transparent border border-[#525355] ">
+        <div className="flex items-center gap-4  px-4 min-w-[400px]  py-2 rounded-[8px] bg-transparent border border-borderColor ">
           <input
-            className="outline-none w-full"
+            className="outline-none w-full text-body2"
             type={`${showPassword ? "text" : "password"}`}
             placeholder="Password"
             name="password"
@@ -142,9 +142,9 @@ const ResetPasswordBlock = () => {
           )}
         </div>
 
-        <div className="flex items-center gap-4  px-4 min-w-[400px]  py-2 rounded-[8px] bg-transparent border border-[#525355] mt-4">
+        <div className="flex items-center gap-4  px-4 min-w-[400px]  py-2 rounded-[8px] bg-transparent border border-borderColor mt-4">
           <input
-            className="outline-none w-full"
+            className="outline-none w-full  text-body2"
             type={`${showConfirmPassword ? "text" : "password"}`}
             placeholder="Confirm Password"
             name="confirmPassword"
@@ -165,7 +165,7 @@ const ResetPasswordBlock = () => {
         </div>
 
         <button
-          className=" hover:bg-[#52535596] cursor-pointer flex justify-center p-2 rounded-lg mt-4 w-full"
+          className=" hover:bg-[#52535596] text-body cursor-pointer flex justify-center p-2 rounded-lg mt-4 w-full"
           type="submit"
         >
           Reset Password

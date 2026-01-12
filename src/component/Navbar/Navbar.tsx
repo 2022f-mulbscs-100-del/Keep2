@@ -2,7 +2,7 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import { IoMdRefresh } from "react-icons/io";
 import { TbLayoutList } from "react-icons/tb";
 import { IoSettingsOutline } from "react-icons/io5";
-// import Input from "../InputFields/Input";
+import Input from "../InputFields/Input";
 import { LuLayoutGrid } from "react-icons/lu";
 import { useSidebar } from "../../Context/sidebarContext";
 import { useNavbar } from "../../Context/navbarContext";
@@ -30,7 +30,7 @@ const Navbar = () => {
   return (
     <>
       <div
-        className="grid grid-cols-[auto_1fr_auto]    items-center text-[20px] border-b border-[#525355]
+        className="grid grid-cols-[auto_1fr_auto]    items-center text-[20px] border-b border-borderColor
       
       md:px-8 md:py-4 md:gap-8
       xsm:p-4
@@ -39,7 +39,7 @@ const Navbar = () => {
       "
       >
         {/* logo and title */}
-        <div className=" items-center gap-30 w-[130px]">
+        <div className=" items-center  w-fit">
           <div className="flex items-center gap-4">
             <RxHamburgerMenu
               className="cursor-pointer"
@@ -47,7 +47,7 @@ const Navbar = () => {
                 setIsOpen(!isOpen);
               }}
             />
-            <h1>
+            <h1 className="text-subheading2 w-fit">
               {path === "/setting" || path.startsWith("/setting/")
                 ? path.slice(9, 10).toUpperCase() + path.slice(10)
                 : path === "/" || path.slice(0, 6) === "/notes"
@@ -59,10 +59,11 @@ const Navbar = () => {
 
         {/* input field */}
 
-        {/* <div className="lg:pr-50
+        <div className="
+        px-4
         ">
           <Input />
-        </div> */}
+        </div>
 
         <div className="flex justify-end items-center gap-16">
           {!isTablet && !isMobile && (

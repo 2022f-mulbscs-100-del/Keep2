@@ -94,25 +94,25 @@ const router = createBrowserRouter([
       {
         path: "/login",
         element: (
-          <PublicRoute>
+          // <PublicRoute>
             <Login />
-          </PublicRoute>
+          // </PublicRoute>
         ),
       },
       {
         path: "/sign-up",
         element: (
-          <PublicRoute>
+          // <PublicRoute>
             <SignUp />
-          </PublicRoute>
+          // </PublicRoute>
         ),
       },
       {
         path: "/forget-password",
         element: (
-          <PublicRoute>
+          // <PublicRoute>
             <ForgetPassword />
-          </PublicRoute>
+          // </PublicRoute>
         ),
       },
       {

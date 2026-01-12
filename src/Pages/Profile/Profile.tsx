@@ -124,9 +124,9 @@ const Profile = () => {
           <div className="flex  flex-col gap-2 text-center">
             <div>
               <h2
-                className="md:text-4xl font-bold
-              xms:text-[22px]
-              "
+                className=" font-bold
+              text-subheading
+                "
               >
                 {profileData?.name}
               </h2>
@@ -134,7 +134,7 @@ const Profile = () => {
             <div>
               <h2
                 className=" 
-              xsm:text-[14px]
+              text-body
               "
               >
                 {profileData?.email}

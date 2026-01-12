@@ -53,7 +53,7 @@ const Dialougebox = ({  setisActive }:{setisActive: React.Dispatch<React.SetStat
         <>
             <div className='h-fit w-[300px] z-100 fixed inset-0 m-auto bg-[#313235]  drop-shadow-lg '>
 
-                <div className='p-4 pt-0 border-b-2 border-[#525355]' >
+                <div className='p-4 pt-0 border-b-2 border-borderColor' >
                     <div className='py-2'>
                         <h1>Edit Labels</h1>
                     </div>
@@ -64,7 +64,7 @@ const Dialougebox = ({  setisActive }:{setisActive: React.Dispatch<React.SetStat
                             {focus ? <RxCross2 className='cursor-pointer rounded-full w-[25px] h-[25px] p-1 hover:bg-[#52535596]' /> : <FaPlus className='cursor-pointer rounded-full w-[25px] h-[25px] p-1 hover:bg-[#52535596]' />}
 
 
-                            <input className='py-1 border-b border-transparent focus:border-b focus:border-[#525355] outline-none ' type="text" value={input} placeholder='Create new label'
+                            <input className='py-1 border-b border-transparent focus:border-b focus:border-borderColor outline-none ' type="text" value={input} placeholder='Create new label'
                                 onFocus={InputHandler}
                                 onBlur={InputHandler}
                                 onChange={HandleChange}
@@ -82,7 +82,7 @@ const Dialougebox = ({  setisActive }:{setisActive: React.Dispatch<React.SetStat
                                 return (
                                     <div className='flex py-2 justify-between items-center' key={index}>
                                         <MdDelete onClick={() => { deleteNote(index) }} className='cursor-pointer rounded-full w-[25px] h-[25px] p-1 hover:bg-[#52535596]' />
-                                        <input className='py-1 border-b border-transparent focus:border-b focus:border-[#525355] outline-none ' type="text" defaultValue={item} placeholder='Create new label'
+                                        <input className='py-1 border-b border-transparent focus:border-b focus:border-borderColor outline-none ' type="text" defaultValue={item} placeholder='Create new label'
                                             onFocus={() => setFocus(true)}
                                             onBlur={() => setFocus(false)}
                                            

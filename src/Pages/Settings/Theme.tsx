@@ -13,7 +13,7 @@ const Theme = () => {
     >
       <SettingHeader title="Theme Settings" />
 
-      <div className="mx-auto border border-[#525355] rounded-[10px] p-6">
+      <div className="mx-auto border border-borderColor rounded-[10px] p-6">
         {/* Light Theme Option */}
         <div className="flex items-center gap-4 mb-4">
           <IoSunnyOutline className="text-2xl text-gray-400" />

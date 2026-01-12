@@ -67,7 +67,7 @@ const Note = ({ title, description, NotePinned, id, image }: NoteProps) => {
   return (
     <div
       ref={NoteRef}
-      className="relative w-full bg-white dark:bg-gray-800 shadow-md hover:shadow-xl transition-shadow duration-200 border rounded-lg border-gray-300 dark:border-gray-600 break-words cursor-pointer overflow-hidden"
+      className="relative w-full text-black dark:text-white  dark:bg-background shadow-md hover:shadow-xl transition-shadow duration-200 border rounded-lg border-gray-300 dark:border-gray-600 break-words cursor-pointer overflow-hidden"
     >
       {/* Select Icon for selecting the note */}
       <div className="absolute top-0 left-0 z-10">
