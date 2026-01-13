@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { IoCallOutline, IoMailOutline, IoPersonOutline } from "react-icons/io5";
-import Pills from "../../component/Pills/Pill";
-import axiosClient from "../../api/axiosClient";
-import SettingHeader from "../../component/settingHeader/SettingHeader";
+import Pills from "../../../component/Pills/Pill";
+import axiosClient from "../../../api/axiosClient";
+import SettingHeader from "../../../component/settingHeader/SettingHeader";
+import PrimaryButton from "../../../component/Buttons/PrimaryButton";
+import PersonalInfoLoader from "./PersonalInfoLoader";
 
 const PersonalInfo = () => {
   const [profileData, setProfileData] = useState({
@@ -15,12 +17,16 @@ const PersonalInfo = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    setIsLoading(true);
     axiosClient
       .get("/userProfile")
       .then((res) => {
+        setIsLoading(false);
         setProfileData(res.data);
       })
-      .catch(() => {});
+      .catch(() => {
+        setIsLoading(false);
+      });
   }, []);
 
   const updateProfileData = () => {
@@ -45,6 +51,11 @@ const PersonalInfo = () => {
   };
 
   const [showSecondaryEmailField, setShowSecondaryEmailField] = useState(false);
+
+  if (isLoading) {
+    return <PersonalInfoLoader />;
+  }
+
   return (
     <div
       className="m-auto w-full 
@@ -131,15 +142,11 @@ const PersonalInfo = () => {
           </div>
         </div>
 
-        <div className="">
-          <button
-            className="hover:bg-[#52535596] w-full cursor-pointer flex justify-center p-2 mt-4 rounded-lg text-body font-medium"
-            type="submit"
-            onClick={updateProfileData}
-          >
-            {isLoading ? "Loading..." : "Save Changes"}
-          </button>
-        </div>
+        <PrimaryButton
+          title={isLoading ? "Loading..." : "Save Changes"}
+          onClick={updateProfileData}
+          isLoading={isLoading}
+        />
       </div>
     </div>
   );

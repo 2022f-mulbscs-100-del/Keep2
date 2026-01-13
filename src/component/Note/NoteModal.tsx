@@ -41,7 +41,7 @@ export default function NoteModal() {
       try {
         axiosClient.get(`/notes/${id}`).then((res) => setValue(res.data));
       } catch (error) {
-      Logger("Error fetching note:", error); 
+        Logger("Error fetching note:", error);
       }
     };
     fetchNote();
@@ -72,7 +72,7 @@ export default function NoteModal() {
       axiosClient.put(`/notes/${id}`, updatedNote);
       fetchApiData();
     } catch (error) {
-    Logger("Error updating note:", error);
+      Logger("Error updating note:", error);
     }
   };
 
@@ -84,7 +84,7 @@ export default function NoteModal() {
     >
       <div
         ref={ref}
-        className={` border-[#5F6368] border rounded-[8px] w-[90%] md:w-[60%] lg:w-[40%] p-4  ${theme !== "dark" ? "text-black bg-white" : "text-white bg-[#121212]"} relative`}
+        className={` border-borderColor border rounded-[8px] w-[90%] md:w-[60%] lg:w-[40%] p-4  ${theme !== "dark" ? " bg-white" : " bg-black"} relative`}
       >
         {image && image.length > 0 && (
           <div className="flex  items-center p-4 gap-4">

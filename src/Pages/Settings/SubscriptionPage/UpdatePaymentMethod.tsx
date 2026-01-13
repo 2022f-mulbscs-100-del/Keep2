@@ -1,6 +1,7 @@
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import UpdateSubscriptionModal from "./UpdateSubscriptionModal";
 import type { paymentMethodtype } from "../../../types/Payment.types";
+import PrimaryButton from "../../../component/Buttons/PrimaryButton";
 type updatePaymentMethodProps = {
   ACTIVE_SUBSCRIPTION: boolean;
   paymentMethod: paymentMethodtype | null;
@@ -18,6 +19,9 @@ const UpdatePaymentMethod = ({
   isModalOpen,
   ACTIVE_SUBSCRIPTION,
 }: updatePaymentMethodProps) => {
+  const OpenModal = () => {
+    setIsModalOpen(!OpenModal);
+  };
   return (
     <>
       {ACTIVE_SUBSCRIPTION && (
@@ -74,12 +78,7 @@ const UpdatePaymentMethod = ({
               />
             )}
 
-            <button
-              className="cursor-pointer hover:bg-[#52535596]  flex justify-center p-2 rounded-lg w-full"
-              onClick={() => setIsModalOpen(true)}
-            >
-              Update Payment Method
-            </button>
+            <PrimaryButton title="Update Payment Method" onClick={OpenModal} />
           </div>
         </div>
       )}

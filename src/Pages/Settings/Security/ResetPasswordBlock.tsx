@@ -4,11 +4,13 @@ import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import { toast } from "react-toastify";
 import axiosClient from "../../../api/axiosClient";
 import { useUser } from "../../../Context/UserContext";
+import PrimaryButton from "../../../component/Buttons/PrimaryButton";
 
 const ResetPasswordBlock = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [currentPassword, setCurrentPassword] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     currentPassword: "",
@@ -56,6 +58,7 @@ const ResetPasswordBlock = () => {
       return;
     }
 
+    setIsLoading(true);
     axiosClient
       .post(`${import.meta.env.VITE_API_BASE_URL}/api/reset-password`, {
         currentPassword: formData.currentPassword,
@@ -64,6 +67,7 @@ const ResetPasswordBlock = () => {
         email: profileData?.email,
       })
       .then(() => {
+        setIsLoading(false);
         toast.success("Password Updated");
         setFormData({
           currentPassword: "",
@@ -72,6 +76,7 @@ const ResetPasswordBlock = () => {
         });
       })
       .catch(() => {
+        setIsLoading(false);
         setFormData({
           currentPassword: "",
           password: "",
@@ -164,12 +169,10 @@ const ResetPasswordBlock = () => {
           )}
         </div>
 
-        <button
-          className=" hover:bg-[#52535596] text-body cursor-pointer flex justify-center p-2 rounded-lg mt-4 w-full"
-          type="submit"
-        >
-          Reset Password
-        </button>
+        <PrimaryButton
+          title={isLoading ? "Loading..." : "Reset Password"}
+          isLoading={isLoading}
+        />
       </div>
     </form>
   );

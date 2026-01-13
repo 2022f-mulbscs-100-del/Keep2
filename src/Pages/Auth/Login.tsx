@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 // import { toast } from "react-toastify"
 import { useAuth } from "../../Context/AuthContext";
 import { toast } from "react-toastify";
+import PrimaryButton from "../../component/Buttons/PrimaryButton";
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -188,8 +189,8 @@ function Login() {
         >
           <div className="">
             <div className="flex flex-col items-center mb-4">
-              <h1 className="font-bold text-2xl">Login In</h1>
-              <p>to continue to Keeper</p>
+              <h1 className="font-bold text-subheading2">Login In</h1>
+              <p className="text-body2">to continue to Keeper</p>
             </div>
             <div className="flex justify-end text-[12px] mr-2 mb-2 ">
               <button
@@ -206,7 +207,7 @@ function Login() {
               <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
                 <input
                   ref={inputRef}
-                  className="outline-none w-full"
+                  className="outline-none w-full text-body2"
                   type="text"
                   placeholder="Email"
                   name="email"
@@ -217,7 +218,7 @@ function Login() {
               <div>
                 <div className="flex items-center gap-4  px-4 min-w-[400px]  py-2 rounded-[8px] bg-transparent border border-borderColor ">
                   <input
-                    className="outline-none w-full"
+                    className="outline-none w-full text-body2"
                     type={`${showPassword ? "text" : "password"}`}
                     placeholder="Password"
                     name="password"
@@ -247,14 +248,10 @@ function Login() {
               </div>
             </div>
 
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="hover:bg-[#52535596] cursor-pointer flex justify-center p-2 mt-4 rounded-lg w-full disabled:cursor-not-allowed disabled:opacity-60
-  "
-            >
-              {isLoading ? "Loading..." : "Login"}
-            </button>
+            <PrimaryButton
+              title={isLoading ? "Loading..." : "Login"}
+              isLoading={isLoading}
+            />
           </div>
         </form>
       )}
@@ -264,16 +261,18 @@ function Login() {
           <div className="flex justify-center items-center h-full mt-10">
             <div className="">
               <div className="flex flex-col items-center mb-4">
-                <h1 className="font-bold text-2xl">
+                <h1 className="font-bold text-subheading2">
                   Two-Factor Authentication
                 </h1>
-                <p>Enter the 2FA code sent to your email to continue</p>
+                <p className="text-body2">
+                  Enter the 2FA code sent to your email to continue
+                </p>
               </div>
               <div className="flex flex-col gap-4 ">
                 <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
                   <input
                     ref={inputRef}
-                    className="outline-none w-full"
+                    className="outline-none w-full text-body2"
                     type="number"
                     placeholder="Enter 2FA Code"
                     name="2faCode"
@@ -283,14 +282,10 @@ function Login() {
                 </div>
               </div>
 
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="hover:bg-[#52535596] mt-4 cursor-pointer flex justify-center p-2 mt-  4 rounded-lg w-full disabled:cursor-not-allowed disabled:opacity-60
-  "
-              >
-                {isLoading ? "Loading..." : "Verify"}
-              </button>
+              <PrimaryButton
+                title={isLoading ? "Loading..." : "Verify"}
+                isLoading={isLoading}
+              />
             </div>
           </div>
         </form>
@@ -301,8 +296,10 @@ function Login() {
           <div className="flex justify-center items-center h-full mt-10">
             <div className="">
               <div className="flex flex-col items-center mb-4">
-                <h1 className="font-bold text-2xl">Email Verification</h1>
-                <p>
+                <h1 className="font-bold text-subheading2">
+                  Email Verification
+                </h1>
+                <p className="text-body2">
                   Enter the verification code sent to your email to continue
                 </p>
               </div>
@@ -310,7 +307,7 @@ function Login() {
                 <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
                   <input
                     ref={inputRef}
-                    className="outline-none w-full"
+                    className="outline-none w-full text-body2"
                     type="number"
                     placeholder="Enter Verification Code"
                     name="verificationCode"
@@ -320,14 +317,10 @@ function Login() {
                 </div>
               </div>
 
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="hover:bg-[#52535596] mt-4 cursor-pointer flex justify-center p-2 mt-  4 rounded-lg w-full disabled:cursor-not-allowed disabled:opacity-60
-  "
-              >
-                {isLoading ? "Loading..." : "Verify"}
-              </button>
+              <PrimaryButton
+                title={isLoading ? "Loading..." : "Verify"}
+                isLoading={isLoading}
+              />
             </div>
           </div>
         </form>
@@ -338,14 +331,14 @@ function Login() {
           <div className="flex justify-center items-center h-full mt-10">
             <div className="">
               <div className="flex flex-col items-center mb-4">
-                <h1 className="font-bold text-2xl">MFA Verification</h1>
-                <p>Enter the MFA code to continue</p>
+                <h1 className="font-bold text-subheading2">MFA Verification</h1>
+                <p className="text-body2">Enter the MFA code to continue</p>
               </div>
               <div className="flex flex-col gap-4 ">
                 <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
                   <input
                     ref={inputRef}
-                    className="outline-none w-full"
+                    className="outline-none w-full text-body2"
                     type="number"
                     placeholder="Enter MFA Code"
                     name="mfaCode"
@@ -355,14 +348,18 @@ function Login() {
                 </div>
               </div>
 
-              <button
+              <PrimaryButton
+                title={isLoading ? "Loading..." : "Verify"}
+                isLoading={isLoading}
+              />
+              {/* <button
                 type="submit"
                 disabled={isLoading}
-                className="hover:bg-[#52535596] mt-4 cursor-pointer flex justify-center p-2 mt-  4 rounded-lg w-full disabled:cursor-not-allowed disabled:opacity-60
+                className="hover:bg-secondary mt-4 cursor-pointer flex justify-center p-2 mt-  4 rounded-lg w-full disabled:cursor-not-allowed disabled:opacity-60
   "
               >
                 {isLoading ? "Loading..." : "Verify"}
-              </button>
+              </button> */}
             </div>
           </div>
         </form>

@@ -14,8 +14,8 @@ import ProtectedRoute from "./ProtectedRoute";
 import Profile from "./Pages/Profile/Profile";
 import Setting from "./Pages/Settings/Setting";
 import SettingLayout from "./Pages/Profile/SettingLayout";
-import PersonalInfo from "./Pages/Settings/PersonalInfo";
-import PublicRoute from "./PublicRoute";
+import PersonalInfo from "./Pages/Settings/Personal-info/PersonalInfo";
+// import PublicRoute from "./PublicRoute";
 
 interface ProviderWrapperProps {
   children: React.ReactNode;
@@ -95,7 +95,7 @@ const router = createBrowserRouter([
         path: "/login",
         element: (
           // <PublicRoute>
-            <Login />
+          <Login />
           // </PublicRoute>
         ),
       },
@@ -103,7 +103,7 @@ const router = createBrowserRouter([
         path: "/sign-up",
         element: (
           // <PublicRoute>
-            <SignUp />
+          <SignUp />
           // </PublicRoute>
         ),
       },
@@ -111,7 +111,7 @@ const router = createBrowserRouter([
         path: "/forget-password",
         element: (
           // <PublicRoute>
-            <ForgetPassword />
+          <ForgetPassword />
           // </PublicRoute>
         ),
       },

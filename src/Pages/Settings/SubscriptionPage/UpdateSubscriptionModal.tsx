@@ -124,7 +124,7 @@ const UpdateSubscriptionModal = ({
           >
             <div className="">
               <FaArrowLeftLong
-                className=" cursor-pointer hover:bg-[#52535596] p-2 rounded-lg
+                className=" cursor-pointer hover:bg-secondary p-2 rounded-lg
                                          sm:size-10
                                          xsm:size-8
                                          "

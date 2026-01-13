@@ -88,7 +88,7 @@ export const NoteInput = () => {
           fetchApiData();
         })
         .catch((error) => {
-        Logger("Error adding note:", error);
+          Logger("Error adding note:", error);
         });
 
       setNotesData({
@@ -161,7 +161,7 @@ export const NoteInput = () => {
               {/* pinned icon */}
               {LocalIsPinned ? (
                 <div
-                  className="rounded-full  cursor-pointer w-[25px] h-[25px] p-1 hover:bg-[#52535596]"
+                  className="rounded-full  cursor-pointer w-[25px] h-[25px] p-1 hover:bg-secondary"
                   onClick={() => {
                     setNotesData({ ...NotesData, pinned: false });
                     setLocalIsPinned(false);
@@ -171,7 +171,7 @@ export const NoteInput = () => {
                 </div>
               ) : (
                 <div
-                  className="rounded-full  cursor-pointer w-[25px] h-[25px] p-1 hover:bg-[#52535596]"
+                  className="rounded-full  cursor-pointer w-[25px] h-[25px] p-1 hover:bg-secondary"
                   onClick={() => {
                     setNotesData({ ...NotesData, pinned: true });
                     setLocalIsPinned(true);
@@ -234,7 +234,7 @@ export const NoteInput = () => {
                   });
                 }}
               >
-                <p className="cursor-pointer hover:bg-[#56585b1f] px-5 py-2">
+                <p className="cursor-pointer hover:bg-secondary px-5 py-2">
                   close
                 </p>
               </div>

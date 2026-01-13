@@ -4,6 +4,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Logger } from "../../utils/Logger";
+import PrimaryButton from "../../component/Buttons/PrimaryButton";
 
 const Logout = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -25,7 +26,7 @@ const Logout = () => {
       })
       .catch((error) => {
         setIsLoading(false);
-        Logger("Error logging out from server",error)
+        Logger("Error logging out from server", error);
         setError(`Error logging out from server: ${error.message}`);
       });
   };
@@ -55,13 +56,11 @@ const Logout = () => {
           to access your account.
         </p>
 
-
-          <button className="  w-full hover:bg-[#52535596] cursor-pointer flex justify-center p-2 rounded-lg" disabled={isLoading}
+        <PrimaryButton
+          title={isLoading ? "Logging out..." : "Logout"}
           onClick={handleLogout}
-          >
-            {isLoading ? "Logging out..." : "Logout"}
-          </button>
-    
+          isLoading={isLoading}
+        />
       </div>
     </div>
   );

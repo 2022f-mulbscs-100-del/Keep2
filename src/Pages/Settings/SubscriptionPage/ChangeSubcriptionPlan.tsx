@@ -2,6 +2,7 @@ import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import type { paymentMethodtype } from "../../../types/Payment.types";
 import { useState } from "react";
 import ChangeSubscriptionModal from "./ChangeSubscriptionModal";
+import PrimaryButton from "../../../component/Buttons/PrimaryButton";
 
 type changeSubscriptionPlanProps = {
   ACTIVE_SUBSCRIPTION: boolean;
@@ -62,14 +63,10 @@ const ChangeSubscriptionPlan = ({
               </div>
             )}
 
-            <button
-              className="cursor-pointer hover:bg-[#52535596]  flex justify-center p-2 rounded-lg w-full"
-              onClick={() => {
-                setIsModalOpen(true);
-              }}
-            >
-              Change Subscription Plan
-            </button>
+            <PrimaryButton
+              title={"Change Subscription Plan"}
+              onClick={() => setIsModalOpen(true)}
+            />
           </div>
         </div>
       )}

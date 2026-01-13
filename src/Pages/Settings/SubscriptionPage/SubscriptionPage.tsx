@@ -199,7 +199,7 @@ export default function SubscriptionPage() {
                 className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all cursor-pointer ${
                   !plan
                     ? "bg-primary text-white"
-                    : "text-gray-400 hover:text-white hover:bg-[#525355]"
+                    : "text-gray-400 hover:text-white hover:bg-secondary"
                 }`}
               >
                 Monthly
@@ -214,7 +214,7 @@ export default function SubscriptionPage() {
                 className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all cursor-pointer ${
                   plan
                     ? "bg-primary text-white"
-                    : "text-gray-400 hover:text-white hover:bg-[#525355]"
+                    : "text-gray-400 hover:text-white hover:bg-secondary"
                 }`}
               >
                 Yearly

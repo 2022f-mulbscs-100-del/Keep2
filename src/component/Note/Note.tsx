@@ -67,7 +67,7 @@ const Note = ({ title, description, NotePinned, id, image }: NoteProps) => {
   return (
     <div
       ref={NoteRef}
-      className="relative w-full text-black dark:text-white  dark:bg-background shadow-md hover:shadow-xl transition-shadow duration-200 border rounded-lg border-gray-300 dark:border-gray-600 break-words cursor-pointer overflow-hidden"
+      className="relative w-full     shadow-md hover:shadow-xl transition-shadow duration-200 border rounded-lg border-borderColor break-words cursor-pointer overflow-hidden"
     >
       {/* Select Icon for selecting the note */}
       <div className="absolute top-0 left-0 z-10">
@@ -82,7 +82,7 @@ const Note = ({ title, description, NotePinned, id, image }: NoteProps) => {
           onClick={HandlePinned}
           className={`rounded-full flex justify-center items-center cursor-pointer w-9 h-9 m-1 transition-opacity duration-200 ${
             IsHover || LocalIsPinned ? "opacity-100" : "opacity-0"
-          } hover:bg-gray-200 dark:hover:bg-gray-700`}
+          }  dark:hover:bg-secondary`}
         >
           {LocalIsPinned ? (
             <TiPin className="w-5 h-5 text-gray-700 dark:text-gray-300" />

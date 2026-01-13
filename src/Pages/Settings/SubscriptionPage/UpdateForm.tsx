@@ -9,6 +9,7 @@ import Placeholder from "../../../component/Placeholder/Placeholder";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import axiosClient from "../../../api/axiosClient";
 import { Logger } from "../../../utils/Logger";
+import PrimaryButton from "../../../component/Buttons/PrimaryButton";
 // import axiosClient from "../../api/axiosClient";
 
 // type Status = string;
@@ -90,13 +91,13 @@ export default function UpdateForm({
               onClose();
             })
             .catch((error) => {
-            Logger("Error in updating payment method:", error);
+              Logger("Error in updating payment method:", error);
               onClose();
               toast.error("Failed to update payment method on server.");
             });
         } catch (error) {
           onClose();
-        Logger("Error in updating payment method:", error);
+          Logger("Error in updating payment method:", error);
           toast.error("Failed to update payment method on server.");
         }
       }
@@ -122,7 +123,7 @@ export default function UpdateForm({
           >
             <div className="">
               <FaArrowLeftLong
-                className=" cursor-pointer hover:bg-[#52535596] p-2 rounded-lg
+                className=" cursor-pointer hover:bg-secondary p-2 rounded-lg
                                          sm:size-10
                                          xsm:size-8
                                          "
@@ -159,7 +160,7 @@ export default function UpdateForm({
         >
           <div className="">
             <FaArrowLeftLong
-              className=" cursor-pointer hover:bg-[#52535596] p-2 rounded-lg
+              className=" cursor-pointer hover:bg-secondary p-2 rounded-lg
                       sm:size-10
                       xsm:size-8
                       "
@@ -198,7 +199,7 @@ export default function UpdateForm({
                   setTimeout(() => setIsLoading(false), 100);
                 }}
                 onLoadError={(error) => {
-                 Logger("Error loading payment form:", error);
+                  Logger("Error loading payment form:", error);
                   setIsLoading(false);
                   toast.error("Failed to load payment form");
                 }}
@@ -206,13 +207,11 @@ export default function UpdateForm({
             </div>
           </div>
 
-          <button
+          <PrimaryButton
+            title={isLoading ? "Loading..." : "Update payment method"}
+            isLoading={loading}
             disabled={!stripe || isLoading}
-            type="submit"
-            className=" disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#52535596] cursor-pointer flex justify-center p-2 rounded-lg mt-4 w-full"
-          >
-            {loading ? "Loading..." : "Update payment method"}
-          </button>
+          />
         </form>
       </div>
     </>

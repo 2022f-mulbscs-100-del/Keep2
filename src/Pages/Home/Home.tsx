@@ -17,7 +17,20 @@ export default function Home() {
   useEffect(() => {
     fetchApiData();
   }, []);
-
+  if (items.length === 0) {
+    return (
+      <>
+        <div className="p-4">
+          <NoteInput />
+        </div>
+        <div className="flex flex-col items-center justify-center mt-20">
+          <h2 className="text-xl font-semibold text-gray-500">
+            No notes available. Start by creating a new note!
+          </h2>
+        </div>
+      </>
+    );
+  }
   // Separate pinned and unpinned notes
   const pinnedNotes = items.filter((item: NoteType) => item.pinned);
   const unpinnedNotes = items.filter((item: NoteType) => !item.pinned);

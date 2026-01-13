@@ -1,6 +1,7 @@
 import { IoSunnyOutline, IoMoonOutline } from "react-icons/io5";
 import SettingHeader from "../../component/settingHeader/SettingHeader";
 import { useTheme } from "../../Context/themeSwitcherContext";
+import PrimaryButton from "../../component/Buttons/PrimaryButton";
 
 const Theme = () => {
   const { settingTheme } = useTheme();
@@ -24,12 +25,10 @@ const Theme = () => {
           A bright theme for your application interface.
         </p>
 
-        <div
+        <PrimaryButton
+          title={"Apply Light Theme"}
           onClick={() => settingTheme("light")}
-          className="hover:bg-[#52535596] cursor-pointer flex justify-center p-2 rounded-lg mb-6"
-        >
-          <button className="cursor-pointer">Select Light</button>
-        </div>
+        />
 
         {/* Dark Theme Option */}
         <div className="flex items-center gap-4 mb-4">
@@ -41,12 +40,10 @@ const Theme = () => {
           A dark theme for better readability and reduced eye strain.
         </p>
 
-        <div
+        <PrimaryButton
+          title={"Apply dark Theme"}
           onClick={() => settingTheme("dark")}
-          className="hover:bg-[#52535596] cursor-pointer flex justify-center p-2 rounded-lg"
-        >
-          <button className="cursor-pointer">Select Dark</button>
-        </div>
+        />
       </div>
     </div>
   );

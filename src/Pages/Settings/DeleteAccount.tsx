@@ -4,6 +4,7 @@ import axiosClient from "../../api/axiosClient";
 import { useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { toast } from "react-toastify";
+import PrimaryButton from "../../component/Buttons/PrimaryButton";
 
 const DeleteAccount = () => {
   const [Loading, setLoading] = useState(false);
@@ -61,7 +62,9 @@ const DeleteAccount = () => {
       <div className="mx-auto border border-borderColor rounded-[10px] p-6">
         <div className="flex items-center gap-4 mb-4">
           <IoTrashOutline className="text-subheading2 text-red-400" />
-          <h2 className="text-subheading2 font-semibold text-red-400">Delete Account</h2>
+          <h2 className="text-subheading2 font-semibold text-red-400">
+            Delete Account
+          </h2>
         </div>
 
         <p className="text-body text-gray-400 mb-6">
@@ -93,21 +96,21 @@ const DeleteAccount = () => {
           </div>
         )}
 
-    
-          <button className="w-full text-red-400 text-body  hover:bg-red-500/10 cursor-pointer flex justify-center p-2 rounded-lg" disabled={Loading}
-           onClick={
-            stage === "deleteConfirmation"
-              ? () => setStage("accountDeleted")
-              : handleDelete
-          }>
-            {!Loading
+        <PrimaryButton
+          title={
+            !Loading
               ? stage === "deleteConfirmation"
                 ? "Delete My Account"
                 : "Confirm Account Deletion"
-              : "Deleting Account..."}
-              
-          </button>
-   
+              : "Deleting Account..."
+          }
+          onClick={
+            stage === "deleteConfirmation"
+              ? () => setStage("accountDeleted")
+              : handleDelete
+          }
+          isLoading={Loading}
+        />
       </div>
     </div>
   );

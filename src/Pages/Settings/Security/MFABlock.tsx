@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import axiosClient from "../../../api/axiosClient";
 import { toast } from "react-toastify";
 import { Logger } from "../../../utils/Logger";
+import PrimaryButton from "../../../component/Buttons/PrimaryButton";
 
 const MFABlock = () => {
   const {
@@ -17,6 +18,7 @@ const MFABlock = () => {
   const [MFAcode, setMFAcode] = useState("");
   const [qrCode, setQrCode] = useState("");
   const formRef = useRef<HTMLFormElement | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     if (profileData?.MfaEnabled === true) {
       setEnableMFA(true);
@@ -27,45 +29,54 @@ const MFABlock = () => {
   }, [profileData]);
 
   const handleMFA = () => {
+    setIsLoading(true);
     axiosClient
       .post("/MFA-generate", { email: profileData?.email })
       .then((response) => {
         setQrCode(response.data.qrCode);
+        setIsLoading(false);
       })
       .catch((error) => {
-      Logger("Error generating MFA QR code:", error);
+        Logger("Error generating MFA QR code:", error);
+        setIsLoading(false);
       });
   };
 
   const CodeVerification = () => {
     if (MFAcode.length !== 6) {
-    Logger("MFA code must be 6 digits long");
+      Logger("MFA code must be 6 digits long");
       return;
     }
+    setIsLoading(true);
     axiosClient
       .post("/verify-mfa", {
         email: profileData?.email,
         token: MFAcode,
       })
       .then(() => {
+        setIsLoading(false);
         setEnableMFA(true);
         fetchUserProfile();
       })
       .catch((error) => {
+        setIsLoading(false);
         Logger("Error verifying MFA code:", error);
       });
   };
 
   const HandleDisableMFa = async () => {
+    setIsLoading(true);
     try {
       await UpdateUserProfile({
         MfaEnabled: false,
       });
+      setIsLoading(false);
       setQrCode("");
       setEnableMFA(false);
       //eslint-disable-next-line
     } catch (error: any) {
       toast.error(error.message || "Error disabling MFA");
+      setIsLoading(false);
     }
   };
 
@@ -129,14 +140,14 @@ const MFABlock = () => {
             </>
           )}
         </div>
-        <button
-          className="cursor-pointer hover:bg-[#52535596]  flex justify-center p-2 rounded-lg w-full text-body"
+
+        <PrimaryButton
+          title={enableMFA ? "Disable MFA" : "Enable MFA"}
           onClick={
             enableMFA ? HandleDisableMFa : qrCode ? CodeVerification : handleMFA
           }
-        >
-          {enableMFA ? "Disable MFA" : "Enable MFA"}
-        </button>
+          isLoading={isLoading}
+        />
       </div>
     </>
   );

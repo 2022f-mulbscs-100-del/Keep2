@@ -13,8 +13,17 @@ import { useSidebar } from "../../Context/sidebarContext";
 import { useScreenSize } from "../CustomHooks/useScreenSize";
 
 const Sidebar = () => {
+  // const pathname = useLocation().pathname;
   const { label } = useEditLaber();
+  const { pathname } = useLocation();
+
   const [isActive, setisActive] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (pathname === "/") {
+      setisActive(1);
+    }
+  }, []);
 
   const { size, isMobile, isTablet } = useScreenSize();
   const HandleClick = (id: number) => {
@@ -74,8 +83,6 @@ const Sidebar = () => {
     }
   }, [size]);
 
-  const { pathname } = useLocation();
-
   const { isOpen, setIsOpen } = useSidebar();
   return (
     <>
@@ -104,9 +111,7 @@ const Sidebar = () => {
                     <div
                       className={`cursor-pointer  flex items-center  text-nowrap  `}
                     >
-                      <p className="text-body">
-                      {item.title}
-                      </p>
+                      <p className="text-body">{item.title}</p>
                     </div>
                   )}
                 </li>
