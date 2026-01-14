@@ -11,6 +11,7 @@ import Dialougebox from "../EditLabelDialougebox";
 import { Link, useLocation } from "react-router-dom";
 import { useSidebar } from "../../Context/sidebarContext";
 import { useScreenSize } from "../CustomHooks/useScreenSize";
+import { Tooltip } from "react-tooltip";
 
 const Sidebar = () => {
   // const pathname = useLocation().pathname;
@@ -103,6 +104,8 @@ const Sidebar = () => {
                   }}
                 >
                   <div
+                    data-tooltip-id={`tooltip-${item.id}`}
+                    data-tooltip-content={item.title}
                     className={`cursor-pointer pl-[17px] flex items-center  text-nowrap`}
                   >
                     {item.icon}
@@ -114,6 +117,7 @@ const Sidebar = () => {
                       <p className="text-body">{item.title}</p>
                     </div>
                   )}
+                  {!isOpen && <Tooltip id={`tooltip-${item.id}`} />}
                 </li>
               </Link>
             );
