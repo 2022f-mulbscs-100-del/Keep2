@@ -48,7 +48,7 @@ export default function NoteModal() {
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (ref.current && !ref.current.contains(e.target as Node)) {
       setShowModal(false);
-      navigate("/");
+      navigate(-1);
     }
   };
 

@@ -49,12 +49,13 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/notes/:id",
-        element: (
-          <BackgroundLayout>
-            <NoteModal />
-          </BackgroundLayout>
-        ),
+        element: <BackgroundLayout />,
+        children: [
+          {
+            path: "notes/:id",
+            element: <NoteModal />,
+          },
+        ],
       },
       {
         path: "/reminders",

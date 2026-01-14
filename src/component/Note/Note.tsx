@@ -3,7 +3,7 @@ import SelectIcon from "./SelectIcon";
 import NoteDescription from "./NoteDescription";
 import ActionIcons from "./ActionIcons";
 import NoteTitle from "./NoteTitle";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { TiPin, TiPinOutline } from "react-icons/ti";
 
 import { useNote } from "../../Context/noteContext";
@@ -25,6 +25,7 @@ const Note = ({ title, description, NotePinned, id, image }: NoteProps) => {
   const NoteRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { fetchApiData, DeletedNotes } = useNote();
+  const location = useLocation();
 
   useEffect(() => {
     setLocalIsPinned(NotePinned);
@@ -37,7 +38,7 @@ const Note = ({ title, description, NotePinned, id, image }: NoteProps) => {
       } else {
         setIsHover(false);
       }
-  };
+    };
 
     document.addEventListener("mouseover", HandleHover);
     return () => {
@@ -61,7 +62,9 @@ const Note = ({ title, description, NotePinned, id, image }: NoteProps) => {
   };
 
   const HandleClick = () => {
-    navigate("/notes/" + id);
+    navigate(`/notes/${id}`, {
+      state: { backgroundLocation: location },
+    });
   };
 
   return (
