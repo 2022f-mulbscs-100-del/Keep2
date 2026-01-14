@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import TurnstileWidget from "../../component/turnstile/Turnstile";
 import axios from "axios";
 import { Logger } from "../../utils/Logger";
+import PrimaryButton from "../../component/Buttons/PrimaryButton";
 
 function SignUp() {
   const { SignUpHandler, isLoading, signUpStage, error, setError } = useAuth();
@@ -110,7 +111,7 @@ function SignUp() {
       await SignUpHandler(signupFormData);
       setStage("verifyEmail");
     } catch (error) {
-    Logger("Error during signup:", error);
+      Logger("Error during signup:", error);
       toast.error("Signup failed. Please try again.");
     }
   };
@@ -137,7 +138,7 @@ function SignUp() {
       }
     } catch (error) {
       toast.error("Invalid 2FA code. Please try again.");
-    Logger("Error during email verification:", error);
+      Logger("Error during email verification:", error);
     }
   };
 
@@ -154,7 +155,7 @@ function SignUp() {
           toast.success("CAPTCHA verified successfully");
         })
         .catch((error) => {
-        Logger("CAPTCHA verification failed:", error);
+          Logger("CAPTCHA verification failed:", error);
           setTurnstileVerified(false);
           toast.error("CAPTCHA verification failed");
         });
@@ -185,15 +186,15 @@ function SignUp() {
           <form onSubmit={SignUpHandleFunction}>
             <div className="">
               <div className="flex flex-col items-center mb-4">
-                <h1 className="font-bold text-2xl">Sign Up</h1>
-                <p>to continue to Keeper</p>
+                <h1 className="font-bold text-heading2">Sign Up</h1>
+                <p className="text-body2">to continue to Keeper</p>
               </div>
 
               <div className="flex flex-col gap-4 ">
-                <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-[#525355] ">
+                <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
                   <input
                     ref={inputRef}
-                    className="outline-none w-full"
+                    className="outline-none w-full text-body2"
                     type="text"
                     placeholder="Name"
                     name="name"
@@ -201,9 +202,9 @@ function SignUp() {
                     onChange={handleChange}
                   />
                 </div>
-                <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-[#525355] ">
+                <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
                   <input
-                    className="outline-none w-full"
+                    className="outline-none w-full text-body2"
                     type="text"
                     placeholder="Email"
                     name="email"
@@ -213,9 +214,9 @@ function SignUp() {
                 </div>
 
                 <div>
-                  <div className="flex items-center gap-4  px-4 min-w-[400px]  py-2 rounded-[8px] bg-transparent border border-[#525355] ">
+                  <div className="flex items-center gap-4  px-4 min-w-[400px]  py-2 rounded-[8px] bg-transparent border border-borderColor ">
                     <input
-                      className="outline-none w-full"
+                      className="outline-none w-full text-body2"
                       type={`${showPassword ? "text" : "password"}`}
                       placeholder="Password"
                       name="password"
@@ -235,9 +236,9 @@ function SignUp() {
                       />
                     )}
                   </div>
-                  <div className="flex items-center gap-4  px-4 min-w-[400px]  py-2 rounded-[8px] bg-transparent border border-[#525355] mt-4">
+                  <div className="flex items-center gap-4  px-4 min-w-[400px]  py-2 rounded-[8px] bg-transparent border border-borderColor mt-4">
                     <input
-                      className="outline-none w-full"
+                      className="outline-none w-full text-body2"
                       type={`${showConfirmPassword ? "text" : "password"}`}
                       placeholder="Confirm Password"
                       name="confirmPassword"
@@ -270,14 +271,12 @@ function SignUp() {
               <div className="mt-2 ">
                 <TurnstileWidget onVerify={handleVerify} />
               </div>
-              <div
-                className="hover:bg-[#52535596] cursor-pointer flex justify-center p-2 mt-4 rounded-lg"
+
+              <PrimaryButton
+                title={isLoading ? "Loading..." : "SignUp"}
                 onClick={SignUpHandleFunction}
-              >
-                <button disabled={isLoading} className="cursor-pointer">
-                  {isLoading ? "Loading..." : "SignUp"}
-                </button>
-              </div>
+                isLoading={isLoading}
+              />
             </div>
           </form>
         </div>
@@ -288,16 +287,18 @@ function SignUp() {
           <div className="flex justify-center items-center h-full mt-10">
             <div className="">
               <div className="flex flex-col items-center mb-4">
-                <h1 className="font-bold text-2xl">Email Verification</h1>
-                <p>
+                <h1 className="font-bold text-subheading2">
+                  Email Verification
+                </h1>
+                <p className="text-body2">
                   Enter the verification code sent to your email to continue
                 </p>
               </div>
               <div className="flex flex-col gap-4 ">
-                <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-[#525355] ">
+                <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
                   <input
                     ref={inputRef}
-                    className="outline-none w-full"
+                    className="outline-none w-full text-body2"
                     type="number"
                     placeholder="Enter Security Code"
                     name="SignUpCode"
@@ -307,14 +308,10 @@ function SignUp() {
                 </div>
               </div>
 
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="hover:bg-[#52535596] mt-4 cursor-pointer flex justify-center p-2 mt-  4 rounded-lg w-full disabled:cursor-not-allowed disabled:opacity-60
-  "
-              >
-                {isLoading ? "Loading..." : "Verify"}
-              </button>
+              <PrimaryButton
+                title={isLoading ? "Loading..." : "Verify"}
+                isLoading={isLoading}
+              />
             </div>
           </div>
         </form>

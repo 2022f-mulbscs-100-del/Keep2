@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import axiosClient from "../../../api/axiosClient";
 import { toast } from "react-toastify";
 import { Logger } from "../../../utils/Logger";
+import PrimaryButton from "../../../component/Buttons/PrimaryButton";
 
 const MFABlock = () => {
   const {
@@ -17,6 +18,7 @@ const MFABlock = () => {
   const [MFAcode, setMFAcode] = useState("");
   const [qrCode, setQrCode] = useState("");
   const formRef = useRef<HTMLFormElement | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     if (profileData?.MfaEnabled === true) {
       setEnableMFA(true);
@@ -27,45 +29,54 @@ const MFABlock = () => {
   }, [profileData]);
 
   const handleMFA = () => {
+    setIsLoading(true);
     axiosClient
       .post("/MFA-generate", { email: profileData?.email })
       .then((response) => {
         setQrCode(response.data.qrCode);
+        setIsLoading(false);
       })
       .catch((error) => {
-      Logger("Error generating MFA QR code:", error);
+        Logger("Error generating MFA QR code:", error);
+        setIsLoading(false);
       });
   };
 
   const CodeVerification = () => {
     if (MFAcode.length !== 6) {
-    Logger("MFA code must be 6 digits long");
+      Logger("MFA code must be 6 digits long");
       return;
     }
+    setIsLoading(true);
     axiosClient
       .post("/verify-mfa", {
         email: profileData?.email,
         token: MFAcode,
       })
       .then(() => {
+        setIsLoading(false);
         setEnableMFA(true);
         fetchUserProfile();
       })
       .catch((error) => {
+        setIsLoading(false);
         Logger("Error verifying MFA code:", error);
       });
   };
 
   const HandleDisableMFa = async () => {
+    setIsLoading(true);
     try {
       await UpdateUserProfile({
         MfaEnabled: false,
       });
+      setIsLoading(false);
       setQrCode("");
       setEnableMFA(false);
       //eslint-disable-next-line
     } catch (error: any) {
       toast.error(error.message || "Error disabling MFA");
+      setIsLoading(false);
     }
   };
 
@@ -98,15 +109,15 @@ const MFABlock = () => {
   }, []);
   return (
     <>
-      <div className="mx-auto border border-[#525355] rounded-[10px] p-6 mb-4">
+      <div className="mx-auto border border-borderColor rounded-[10px] p-6 mb-4">
         <div className="flex items-center gap-4 mb-4">
-          <IoShieldCheckmarkOutline className="text-2xl text-gray-400" />
-          <h2 className="text-xl font-semibold">
+          <IoShieldCheckmarkOutline className="text-subheading2 text-gray-400" />
+          <h2 className="text-subheading2 font-semibold">
             Multi-Factor Authentication{" "}
           </h2>
         </div>
 
-        <p className="text-sm text-gray-400 mb-6">
+        <p className="text-body text-gray-400 mb-6">
           Add an extra layer of protection to your account by enabling
           Multi-Factor Authentication (MFA).
         </p>
@@ -115,9 +126,9 @@ const MFABlock = () => {
             <>
               <img src={qrCode} alt="MFA QR Code" />
               <form ref={formRef} onSubmit={CodeVerification}>
-                <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-[#525355] ">
+                <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
                   <input
-                    className="outline-none w-full"
+                    className="outline-none w-full  text-body2"
                     type="number"
                     placeholder="Enter MFA Code"
                     name="mfaCode"
@@ -129,14 +140,14 @@ const MFABlock = () => {
             </>
           )}
         </div>
-        <button
-          className="cursor-pointer hover:bg-[#52535596]  flex justify-center p-2 rounded-lg w-full"
+
+        <PrimaryButton
+          title={enableMFA ? "Disable MFA" : "Enable MFA"}
           onClick={
             enableMFA ? HandleDisableMFa : qrCode ? CodeVerification : handleMFA
           }
-        >
-          {enableMFA ? "Disable MFA" : "Enable MFA"}
-        </button>
+          isLoading={isLoading}
+        />
       </div>
     </>
   );

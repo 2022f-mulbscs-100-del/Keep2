@@ -13,8 +13,17 @@ import { useSidebar } from "../../Context/sidebarContext";
 import { useScreenSize } from "../CustomHooks/useScreenSize";
 
 const Sidebar = () => {
+  // const pathname = useLocation().pathname;
   const { label } = useEditLaber();
+  const { pathname } = useLocation();
+
   const [isActive, setisActive] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (pathname === "/") {
+      setisActive(1);
+    }
+  }, []);
 
   const { size, isMobile, isTablet } = useScreenSize();
   const HandleClick = (id: number) => {
@@ -74,8 +83,6 @@ const Sidebar = () => {
     }
   }, [size]);
 
-  const { pathname } = useLocation();
-
   const { isOpen, setIsOpen } = useSidebar();
   return (
     <>
@@ -89,7 +96,7 @@ const Sidebar = () => {
             return (
               <Link to={item.path} key={item.id}>
                 <li
-                  className={`py-4 h-[50px] ${isOpen ? `pl-4 ml-0 w-[250px] rounded-r-[25px]` : `pl-0  w-[50px] rounded-full md:ml-4`} flex     overflow-hidden   gap-4 hover:bg-[#36363898] ${isActive && (pathname === item.path ? `bg-[#41331C]` : "hover:bg-[#36363898]")} `}
+                  className={`py-4 h-[50px] ${isOpen ? `pl-4 ml-0 w-[250px] rounded-r-[25px]` : `pl-0  w-[50px] rounded-full md:ml-4`} flex     overflow-hidden   gap-4 hover:bg-secondary ${isActive && (pathname === item.path ? `bg-primary` : "hover:bg-secondary")} `}
                   key={item.id}
                   onClick={() => {
                     HandleClick(item.id);
@@ -102,9 +109,9 @@ const Sidebar = () => {
                   </div>
                   {isOpen && (
                     <div
-                      className={`cursor-pointe  flex items-center  text-nowrap`}
+                      className={`cursor-pointer  flex items-center  text-nowrap  `}
                     >
-                      {item.title}
+                      <p className="text-body">{item.title}</p>
                     </div>
                   )}
                 </li>

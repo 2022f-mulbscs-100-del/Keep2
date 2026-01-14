@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { IoCallOutline, IoMailOutline, IoPersonOutline } from "react-icons/io5";
-import Pills from "../../component/Pills/Pill";
-import axiosClient from "../../api/axiosClient";
-import SettingHeader from "../../component/settingHeader/SettingHeader";
+import Pills from "../../../component/Pills/Pill";
+import axiosClient from "../../../api/axiosClient";
+import SettingHeader from "../../../component/settingHeader/SettingHeader";
+import PrimaryButton from "../../../component/Buttons/PrimaryButton";
+import PersonalInfoLoader from "./PersonalInfoLoader";
 
 const PersonalInfo = () => {
   const [profileData, setProfileData] = useState({
@@ -15,12 +17,16 @@ const PersonalInfo = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    setIsLoading(true);
     axiosClient
       .get("/userProfile")
       .then((res) => {
+        setIsLoading(false);
         setProfileData(res.data);
       })
-      .catch(() => {});
+      .catch(() => {
+        setIsLoading(false);
+      });
   }, []);
 
   const updateProfileData = () => {
@@ -45,6 +51,11 @@ const PersonalInfo = () => {
   };
 
   const [showSecondaryEmailField, setShowSecondaryEmailField] = useState(false);
+
+  if (isLoading) {
+    return <PersonalInfoLoader />;
+  }
+
   return (
     <div
       className="m-auto w-full 
@@ -65,11 +76,11 @@ const PersonalInfo = () => {
 
       <div className="flex flex-col gap-4 max-w-md mx-auto">
         <div>
-          <label className="block text-sm font-medium mb-1">Name</label>
-          <div className="flex items-center gap-4 px-4 py-2 rounded-[8px] bg-transparent border border-[#525355]">
+          <label className="block text-body font-medium mb-1">Name</label>
+          <div className="flex items-center gap-4 px-4 py-2 rounded-[8px] bg-transparent border border-borderColor">
             <IoPersonOutline className="text-gray-400" />
             <input
-              className="outline-none w-full bg-transparent"
+              className="outline-none w-full bg-transparent text-body2"
               type="text"
               placeholder="Enter your name"
               value={profileData.name}
@@ -80,13 +91,13 @@ const PersonalInfo = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Email</label>
+          <label className="block text-body font-medium mb-1">Email</label>
           <div
-            className={`flex items-center gap-4 px-4 py-2 rounded-[8px] bg-transparent border border-[#525355] `}
+            className={`flex items-center gap-4 px-4 py-2 rounded-[8px] bg-transparent border border-borderColor `}
           >
             <IoMailOutline className="text-gray-400" />
             <input
-              className="outline-none w-full bg-transparent"
+              className="outline-none w-full bg-transparent text-body2"
               type="email"
               placeholder="Enter your email"
               name="email"
@@ -99,13 +110,13 @@ const PersonalInfo = () => {
 
         {showSecondaryEmailField && (
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label className="block text-body font-medium mb-1">
               Secondary Email
             </label>
-            <div className="flex items-center gap-4 px-4 py-2 rounded-[8px] bg-transparent border border-[#525355]">
+            <div className="flex items-center gap-4 px-4 py-2 rounded-[8px] bg-transparent border border-borderColor">
               <IoMailOutline className="text-gray-400" />
               <input
-                className="outline-none w-full bg-transparent"
+                className="outline-none w-full bg-transparent text-body2"
                 type="email"
                 placeholder="Enter your email"
                 name="secondaryEmail"
@@ -117,11 +128,11 @@ const PersonalInfo = () => {
         )}
 
         <div>
-          <label className="block text-sm font-medium mb-1">Phone</label>
-          <div className="flex items-center gap-4 px-4 py-2 rounded-[8px] bg-transparent border border-[#525355]">
+          <label className="block text-body font-medium mb-1. ">Phone</label>
+          <div className="flex items-center gap-4 px-4 py-2 rounded-[8px] bg-transparent border border-borderColor">
             <IoCallOutline className="text-gray-400" />
             <input
-              className="outline-none w-full bg-transparent"
+              className="outline-none w-full bg-transparent text-body2"
               type="tel"
               placeholder="Enter your phone number"
               value={profileData.phone}
@@ -131,15 +142,11 @@ const PersonalInfo = () => {
           </div>
         </div>
 
-        <div className="hover:bg-[#52535596] cursor-pointer flex justify-center p-2 mt-4 rounded-lg">
-          <button
-            className="cursor-pointer"
-            type="submit"
-            onClick={updateProfileData}
-          >
-            {isLoading ? "Loading..." : "Save Changes"}
-          </button>
-        </div>
+        <PrimaryButton
+          title={isLoading ? "Loading..." : "Save Changes"}
+          onClick={updateProfileData}
+          isLoading={isLoading}
+        />
       </div>
     </div>
   );

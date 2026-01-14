@@ -71,7 +71,7 @@ const ProfileLowerSidebar = () => {
         {settingLayout.map((item) => (
           <div
             key={item.id}
-            className={`  px-4 w-full py-2 cursor-pointer flex itmems-center gap-4  rounded-[8px]  border border-[#525355] ${pathname === item.path ? "bg-[#41331C]" : "hover:bg-[#52535596]"} `}
+            className={`  px-4 w-full py-2 cursor-pointer flex itmems-center gap-4  rounded-[8px]  border border-borderColor ${pathname === item.path ? "bg-primary" : "hover:bg-senondary"} `}
             onClick={() => {
               // setactive(item.id);
               if (item.title === "Home") {

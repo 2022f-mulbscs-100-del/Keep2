@@ -21,6 +21,7 @@ type noteContextprops = {
   deletedNotes: NoteType[];
   DeletedNotes: () => Promise<void>;
   archievedNote: NoteType[];
+  loading: boolean;
 };
 
 const noteContext = createContext<noteContextprops | undefined>(undefined);
@@ -30,35 +31,45 @@ export const NoteContext = ({ children }: { children: React.ReactNode }) => {
   const [Ispinned, setIspinned] = useState<boolean>(false);
   const [items, setItems] = useState<NoteType[]>([]);
   const [deletedNotes, setDeletedNotes] = useState<NoteType[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const fetchApiData = async () => {
+    setLoading(true);
     axiosClient
       .get("/notes")
       .then((res) => {
         setItems(res.data);
+        setLoading(false);
       })
       .catch((error) => {
        Logger("Error fetching notes:", error);
+       setLoading(false);
       });
   };
 
   const DeletedNotes = async () => {
+    setLoading(true);
     axiosClient
       .get("/deletedNotes")
       .then((res) => {
         setDeletedNotes(res.data);
+        setLoading(false);
       })
       .catch((error) => {
         Logger("Error fetching deleted notes:", error);
+        setLoading(false);
       });
   };
 
   const ArchivedNotes = async () => {
+    setLoading(true);
     axiosClient
       .get("/getArchivedNotes")
       .then((res) => {
+        setLoading(false);
         setArchieveNote(res.data);
       })
       .catch((error) => {
+        setLoading(false);
         Logger("Error fetching archived notes:", error);
       });
   };
@@ -82,6 +93,7 @@ export const NoteContext = ({ children }: { children: React.ReactNode }) => {
           fetchApiData,
           deletedNotes,
           DeletedNotes,
+          loading,
         } as noteContextprops
       }
     >

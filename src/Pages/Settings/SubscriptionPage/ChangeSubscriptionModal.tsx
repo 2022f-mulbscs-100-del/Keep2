@@ -4,6 +4,7 @@ import Placeholder from "../../../component/Placeholder/Placeholder";
 import { useUser } from "../../../Context/UserContext";
 import axiosClient from "../../../api/axiosClient";
 import { toast } from "react-toastify";
+// import PrimaryButton from "../../../component/Buttons/PrimaryButton";
 
 type changeSubscriptionModalProps = {
   onClose: () => void;
@@ -119,11 +120,15 @@ const ChangeSubscriptionModal = ({ onClose }: changeSubscriptionModalProps) => {
                   onClick={handleChangeSubscription}
                   disabled={isLoading}
                   type="submit"
-                  className=" disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#52535596] cursor-pointer flex justify-center p-2 rounded-lg mt-4 w-full"
+                  className=" disabled:opacity-50 disabled:cursor-not-allowed hover:bg-secondary cursor-pointer flex justify-center p-2 rounded-lg mt-4 w-full"
                 >
                   {isLoading ? "Loading..." : "Cancel Subscription"}
                 </button>
-
+                {/* 
+        <PrimaryButton title={isLoading ? "Loading..." : "Cancel Subscription"}
+        onClick={()=>{handleChangeSubscription(e)}}
+          isLoading={isLoading}
+        /> */}
                 <button
                   disabled={isLoading}
                   type="submit"
@@ -132,7 +137,7 @@ const ChangeSubscriptionModal = ({ onClose }: changeSubscriptionModalProps) => {
                       ? HandleMontlySubscriptionSwitchToYearly
                       : handleChangeSubscriptionToMonthly
                   }
-                  className=" disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#52535596] cursor-pointer flex justify-center p-2 rounded-lg mt-4 w-full"
+                  className=" disabled:opacity-50 disabled:cursor-not-allowed hover:bg-secondary cursor-pointer flex justify-center p-2 rounded-lg mt-4 w-full"
                 >
                   {isLoading
                     ? "Loading..."

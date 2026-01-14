@@ -68,7 +68,7 @@ const ProfileSidebar = () => {
           {settingLayout.map((item) => (
             <div
               key={item.id}
-              className={` w-fit px-4 py-2 rounded-[20px] cursor-pointer flex gap-4 items-center ${pathname === item.path ? "bg-[#41331C]" : "hover:bg-[#52535596]"} `}
+              className={` w-fit px-4 py-2 rounded-[20px] cursor-pointer flex gap-4 items-center ${pathname === item.path ? "bg-primary" : "hover:bg-secondary"} `}
               onClick={() => {
                 // setactive(item.id);
                 if (item.title === "Home") {
@@ -78,7 +78,7 @@ const ProfileSidebar = () => {
                 navigate(item.path);
               }}
             >
-              <p>{item.title}</p>
+              <p className="text-body">{item.title}</p>
               {item.icons}
             </div>
           ))}

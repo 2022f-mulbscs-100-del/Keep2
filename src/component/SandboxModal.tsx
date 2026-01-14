@@ -4,6 +4,7 @@ import { useNote } from "../Context/noteContext";
 import { toast } from "react-toastify";
 import axiosClient from "../api/axiosClient";
 import { Logger } from "../utils/Logger";
+import PrimaryButton from "./Buttons/PrimaryButton";
 
 interface SandboxMoadlProps {
   onclose: () => void;
@@ -42,7 +43,7 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
         toast.success("Sandbox data generated successfully");
       })
       .catch((error) => {
-       Logger("Error generating sandbox data:", error);
+        Logger("Error generating sandbox data:", error);
         setIsLoading(false);
       });
   };
@@ -57,7 +58,7 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
         onclose();
       })
       .catch((error) => {
-       Logger("Error deleting sandbox data:", error);
+        Logger("Error deleting sandbox data:", error);
         setIsLoading(false);
       });
   };
@@ -103,13 +104,11 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
             onClick={onclose}
           >
             <div>
-              <button
-                disabled={isLoading}
-                className="w-fit rounded-md p-3 text-sm hover:bg-[#41331C] cursor-pointer"
+              <PrimaryButton
+                title={isLoading ? "Loading..." : "Delete All notes"}
                 onClick={deletedData}
-              >
-                Delete All notes
-              </button>
+                isLoading={isLoading}
+              />
             </div>
             X
           </div>
@@ -119,7 +118,7 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
 
           <div className="flex flex-col gap-4 p-4">
             <p className="text-sm">Enter number of notes want to generate!!</p>
-            <div className="flex items-center gap-4  p-1 rounded-[4px] bg-transparent border border-[#525355] ">
+            <div className="flex items-center gap-4  p-1 rounded-[4px] bg-transparent border border-borderColor ">
               <input
                 className="outline-none w-full"
                 type="number"
@@ -135,7 +134,7 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
                 <p className="text-sm">
                   Enter number of notes you want to Archive
                 </p>
-                <div className="flex items-center gap-4  p-1 rounded-[4px] bg-transparent border border-[#525355] ">
+                <div className="flex items-center gap-4  p-1 rounded-[4px] bg-transparent border border-borderColor ">
                   <input
                     className="outline-none w-full"
                     type="number"
@@ -171,14 +170,11 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
                 Generate Notes with Random Images
               </label>
             </div>
-            <button
-              className="w-full cursor-pointer rounded-lg p-2 hover:bg-[#41331C]"
-              onClick={() => {
-                generateData();
-              }}
-            >
-              {isLoading ? "Generating..." : "Generate Data"}
-            </button>
+            <PrimaryButton
+              title={isLoading ? "Loading..." : "Generate Notes"}
+              onClick={generateData}
+              isLoading={isLoading}
+            />
           </div>
         </div>
       </div>

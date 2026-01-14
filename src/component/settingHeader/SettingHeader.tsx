@@ -18,7 +18,7 @@ const SettingHeader = ({ title }: SettingHeaderProps) => {
       >
         <div className="">
           <FaArrowLeftLong
-            className=" cursor-pointer hover:bg-[#52535596] p-2 rounded-lg
+            className=" cursor-pointer hover:bg-secondary p-2 rounded-lg
        sm:size-10
        xsm:size-8
        "
@@ -29,7 +29,11 @@ const SettingHeader = ({ title }: SettingHeaderProps) => {
         </div>
 
         <div className="sm:flex-1   ">
-          <h1 className="sm:text-3xl xs:text-[24px] font-bold text-nowrap text-center">
+          <h1
+            className=" font-bold text-nowrap text-center
+          text-subheading
+          "
+          >
             {title}
           </h1>
         </div>

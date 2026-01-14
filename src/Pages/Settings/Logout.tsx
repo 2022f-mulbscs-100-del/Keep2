@@ -4,6 +4,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Logger } from "../../utils/Logger";
+import PrimaryButton from "../../component/Buttons/PrimaryButton";
 
 const Logout = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -25,7 +26,7 @@ const Logout = () => {
       })
       .catch((error) => {
         setIsLoading(false);
-        Logger("Error logging out from server",error)
+        Logger("Error logging out from server", error);
         setError(`Error logging out from server: ${error.message}`);
       });
   };
@@ -44,25 +45,22 @@ const Logout = () => {
     >
       <SettingHeader title="Logout Settings" />
 
-      <div className="mx-auto border border-[#525355] rounded-[10px] p-6">
+      <div className="mx-auto border border-borderColor rounded-[10px] p-6">
         <div className="flex items-center gap-4 mb-4">
-          <IoExitOutline className="text-2xl text-gray-400" />
-          <h2 className="text-xl font-semibold">Logout</h2>
+          <IoExitOutline className="text-subheading2 text-gray-400" />
+          <h2 className="text-subheading2 font-semibold">Logout</h2>
         </div>
 
-        <p className="text-sm text-gray-400 mb-6">
+        <p className="text-body text-gray-400 mb-6">
           Signing out will end your current session. You’ll need to log in again
           to access your account.
         </p>
 
-        <div
+        <PrimaryButton
+          title={isLoading ? "Logging out..." : "Logout"}
           onClick={handleLogout}
-          className="hover:bg-[#52535596] cursor-pointer flex justify-center p-2 rounded-lg"
-        >
-          <button className="cursor-pointer" disabled={isLoading}>
-            {isLoading ? "Logging out..." : "Logout"}
-          </button>
-        </div>
+          isLoading={isLoading}
+        />
       </div>
     </div>
   );

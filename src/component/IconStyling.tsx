@@ -10,10 +10,14 @@ const IconStyling = ({ icon, tooltip }: IconStylingProps) => {
   const Icon = icon;
   return (
     <>
-      <div data-tooltip-id={`${tooltip}-tooltip`} data-tooltip-content={tooltip} className="rounded-full flex justify-center items-center cursor-pointer w-[30px] h-[30px] p-1 hover:bg-[#52535596] ">
+      <div
+        data-tooltip-id={`${tooltip}-tooltip`}
+        data-tooltip-content={tooltip}
+        className="rounded-full flex justify-center items-center cursor-pointer w-[30px] h-[30px] p-1 hover:bg-secondary "
+      >
         <Icon className="cursor-pointer " />
       </div>
-      <Tooltip id={`${tooltip}-tooltip`} place="top"  />
+      <Tooltip id={`${tooltip}-tooltip`} place="top" />
     </>
   );
 };

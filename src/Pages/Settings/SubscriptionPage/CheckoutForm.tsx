@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import Placeholder from "../../../component/Placeholder/Placeholder";
 import { useUser } from "../../../Context/UserContext";
 import { Logger } from "../../../utils/Logger";
+import PrimaryButton from "../../../component/Buttons/PrimaryButton";
 
 type Status = string;
 
@@ -32,7 +33,7 @@ export default function CheckoutForm({ choosePlan }: { choosePlan: string }) {
       });
     } catch (error) {
       toast.error(error as string);
-     Logger("Error confirming payment:", error);
+      Logger("Error confirming payment:", error);
       return;
     }
 
@@ -98,13 +99,11 @@ export default function CheckoutForm({ choosePlan }: { choosePlan: string }) {
               </div>
             </div>
 
-            <button
+            <PrimaryButton
+              title={isLoading ? "Loading..." : "Subscribe"}
               disabled={!stripe || isLoading}
-              type="submit"
-              className=" w-full hover:bg-[#52535596] cursor-pointer flex justify-center p-2 rounded-lg mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isLoading ? "Loading..." : "Subscribe"}
-            </button>
+              isLoading={isLoading}
+            />
           </form>
         </div>
       )}
