@@ -5,14 +5,7 @@ import { useTheme } from "../../Context/themeSwitcherContext";
 import ActionIcons from "./ActionIcons";
 import axiosClient from "../../api/axiosClient";
 import { Logger } from "../../utils/Logger";
-
-interface NoteType {
-  id: number;
-  title: string;
-  description: string;
-  pinned: boolean;
-  image?: string;
-}
+import type { NoteType } from "../../types/Note.types";
 
 export default function NoteModal() {
   const [showModal, setShowModal] = useState(true);
@@ -23,6 +16,9 @@ export default function NoteModal() {
     title: "",
     description: "",
     pinned: false,
+    image: "",
+    isDeleted: false,
+    isArchived: false,
   });
   const ref = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
