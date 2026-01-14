@@ -20,6 +20,7 @@ export default function Home() {
   const filteredItems = items?.filter((item: NoteType) => {
     // if(filters.pinned && !item.pinned) return false;
     if (filters.archived && !item?.isArchived) return false;
+    if (!filters.bin && item?.isDeleted) return false;
     return true;
   });
 
@@ -74,7 +75,7 @@ export default function Home() {
                 Pinned
               </h1>
             </div>
-            <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 2xl:columns-5 gap-4 space-y-4">
+            <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 2xl:columns-5 gap-4 space-y-4 transition-all transform duration-500">
               {pinnedNotes.map((item: NoteType) => (
                 <div key={item.id} className="break-inside-avoid">
                   <Note
