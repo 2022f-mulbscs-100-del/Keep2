@@ -1,4 +1,3 @@
-import { IoCallOutline, IoMailOutline, IoPersonOutline } from "react-icons/io5";
 import SettingHeader from "../../../component/settingHeader/SettingHeader";
 // import PrimaryButton from "../../../component/Buttons/PrimaryButton";
 // import { useUser } from "../../../Context/UserContext";
