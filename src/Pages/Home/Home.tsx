@@ -24,8 +24,6 @@ export default function Home() {
     return true;
   });
 
-  console.log("Filtered Items:", filteredItems);
-
   useEffect(() => {
     fetchApiData();
   }, []);
