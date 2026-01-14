@@ -1,15 +1,7 @@
 import React, { useContext, useState, createContext, useEffect } from "react";
 import axiosClient from "../api/axiosClient";
 import { Logger } from "../utils/Logger";
-type NoteType = {
-  id: number;
-  title: string;
-  description: string;
-  pinned: boolean;
-  isDeleted: boolean;
-  isArchived: boolean;
-  image: string;
-};
+import type { NoteType } from "../types/Note.types";
 
 type noteContextprops = {
   setArchieveNote: React.Dispatch<React.SetStateAction<NoteType[]>>;
@@ -41,8 +33,8 @@ export const NoteContext = ({ children }: { children: React.ReactNode }) => {
         setLoading(false);
       })
       .catch((error) => {
-       Logger("Error fetching notes:", error);
-       setLoading(false);
+        Logger("Error fetching notes:", error);
+        setLoading(false);
       });
   };
 

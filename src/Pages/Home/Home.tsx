@@ -1,27 +1,37 @@
 import NoteInput from "../../component/NoteMakingInputField/NoteInput";
 import Note from "../../component/Note/Note";
 import { useNote } from "../../Context/noteContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Loader from "../../component/Note/Loader/Loader";
-
-interface NoteType {
-  id: number;
-  title: string;
-  description: string;
-  pinned: boolean;
-  image: string;
-}
+import FilterButton from "../../component/Buttons/FilterButton/FilterButton";
+import type { NoteType } from "../../types/Note.types";
+import type { FilterState } from "../../types/FilterType";
 
 export default function Home() {
-  const { items, fetchApiData,loading } = useNote();
+  const { items, fetchApiData, loading } = useNote();
+
+  const [filters, setFilters] = useState<FilterState>({
+    archived: false,
+    reminder: false,
+    bin: false,
+    labels: [],
+  });
+
+  const filteredItems = items?.filter((item: NoteType) => {
+    // if(filters.pinned && !item.pinned) return false;
+    if (filters.archived && !item?.isArchived) return false;
+    return true;
+  });
+
+  console.log("Filtered Items:", filteredItems);
 
   useEffect(() => {
     fetchApiData();
   }, []);
 
-if(loading){
-return <Loader/>
-}
+  if (loading) {
+    return <Loader />;
+  }
 
   if (!loading && items.length === 0) {
     return (
@@ -37,12 +47,20 @@ return <Loader/>
       </>
     );
   }
-  // Separate pinned and unpinned notes
-  const pinnedNotes = items.filter((item: NoteType) => item.pinned);
-  const unpinnedNotes = items.filter((item: NoteType) => !item.pinned);
+
+  const pinnedNotes = filteredItems.filter((item: NoteType) => item.pinned);
+  const unpinnedNotes = filteredItems.filter((item: NoteType) => !item.pinned);
 
   return (
     <>
+      <div
+        className="flex justify-end 
+    md:p-4
+    xsm:p-2
+    "
+      >
+        <FilterButton filters={filters} setFilters={setFilters} />
+      </div>
       <div className="p-4">
         <NoteInput />
       </div>

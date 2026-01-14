@@ -111,7 +111,7 @@ export const NoteInput = () => {
         {!InputClick ? (
           <div
             ref={inputRef}
-            className="shadow-lg min-w-[600px] py-2  px-4 border rounded-[5px] border-borderColor flex flex-col gap-2"
+            className="shadow-lg w-full max-w-[600px] py-2  px-4 border rounded-[5px] border-borderColor flex flex-col gap-2"
           >
             <div className="flex w-full ">
               <input
