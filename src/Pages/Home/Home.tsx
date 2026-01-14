@@ -2,6 +2,7 @@ import NoteInput from "../../component/NoteMakingInputField/NoteInput";
 import Note from "../../component/Note/Note";
 import { useNote } from "../../Context/noteContext";
 import { useEffect } from "react";
+import Loader from "../../component/Note/Loader/Loader";
 
 interface NoteType {
   id: number;
@@ -12,12 +13,17 @@ interface NoteType {
 }
 
 export default function Home() {
-  const { items, fetchApiData } = useNote();
+  const { items, fetchApiData,loading } = useNote();
 
   useEffect(() => {
     fetchApiData();
   }, []);
-  if (items.length === 0) {
+
+if(loading){
+return <Loader/>
+}
+
+  if (!loading && items.length === 0) {
     return (
       <>
         <div className="p-4">

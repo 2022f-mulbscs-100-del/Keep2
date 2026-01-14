@@ -37,7 +37,7 @@ const Note = ({ title, description, NotePinned, id, image }: NoteProps) => {
       } else {
         setIsHover(false);
       }
-    };
+  };
 
     document.addEventListener("mouseover", HandleHover);
     return () => {
