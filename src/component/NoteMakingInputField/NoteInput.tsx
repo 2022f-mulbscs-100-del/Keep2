@@ -9,6 +9,8 @@ import IconsArray from "../../../public/Data";
 import { useNote } from "../../Context/noteContext";
 import axiosClient from "../../api/axiosClient";
 import { Logger } from "../../utils/Logger";
+import { useParams } from "react-router";
+import { toast } from "react-toastify";
 
 export const NoteInput = () => {
   interface NoteType {
@@ -31,8 +33,14 @@ export const NoteInput = () => {
   const [LocalIsPinned, setLocalIsPinned] = useState(false);
   const [InputClick, setInputClick] = useState(false);
   const [listClick, setListClick] = useState(false);
-  const [listItemIsCliced, setlistItemIsCliced] = useState(true);
-  const [listArray, setListArray] = useState<number[]>([0]);
+  const [listArray, setListArray] = useState<
+    { id: number | null; data: string }[]
+  >([
+    {
+      id: null,
+      data: "",
+    },
+  ]);
   const { fetchApiData } = useNote();
 
   const HandleNoteData = (
@@ -47,6 +55,15 @@ export const NoteInput = () => {
     }
   };
 
+  const { label } = useParams();
+
+  useEffect(() => {
+    setNotesData({
+      ...NotesData,
+      catgeory: NotesData.catgeory ? NotesData.catgeory : label || "",
+    });
+  }, [label, InputClick]);
+
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (inputRef.current && !inputRef.current.contains(e.target as Node)) {
@@ -54,6 +71,8 @@ export const NoteInput = () => {
         apiCall(stableData);
         setInputClick(false);
         setLocalIsPinned(false);
+        setListClick(false);
+        setListArray([]);
         setNotesData({
           title: "",
           description: "",
@@ -71,14 +90,22 @@ export const NoteInput = () => {
   });
 
   const apiCall = (NotesData: NoteType) => {
-    if (NotesData.title.trim() === "" && NotesData.description.trim() === "")
-      return;
+    if (listArray.length <= 1) {
+      if (
+        NotesData.title.trim() === "" &&
+        NotesData.description.trim() === ""
+      ) {
+        toast.info("Note is empty, not saved.");
+        return;
+      }
+    }
     const sendNotwe = {
       title: NotesData.title,
       description: NotesData.description,
       id: NotesData.id,
       pinned: NotesData.pinned,
       catgeory: NotesData.catgeory,
+      list: listArray.length > 0 && listArray[0].data !== "" ? listArray : [],
     };
 
     try {
@@ -98,6 +125,7 @@ export const NoteInput = () => {
         pinned: false,
         catgeory: "",
       });
+      setListArray([]);
       setLocalIsPinned(false);
       setListClick(false);
     } catch (error) {
@@ -105,14 +133,21 @@ export const NoteInput = () => {
     }
   };
 
+  useEffect(() => {
+    if (listClick) {
+      setListArray([
+        {
+          id: Date.now(),
+          data: "",
+        },
+      ]);
+    }
+  }, [listClick]);
   return (
     <>
       <div className="flex justify-center items-center">
         {!InputClick ? (
-          <div
-            ref={inputRef}
-            className="shadow-lg w-full max-w-[600px] py-2  px-4 border rounded-[5px] border-borderColor flex flex-col gap-2"
-          >
+          <div className="shadow-lg w-full max-w-[600px] py-2  px-4 border rounded-[5px] border-borderColor flex flex-col gap-2">
             <div className="flex w-full ">
               <input
                 className="w-full outline-none "
@@ -199,14 +234,7 @@ export const NoteInput = () => {
             ) : (
               // input list
               <>
-                {listArray.map((item) => (
-                  <InputList
-                    key={item}
-                    listItemIsCliced={listItemIsCliced}
-                    setlistItemIsCliced={setlistItemIsCliced}
-                    onClicked={() => setListArray((prev) => [...prev, 0])}
-                  />
-                ))}
+                <InputList listArray={listArray} setListArray={setListArray} />
               </>
             )}
             {/* list of icon */}
@@ -221,9 +249,9 @@ export const NoteInput = () => {
 
               {/* close icon */}
               <div
-                className="pr-6"
+                className="pr-6 cursor-pointer hover:bg-secondary px-5 py-2"
                 onClick={() => {
-                  setInputClick(false);
+                  setListArray([]);
                   apiCall(NotesData);
                   setNotesData({
                     id: Date.now(),
@@ -232,11 +260,10 @@ export const NoteInput = () => {
                     pinned: false,
                     catgeory: "",
                   });
+                  setInputClick(false);
                 }}
               >
-                <p className="cursor-pointer hover:bg-secondary px-5 py-2">
-                  close
-                </p>
+                close
               </div>
             </div>
           </div>

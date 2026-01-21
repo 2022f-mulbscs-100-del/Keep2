@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { IoTimerOutline } from "react-icons/io5";
 import { useUser } from "../../../Context/UserContext";
 import { toast } from "react-toastify";
+import { IntegerSchema } from "../../../validation/validation";
+import { Logger } from "../../../utils/Logger";
+import { z } from "zod";
 const AutoLogoutBlock = () => {
   const {
     UpdateUserProfile,
@@ -46,12 +49,19 @@ const AutoLogoutBlock = () => {
   const HandlerAutoLogoutTime = async () => {
     if (autoLogoutTime === profileData?.autoLogoutTime) return;
     try {
+      IntegerSchema.parse(autoLogoutTime);
       await UpdateUserProfile({
         autoLogoutTime: autoLogoutTime,
       });
       toast.success(`Auto logout time updated to ${autoLogoutTime} minutes`);
       //eslint-disable-next-line
     } catch (error: any) {
+      if (error instanceof z.ZodError) {
+        const messages = error.issues.map((issue) => issue.message).join(", ");
+        toast.error(messages);
+        Logger("Validation Error:", messages);
+        return;
+      }
       toast.error(error.message || "Error updating auto logout time");
     }
   };
@@ -79,7 +89,7 @@ const AutoLogoutBlock = () => {
           >
             <input
               className={` outline-none  text-body2 w-full text-white ${autoLogout === false ? " cursor-not-allowed" : ""}`}
-              type="number"
+              type="text"
               placeholder="Enter value in minutes"
               name="value"
               value={autoLogoutTime || ""}

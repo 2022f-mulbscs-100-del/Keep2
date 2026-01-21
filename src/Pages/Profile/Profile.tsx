@@ -108,7 +108,7 @@ const Profile = () => {
           >
             <img
               className="w-full h-full object-cover "
-              src={profileData?.profileImage}
+              src={profileData?.profileImage || "HN-PAT-ALK-2000X2000-2.jpg"}
               alt="Profile"
             />
           </div>

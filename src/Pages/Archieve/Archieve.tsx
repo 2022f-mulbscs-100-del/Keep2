@@ -24,23 +24,27 @@ const Archieve = () => {
             </h1>
           </div>
         ) : (
-          archievedNote.map((item, index) => {
-            return (
-              <div
-                key={index}
-                className={` mr-8 ${layout ? "float-none" : `float-left`}`}
-              >
-                <Note
-                  key={index}
-                  id={item?.id}
-                  title={item?.title}
-                  description={item?.description}
-                  NotePinned={item?.pinned}
-                  image={JSON.parse(item?.image)}
-                />
-              </div>
-            );
-          })
+          <div
+            className={` ${!layout ? "columns-1" : "columns-1 notes-sm:columns-2 notes-lg:columns-3 notes-xl:columns-4 2xl:columns-5"}
+                     gap-4 space-y-4 transition-all transform duration-500`}
+          >
+            {archievedNote.map((item, index) => {
+              return (
+                <div key={item.id} className="break-inside-avoid">
+                  <Note
+                    key={index}
+                    id={item?.id || 0}
+                    title={item?.title || ""}
+                    description={item?.description || ""}
+                    NotePinned={item?.pinned || false}
+                    image={item?.image}
+                    list={item?.list || []}
+                    category={item?.category || ""}
+                  />
+                </div>
+              );
+            })}
+          </div>
         )}
       </main>
     </>

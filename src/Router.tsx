@@ -15,6 +15,8 @@ import Profile from "./Pages/Profile/Profile";
 import Setting from "./Pages/Settings/Setting";
 import SettingLayout from "./Pages/Profile/SettingLayout";
 import PersonalInfo from "./Pages/Settings/Personal-info/PersonalInfo";
+import Reminder from "./Pages/Reminders/Reminder";
+import EditLabels from "./Pages/EditLabels/EditLabels";
 // import PublicRoute from "./PublicRoute";
 
 interface ProviderWrapperProps {
@@ -61,20 +63,19 @@ const router = createBrowserRouter([
         path: "/reminders",
         element: (
           <ProtectedRoute>
-            <div>Reminders</div>
+            <div>
+              <Reminder />
+            </div>
           </ProtectedRoute>
         ),
       },
       {
-        path: "/editlabel",
+        path: "/editlabel/:label",
         element: (
           <ProtectedRoute>
-            <div>Edit Label</div>
+            <EditLabels />
           </ProtectedRoute>
         ),
-      },
-      {
-        path: "/editlabel/:title",
       },
       {
         path: "/archieve",

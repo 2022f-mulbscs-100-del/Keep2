@@ -1,18 +1,15 @@
 import { RouterProvider } from "react-router-dom";
 import router from "./Router";
-import { NoteContext } from "./Context/noteContext";
-import { SideBarProvider } from "./Context/sidebarContext";
-import { NavbarProvider } from "./Context/navbarContext";
-import { EditLabelProvider } from "./Context/editLabelContext";
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { useTheme } from "./Context/themeSwitcherContext";
 import { ToastContainer } from "react-toastify";
 import { ThemeSwitcherProvider } from "./Context/themeSwitcherContext";
-import { AuthProvider, useAuth } from "./Context/AuthContext";
-import { UserProvider, useUser } from "./Context/UserContext";
+import { useAuth } from "./Context/AuthContext";
+import { useUser } from "./Context/UserContext";
 import axiosClient from "./api/axiosClient";
 import * as Sentry from "@sentry/react";
 import { Logger } from "./utils/Logger";
+import { ModalProvider } from "./Context/ModalProvider";
 
 Sentry.init({
   dsn: "https://02c6d0261dc131e71370a5eb212bcf8f@o4510685752655872.ingest.us.sentry.io/4510685763141632",
@@ -27,7 +24,7 @@ Sentry.init({
 
   sendDefaultPii: true,
 
-  // 🔥 Performance
+  //  Performance
   tracesSampleRate: 1.0,
 
   // 🎥 Session Replay
@@ -61,7 +58,7 @@ export const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
         })
         .then(() => {})
         .catch((error) => {
-        Logger("Error during logout:", error);
+          Logger("Error during logout:", error);
         });
       window.location.reload();
     };
@@ -123,33 +120,23 @@ export const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
 function App() {
   return (
     <ThemeSwitcherProvider>
-      <AuthProvider>
-        <UserProvider>
-          <EditLabelProvider>
-            <NavbarProvider>
-              <SideBarProvider>
-                <NoteContext>
-                  <ToastContainer
-                    position="bottom-left"
-                    autoClose={4000}
-                    hideProgressBar={true}
-                    newestOnTop={true}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                    theme="dark"
-                  />
-                  <LayoutWrapper>
-                    <RouterProvider router={router} />
-                  </LayoutWrapper>
-                </NoteContext>
-              </SideBarProvider>
-            </NavbarProvider>
-          </EditLabelProvider>
-        </UserProvider>
-      </AuthProvider>
+      <ModalProvider>
+        <ToastContainer
+          position="bottom-left"
+          autoClose={4000}
+          hideProgressBar={true}
+          newestOnTop={true}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        />
+        <LayoutWrapper>
+          <RouterProvider router={router} />
+        </LayoutWrapper>
+      </ModalProvider>
     </ThemeSwitcherProvider>
   );
 }

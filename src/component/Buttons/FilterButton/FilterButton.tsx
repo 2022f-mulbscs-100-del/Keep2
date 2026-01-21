@@ -85,7 +85,9 @@ const FilterButton: React.FC<FilterButtonProps> = ({ filters, setFilters }) => {
       </button>
 
       {isOpen && (
-        <div className="absolute top-full  mt-2 right-0 bg-black  rounded-lg shadow-lg border border-borderColor w-64 z-50">
+        <div
+          className={`absolute top-full  mt-2 right-0 rounded-lg shadow-lg border border-borderColor w-64 z-50 bg-background`}
+        >
           <div className="p-3 border-b border-borderColor flex items-center justify-between">
             <h3 className="font-semibold ">Filter Notes</h3>
             {hasActiveFilters && (

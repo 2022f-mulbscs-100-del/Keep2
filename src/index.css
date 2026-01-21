@@ -17,17 +17,24 @@
   --text-subheading2: var(--text-subheading2); /* 20px */
   --text-body: var(--text-body); /* 14px */
   --text-body2: var(--text-body2); /* 12px */
+  --text-body3: var(--text-body3); /* 10px */
 
   /* Custom Breakpoints */
   --breakpoint-xsm: 320px;
   --breakpoint-sm: 480px;
   --breakpoint-md: 768px;
   --breakpoint-lg: 1024px;
-  --breakpoint-xl: 1300px;
+  --breakpoint-xl: 1280px;
+
+  --breakpoint-notes-xsm: 320px;
+  --breakpoint-notes-sm: 595px;
+  --breakpoint-notes-md: 768px;
+  --breakpoint-notes-lg: 1024px;
+  --breakpoint-notes-xl: 1300px;
 }
 
 /* Light Theme - Define base values first */
-:root {
+:html {
   /* Colors */
   --foreground: #1f2937ca;
   --primary-foreground: #ffffff;
@@ -43,7 +50,7 @@
   --text-subheading2: 1.25rem; /* 20px */
   --text-body: 0.875rem; /* 14px */
   --text-body2: 0.75rem; /* 12px */
-
+  --text-body3: 0.1rem; /* 9px */
   --border-color: #ececec;
 }
 
@@ -52,7 +59,7 @@
   --foreground: #e0e0e0;
   --border-color: #525355;
   /* Custom colors */
-  background-color: black;
+  --background-color: black;
   --primary-color: #41331c;
   --senondary-color: #36363898;
 }
@@ -99,7 +106,7 @@
 }
 
 html {
-  background-color: var(--background);
+  background-color: var(--background-color);
   color: var(--foreground);
 }
 
@@ -119,4 +126,13 @@ html {
 }
 .Toastify__toast-icon {
   display: none !important;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
 }

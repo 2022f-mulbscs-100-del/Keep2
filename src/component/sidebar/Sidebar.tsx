@@ -30,6 +30,20 @@ const Sidebar = () => {
   const HandleClick = (id: number) => {
     setisActive(id);
   };
+
+  const removeSpacing = (str: string) => {
+    return str.replace(/\s+/g, "-");
+  };
+
+  const labelSidebarItems = label
+    .filter((item) => item?.categoryName?.trim() !== "")
+    .map((item, index) => ({
+      id: 110 + index,
+      icon: <TbLabelFilled />,
+      title: item.categoryName,
+      path: `/editlabel/${encodeURIComponent(removeSpacing(item.categoryName))}`,
+    }));
+
   const SideBarData = [
     {
       id: 1,
@@ -43,6 +57,7 @@ const Sidebar = () => {
       title: "Reminders",
       path: "/reminders",
     },
+    ...labelSidebarItems,
     {
       id: 3,
       icon: <MdEdit />,
@@ -63,21 +78,6 @@ const Sidebar = () => {
     },
   ];
 
-  const AddingLabelSidebar = (title: string, id: number) => {
-    SideBarData.splice(2, 0, {
-      id: 110 + id,
-      icon: <TbLabelFilled />,
-      title: title,
-      path: `/editlabel/${title}`,
-    });
-  };
-
-  {
-    label.map((item: string, index: number) => {
-      AddingLabelSidebar(item, index);
-    });
-  }
-
   useEffect(() => {
     if (isMobile || isTablet) {
       setIsOpen(false);
@@ -87,7 +87,7 @@ const Sidebar = () => {
   const { isOpen, setIsOpen } = useSidebar();
   return (
     <>
-      <div className={`   ${isOpen ? "w-[250px]" : `w-fit`} cursor-pointer `}>
+      <div className={`${isOpen ? "w-[250px]" : `w-fit`} cursor-pointer `}>
         <ul
           className={`py-4 
                 transition-all 
@@ -130,3 +130,51 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+
+// const baseSidebarData = [
+//   {
+//     id: 1,
+//     icon: <FaRegLightbulb />,
+//     title: "Notes",
+//     path: "/",
+//   },
+//   {
+//     id: 2,
+//     icon: <FaBell />,
+//     title: "Reminders",
+//     path: "/reminders",
+//   },
+//   {
+//     id: 3,
+//     icon: <MdEdit />,
+//     title: "Edit labels",
+//     path: "#",
+//   },
+//   {
+//     id: 4,
+//     icon: <IoMdArchive />,
+//     title: "Archive",
+//     path: "/archieve",
+//   },
+//   {
+//     id: 5,
+//     icon: <MdDelete />,
+//     title: "Bin",
+//     path: "/bin",
+//   },
+// ];
+
+// const labelSidebarItems = label
+//   .filter(item => item.label.trim() !== "")
+//   .map((item, index) => ({
+//     id: 110 + index,
+//     icon: <TbLabelFilled />,
+//     title: item.label,
+//     path: `/editlabel/${encodeURIComponent(item.label)}`,
+//   }));
+
+// const SideBarData = [
+//   ...baseSidebarData.slice(0, 2),
+//   ...labelSidebarItems,
+//   ...baseSidebarData.slice(2),
+// ];

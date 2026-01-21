@@ -94,10 +94,10 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
   }, [onclose]);
   return (
     <>
-      <div className="fixed top-0 left-0 inset-0 bg-black/10 flex justify-center items-center z-150">
+      <div className="fixed bg-black/60 top-0 left-0 w-full h-full flex justify-center items-center z-100">
         <div
           ref={clickRef}
-          className="bg-black p-4 rounded-lg  flex flex-col z-200"
+          className="border-borderColor border rounded-[8px] w-[90%] md:w-[60%] lg:w-[40%] p-4  bg-black relative"
         >
           <div
             className="cursor-pointer text-white text-xl font-bold p-2 flex justify-between items-center"

@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import axiosClient from "../api/axiosClient";
 import type { ProfileDataType } from "../types/User.types";
 import { Logger } from "../utils/Logger";
+import { UserInputSchema } from "../validation/validation";
 
 const UserContext = createContext<userContextType | null>(null);
 export type userContextType = {
@@ -42,7 +43,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       })
       .catch((error) => {
         setIsLoading(false);
-        Logger("error fetching user profile",error)
+        Logger("error fetching user profile", error);
         setError({
           ...error,
           ProfileError: error.message || "Error fetching user profile",
@@ -55,13 +56,14 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   ): Promise<ProfileDataType> => {
     try {
       setIsLoading(true);
+      UserInputSchema.parse(profileData);
       const res = await axiosClient.patch("/updateProfile", { profileData });
       setProfileData(res.data);
       return res.data;
       // eslint-disable-next-line
     } catch (error: string | any) {
       setIsLoading(false);
-      Logger("Error updating profile",error)
+      Logger("Error updating profile", error);
       setError({
         ...error,
         ProfileError: error.message || "Error updating profile",

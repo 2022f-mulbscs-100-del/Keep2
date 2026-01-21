@@ -5,7 +5,8 @@ import axiosClient from "../../../api/axiosClient";
 import { toast } from "react-toastify";
 import { Logger } from "../../../utils/Logger";
 import PrimaryButton from "../../../component/Buttons/PrimaryButton";
-
+import { MFAcodeValidation } from "../../../validation/validation";
+import { z } from "zod";
 const MFABlock = () => {
   const {
     profileData,
@@ -47,21 +48,32 @@ const MFABlock = () => {
       Logger("MFA code must be 6 digits long");
       return;
     }
-    setIsLoading(true);
-    axiosClient
-      .post("/verify-mfa", {
-        email: profileData?.email,
-        token: MFAcode,
-      })
-      .then(() => {
-        setIsLoading(false);
-        setEnableMFA(true);
-        fetchUserProfile();
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        Logger("Error verifying MFA code:", error);
-      });
+
+    try {
+      setIsLoading(true);
+      MFAcodeValidation.parse({ mfaCode: MFAcode });
+      axiosClient
+        .post("/verify-mfa", {
+          email: profileData?.email,
+          token: MFAcode,
+        })
+        .then(() => {
+          setIsLoading(false);
+          setEnableMFA(true);
+          fetchUserProfile();
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          Logger("Error verifying MFA code:", error);
+        });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const messages = error.issues.map((issue) => issue.message).join(", ");
+        toast.error(messages);
+        Logger("Validation Error:", messages);
+      }
+      setIsLoading(false);
+    }
   };
 
   const HandleDisableMFa = async () => {

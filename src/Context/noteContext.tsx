@@ -14,6 +14,8 @@ type noteContextprops = {
   DeletedNotes: () => Promise<void>;
   archievedNote: NoteType[];
   loading: boolean;
+  setItems: React.Dispatch<React.SetStateAction<NoteType[]>>;
+  UpdateNote: (id: number, updatedNote: NoteType) => Promise<void>;
 };
 
 const noteContext = createContext<noteContextprops | undefined>(undefined);
@@ -44,12 +46,21 @@ export const NoteContext = ({ children }: { children: React.ReactNode }) => {
       .get("/deletedNotes")
       .then((res) => {
         setDeletedNotes(res.data);
+        setItems(res.data);
         setLoading(false);
       })
       .catch((error) => {
         Logger("Error fetching deleted notes:", error);
         setLoading(false);
       });
+  };
+
+  const UpdateNote = async (id: number, updatedNote: NoteType) => {
+    try {
+      await axiosClient.put(`/UpdateNotes/${id}`, updatedNote);
+    } catch (error) {
+      Logger("Error updating note:", error);
+    }
   };
 
   const ArchivedNotes = async () => {
@@ -86,6 +97,8 @@ export const NoteContext = ({ children }: { children: React.ReactNode }) => {
           deletedNotes,
           DeletedNotes,
           loading,
+          setItems,
+          UpdateNote,
         } as noteContextprops
       }
     >
