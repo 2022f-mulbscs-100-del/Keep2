@@ -5,6 +5,9 @@ import { toast } from "react-toastify";
 import axiosClient from "../../../api/axiosClient";
 import { useUser } from "../../../Context/UserContext";
 import PrimaryButton from "../../../component/Buttons/PrimaryButton";
+import { passwordValidation } from "../../../validation/validation";
+import { z } from "zod";
+import { Logger } from "../../../utils/Logger";
 
 const ResetPasswordBlock = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -57,32 +60,41 @@ const ResetPasswordBlock = () => {
       toast.error("Please fill all the fields");
       return;
     }
-
-    setIsLoading(true);
-    axiosClient
-      .post(`${import.meta.env.VITE_API_BASE_URL}/api/reset-password`, {
-        currentPassword: formData.currentPassword,
-        resetThroughToken: false,
-        password: formData.password,
-        email: profileData?.email,
-      })
-      .then(() => {
-        setIsLoading(false);
-        toast.success("Password Updated");
-        setFormData({
-          currentPassword: "",
-          password: "",
-          confirmPassword: "",
+    try {
+      setIsLoading(true);
+      passwordValidation.parse(formData);
+      axiosClient
+        .post(`${import.meta.env.VITE_API_BASE_URL}/api/reset-password`, {
+          currentPassword: formData.currentPassword,
+          resetThroughToken: false,
+          password: formData.password,
+          email: profileData?.email,
+        })
+        .then(() => {
+          setIsLoading(false);
+          toast.success("Password Updated");
+          setFormData({
+            currentPassword: "",
+            password: "",
+            confirmPassword: "",
+          });
+        })
+        .catch(() => {
+          setIsLoading(false);
+          setFormData({
+            currentPassword: "",
+            password: "",
+            confirmPassword: "",
+          });
         });
-      })
-      .catch(() => {
-        setIsLoading(false);
-        setFormData({
-          currentPassword: "",
-          password: "",
-          confirmPassword: "",
-        });
-      });
+    } catch (error) {
+      setIsLoading(false);
+      if (error instanceof z.ZodError) {
+        const messages = error.issues.map((issue) => issue.message).join(", ");
+        toast.error(messages);
+        Logger("Validation Error:", messages);
+      }
+    }
   };
 
   //   {

@@ -8,18 +8,27 @@ import { useRef, type ChangeEvent } from "react";
 import axiosClient from "../../api/axiosClient.js";
 import axios from "axios";
 import { Logger } from "../../utils/Logger.js";
+import { useModal } from "../../Context/ModalProvider.js";
+import { BiSolidBellMinus } from "react-icons/bi";
 
 type ActionIconsProps = {
   IsHover: boolean;
   id: number;
   onClick?: () => void;
+  hasReminder?: boolean;
 };
 
-const ActionIcons = ({ IsHover, id, onClick }: ActionIconsProps) => {
+const ActionIcons = ({
+  IsHover,
+  id,
+  onClick,
+  hasReminder,
+}: ActionIconsProps) => {
   const { fetchApiData, DeletedNotes } = useNote();
   const inputRef = useRef<HTMLInputElement>(null);
   const { ArchivedNotes } = useNote();
 
+  const { setReminderModal, setNoteId } = useModal();
   const deleteNote = (id: number) => {
     axiosClient
       .put(`${import.meta.env.VITE_API_BASE_URL}/api/UpdateNotes/${id}`, {
@@ -67,7 +76,7 @@ const ActionIcons = ({ IsHover, id, onClick }: ActionIconsProps) => {
         toast.success("Note deleted permanently");
       })
       .catch((error) => {
-      Logger("Error permanently deleting note:", error);
+        Logger("Error permanently deleting note:", error);
       });
   };
 
@@ -82,7 +91,7 @@ const ActionIcons = ({ IsHover, id, onClick }: ActionIconsProps) => {
         toast.success("Note archived successfully");
       })
       .catch((error) => {
-      Logger("Error archiving note:", error);
+        Logger("Error archiving note:", error);
       });
   };
 
@@ -127,8 +136,8 @@ const ActionIcons = ({ IsHover, id, onClick }: ActionIconsProps) => {
           data,
         );
         return response.data.url;
-        } catch (error) {
-          Logger("Error uploading file:", error);
+      } catch (error) {
+        Logger("Error uploading file:", error);
         return null;
       }
     });
@@ -163,12 +172,11 @@ const ActionIcons = ({ IsHover, id, onClick }: ActionIconsProps) => {
         toast.success("Note unarchived successfully");
       })
       .catch((error) => {
-      Logger("Error unarchiving note:", error);
+        Logger("Error unarchiving note:", error);
       });
   };
 
   const { pathname } = useLocation();
-
   return (
     <>
       <div
@@ -186,15 +194,27 @@ const ActionIcons = ({ IsHover, id, onClick }: ActionIconsProps) => {
                     if (item.id === 5) {
                       ArchieveDescion(id);
                     }
-                    if (item.id === 3) {
-                      return;
-                    }
                     if (item.id === 4) {
                       openFileDialog();
                     }
+                    if (item.id === 3) {
+                      if (pathname === "/reminders") {
+                        // Remove reminder logic here
+                      }
+                      setReminderModal(true);
+                      setNoteId(id);
+                    }
                   }}
                 >
-                  {pathname === "/archieve" && item.id === 5 ? (
+                  {hasReminder === true && item.id === 3 ? (
+                    <div>
+                      <IconStyling
+                        tooltip="Remove Reminder"
+                        id={item.id}
+                        icon={BiSolidBellMinus}
+                      />
+                    </div>
+                  ) : pathname === "/archieve" && item.id === 5 ? (
                     <div>
                       <IconStyling
                         tooltip="Unarchive"

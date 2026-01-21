@@ -15,6 +15,7 @@ import { useNote } from "../../Context/noteContext";
 import { useUser } from "../../Context/UserContext";
 import { Tooltip } from "react-tooltip";
 import { useScreenSize } from "../CustomHooks/useScreenSize";
+import IconStyling from "../IconStyling";
 
 const Navbar = () => {
   const { pathname: path } = useLocation();
@@ -59,50 +60,56 @@ const Navbar = () => {
 
         {/* input field */}
 
-        <div className="
+        <div
+          className="
         px-4
-        ">
+        "
+        >
           <Input />
         </div>
 
         <div className="flex justify-end items-center gap-16">
           {!isTablet && !isMobile && (
             <div className="flex items-center gap-4">
-              <div
-                data-tooltip-id="refresh-tooltip"
-                data-tooltip-content="Refresh"
-              >
-                <IoMdRefresh
-                  className="cursor-pointer"
-                  onClick={() => {
+              <div>
+                <IconStyling
+                  icon={IoMdRefresh}
+                  id={1}
+                  tooltip="Refresh"
+                  onclick={() => {
                     fetchApiData();
                   }}
                 />
               </div>
 
               {layout ? (
-                <LuLayoutGrid
-                  className="cursor-pointer"
-                  onClick={() => {
+                <IconStyling
+                  icon={LuLayoutGrid}
+                  id={2}
+                  tooltip="Layout"
+                  onclick={() => {
                     setLayout(false);
                   }}
                 />
               ) : (
-                <TbLayoutList
-                  className="cursor-pointer"
-                  onClick={() => {
+                <IconStyling
+                  icon={TbLayoutList}
+                  id={1}
+                  tooltip="Layout"
+                  onclick={() => {
                     setLayout(true);
                   }}
                 />
               )}
 
-              <div
-                data-tooltip-id="setting-tooltip"
-                data-tooltip-content="Settings"
-              >
-                <IoSettingsOutline
-                  className="cursor-pointer"
-                  onClick={() => navigate("/setting/personal-info")}
+              <div>
+                <IconStyling
+                  icon={IoSettingsOutline}
+                  id={1}
+                  tooltip="Setting"
+                  onclick={() => {
+                    navigate("/setting/personal-info");
+                  }}
                 />
               </div>
 
@@ -119,8 +126,8 @@ const Navbar = () => {
                 <PiCodesandboxLogo
                   className="cursor-pointer"
                   onClick={(e) => {
-                    e.stopPropagation();
-                    setSandboxOpen(true);
+                    e.stopPropagation(); //prevents parent elements from reacting to the same event.
+                    setSandboxOpen(true); // when i click on the icon the modal opens but immediately closes because of the overlay click handler in SandboxModal.tsx so to prevent that we use e.stopPropagation()
                   }}
                 />
               </div>
@@ -143,7 +150,7 @@ const Navbar = () => {
             >
               <img
                 className="object-cover w-full h-full "
-                src={profileData?.profileImage}
+                src={profileData?.profileImage || "HN-PAT-ALK-2000X2000-2.jpg"}
                 alt=""
               />
             </div>

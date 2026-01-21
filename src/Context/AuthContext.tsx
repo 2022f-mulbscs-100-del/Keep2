@@ -1,11 +1,13 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
-
-import type {
-  LoginDatatype,
-  SignUpDatatype,
-  UserDataType,
-  ErrorType,
+import { z } from "zod";
+import {
+  type LoginDatatype,
+  type SignUpDatatype,
+  type UserDataType,
+  type ErrorType,
+  LoginDatatypeSchema,
+  MFAverificationSchema,
 } from "../types/Auth.types";
 import { Logger } from "../utils/Logger";
 
@@ -66,7 +68,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setIsLoading(false);
       })
       .catch((err) => {
-        Logger("Error refreshing token",err)
+        Logger("Error refreshing token", err);
         setError({
           ...error,
           refreshError: err.response?.data?.message || "Error refreshing token",
@@ -91,64 +93,64 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // }
 
   const LoginHandler = async (loginData: LoginDatatype) => {
-    setIsLoading(true);
-    axios
-      .post(`${import.meta.env.VITE_API_BASE_URL}/api/login`, loginData, {
-        withCredentials: true,
-      })
-      .then((res) => {
-        if (res.data.message === "2FA enabled") {
-          setLoginStage("2FA");
-          setIsLoading(false);
-          return;
-        } else if (res.data.message === "verify email") {
-          setLoginStage("verifyEmail");
-          setIsLoading(false);
-          return;
-        } else if (res.data.message === "MFA enabled") {
-          setLoginStage("MFA");
-          setIsLoading(false);
-          return;
-        } else {
-          setLoginStage("success");
+    try {
+      const loginParseData = LoginDatatypeSchema.parse(loginData);
+      setIsLoading(true);
+      axios
+        .post(
+          `${import.meta.env.VITE_API_BASE_URL}/api/login`,
+          loginParseData,
+          {
+            withCredentials: true,
+          },
+        )
+        .then((res) => {
+          if (res.data.message === "2FA enabled") {
+            setLoginStage("2FA");
+            setIsLoading(false);
+            return;
+          } else if (res.data.message === "verify email") {
+            setLoginStage("verifyEmail");
+            setIsLoading(false);
+            return;
+          } else if (res.data.message === "MFA enabled") {
+            setLoginStage("MFA");
+            setIsLoading(false);
+            return;
+          } else {
+            setLoginStage("success");
 
-          setUserData(res.data.rest);
-          setAccessToken(res.data.accessToken);
-          sessionStorage.setItem("accessToken", res.data.accessToken);
-          localStorage.setItem("userData", JSON.stringify(res.data.rest));
+            setUserData(res.data.rest);
+            setAccessToken(res.data.accessToken);
+            sessionStorage.setItem("accessToken", res.data.accessToken);
+            localStorage.setItem("userData", JSON.stringify(res.data.rest));
+            setIsLoading(false);
+          }
+        })
+        .catch((err) => {
+          Logger("Error during login", err);
+          setError({
+            ...error,
+            loginError: err.response?.data?.message || "Login error",
+          });
           setIsLoading(false);
-        }
-      })
-      .catch((err) => {
-        Logger("Error during login",err)
+        });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const messages = error.issues.map((issue) => issue.message);
+        Logger("Validation Error:", messages);
         setError({
           ...error,
-          loginError: err.response?.data?.message || "Login error",
+          loginError: messages[0],
         });
-        setIsLoading(false);
-      });
-
-    // try {
-    //   const response = await axios.post(
-    //     "https://keep2-d798.onrender.com/api/send-email",
-    //     {
-    //       email: loginData.email,
-    //       name: ExtractName(loginData.email),
-    //       templateId: 1,
-    //       params: {
-    //         name: ExtractName(loginData.email),
-    //       },
-    //     },
-    //   );
-
-    // } catch (error) {
-    //   Logger("Error sending login email:", error);
-    // }
+      }
+    }
   };
 
   const MFACodeVerification = async (email: string, mfaCode: string) => {
     setIsLoading(true);
     try {
+      MFAverificationSchema.parse({ email, mfaCode });
       const res = await axios.post(
         `${import.meta.env.VITE_API_BASE_URL}/api/login-verify-mfa`,
         {
@@ -168,7 +170,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       //eslint-disable-next-line
     } catch (err: any) {
       setLoginStage("failed");
-      Logger("Error verifying MFA code",err)
+      if (error instanceof z.ZodError) {
+        const messages = error.issues.map((issue) => issue.message);
+        setError({
+          ...error,
+          signUpConfirmationError: messages[0],
+        });
+        return;
+      }
+      Logger("Error verifying MFA code", err);
       setError({
         ...error,
         MFAError: err.response?.data?.message || "MFA Verification error",
@@ -206,7 +216,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } catch (err: any) {
       setIsLoading(false);
       setLoginStage("Invalid verification code");
-      Logger("Error during sign up confirmation",err)
+      Logger("Error during sign up confirmation", err);
+      if (error instanceof z.ZodError) {
+        const messages = error.issues.map((issue) => issue.message);
+        setError({
+          ...error,
+          signUpConfirmationError: messages[0],
+        });
+        return;
+      }
       setError({
         ...error,
         signUpConfirmationError:
@@ -237,7 +255,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       //eslint-disable-next-line
     } catch (err: any) {
       setLoginStage("failed");
-      Logger("Error during 2FA login",err)
+      Logger("Error during 2FA login", err);
       setError({
         ...error,
         twoFaError: err.response?.data?.message || "2FA Login error",
@@ -279,7 +297,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
       //eslint-disable-next-line
     } catch (err: any) {
-      Logger("Error during sign up",err)
+      Logger("Error during sign up", err);
       setError({
         ...error,
         signUpError: err.response?.data?.message || "Error during sign up",

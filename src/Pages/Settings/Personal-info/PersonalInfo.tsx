@@ -5,6 +5,7 @@ import axiosClient from "../../../api/axiosClient";
 import SettingHeader from "../../../component/settingHeader/SettingHeader";
 import PrimaryButton from "../../../component/Buttons/PrimaryButton";
 import PersonalInfoLoader from "./PersonalInfoLoader";
+import { Logger } from "../../../utils/Logger";
 
 const PersonalInfo = () => {
   const [profileData, setProfileData] = useState({
@@ -30,16 +31,21 @@ const PersonalInfo = () => {
   }, []);
 
   const updateProfileData = () => {
-    setIsLoading(true);
-    axiosClient
-      .patch("/updateProfile", { profileData })
-      .then((res) => {
-        setProfileData(res.data);
-        setIsLoading(false);
-      })
-      .catch(() => {
-        setIsLoading(false);
-      });
+    try {
+      setIsLoading(true);
+      axiosClient
+        .patch("/updateProfile", { profileData })
+        .then((res) => {
+          setProfileData(res.data);
+          setIsLoading(false);
+        })
+        .catch(() => {
+          setIsLoading(false);
+        });
+    } catch (error) {
+      setIsLoading(false);
+      Logger("Error updating profile data:", error);
+    }
   };
 
   const HandleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

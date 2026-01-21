@@ -9,7 +9,7 @@ import { TiPin, TiPinOutline } from "react-icons/ti";
 import { useNote } from "../../Context/noteContext";
 import "react-tooltip/dist/react-tooltip.css";
 import { Tooltip } from "react-tooltip";
-import axiosClient from "../../api/axiosClient";
+import NotePills from "../Pills/NotePills";
 
 type NoteProps = {
   id: number;
@@ -17,16 +17,27 @@ type NoteProps = {
   description: string;
   NotePinned: boolean;
   image?: string[];
+  hasReminder?: boolean;
+  list?: { id: number; data: string }[];
+  category?: string;
 };
 
-const Note = ({ title, description, NotePinned, id, image }: NoteProps) => {
+const Note = ({
+  title,
+  description,
+  NotePinned,
+  id,
+  image,
+  hasReminder,
+  list,
+  category,
+}: NoteProps) => {
   const [LocalIsPinned, setLocalIsPinned] = useState(false);
   const [IsHover, setIsHover] = useState<boolean>(false);
   const NoteRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const { fetchApiData, DeletedNotes } = useNote();
+  const { fetchApiData, UpdateNote } = useNote();
   const location = useLocation();
-
   useEffect(() => {
     setLocalIsPinned(NotePinned);
   }, [NotePinned]);
@@ -46,19 +57,16 @@ const Note = ({ title, description, NotePinned, id, image }: NoteProps) => {
     };
   }, []);
 
-  const HandlePinned = () => {
-    axiosClient
-      .patch(`${import.meta.env.VITE_API_BASE_URL}/api/pinnedNotes/${id}`, {
-        pinned: !NotePinned,
-      })
-      .then(() => {
-        fetchApiData();
-        DeletedNotes();
-        setLocalIsPinned(!NotePinned);
-      })
-      .catch((error) => {
-        console.error("Error updating note pin status:", error);
+  const HandlePinned = async () => {
+    try {
+      await UpdateNote(id, {
+        pinned: !LocalIsPinned,
       });
+      fetchApiData();
+    } catch (error) {
+      console.error("Error updating pin status:", error);
+    }
+    setLocalIsPinned(!LocalIsPinned);
   };
 
   const HandleClick = () => {
@@ -70,7 +78,7 @@ const Note = ({ title, description, NotePinned, id, image }: NoteProps) => {
   return (
     <div
       ref={NoteRef}
-      className="relative w-full     shadow-md hover:shadow-xl transition-shadow duration-200 border rounded-lg border-borderColor break-words cursor-pointer overflow-hidden"
+      className="relative w-full     shadow-md hover:shadow-xl transition-all transform duration-300 border rounded-lg border-borderColor break-words cursor-pointer overflow-hidden"
     >
       {/* Select Icon for selecting the note */}
       <div className="absolute top-0 left-0 z-10">
@@ -123,11 +131,14 @@ const Note = ({ title, description, NotePinned, id, image }: NoteProps) => {
       {/* Title and Description */}
       <div className="p-4" onClick={HandleClick}>
         <NoteTitle title={title} IsHover={IsHover} />
-        <NoteDescription description={description} />
+        <NoteDescription description={description} list={list} />
       </div>
-
+      <div className="p-4 pb-0 flex flex-wrap gap-2 ">
+        {category && <NotePills title={category} color="" />}
+        {hasReminder && <NotePills title="Reminder Set" color="" />}
+      </div>
       {/* Action Icons */}
-      <ActionIcons IsHover={IsHover} id={id} />
+      <ActionIcons IsHover={IsHover} id={id} hasReminder={hasReminder} />
     </div>
   );
 };
