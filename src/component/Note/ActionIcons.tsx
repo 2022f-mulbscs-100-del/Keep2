@@ -24,9 +24,8 @@ const ActionIcons = ({
   onClick,
   hasReminder,
 }: ActionIconsProps) => {
-  const { fetchApiData, DeletedNotes } = useNote();
+  const { getNotes, DeletedNotes } = useNote();
   const inputRef = useRef<HTMLInputElement>(null);
-  const { ArchivedNotes } = useNote();
 
   const { setReminderModal, setNoteId } = useModal();
   const deleteNote = (id: number) => {
@@ -35,8 +34,7 @@ const ActionIcons = ({
         isDeleted: true,
       })
       .then(() => {
-        fetchApiData();
-        ArchivedNotes();
+        getNotes();
         if (onClick) onClick();
         toast.success("Note trashed");
       })
@@ -86,7 +84,7 @@ const ActionIcons = ({
         isArchived: true,
       })
       .then(() => {
-        fetchApiData();
+        getNotes();
         if (onClick) onClick();
         toast.success("Note archived successfully");
       })
@@ -154,7 +152,7 @@ const ActionIcons = ({
         imageUrl: fileUrl,
       })
       .then(() => {
-        fetchApiData();
+        getNotes();
         toast.success("Image uploaded to note successfully");
       })
       .catch((error) => {
@@ -167,7 +165,6 @@ const ActionIcons = ({
         isArchived: false,
       })
       .then(() => {
-        ArchivedNotes();
         if (onClick) onClick();
         toast.success("Note unarchived successfully");
       })

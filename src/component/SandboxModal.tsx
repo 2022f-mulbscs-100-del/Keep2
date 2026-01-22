@@ -16,7 +16,7 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
   const [useRandomData, setUseRandomData] = useState(false);
   const [useRandomImages, setUseRandomImages] = useState(false);
   const clickRef = useRef<HTMLDivElement>(null);
-  const { fetchApiData } = useNote();
+  const { getNotes } = useNote();
 
   const generateData = () => {
     if (numNotes === 0) {
@@ -37,7 +37,7 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
         archiveNotes,
       })
       .then(() => {
-        fetchApiData();
+        getNotes();
         setIsLoading(false);
         onclose();
         toast.success("Sandbox data generated successfully");
@@ -53,7 +53,7 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
     axiosClient
       .delete(`${import.meta.env.VITE_API_BASE_URL}/api/deleteSandbox`)
       .then(() => {
-        fetchApiData();
+        getNotes();
         setIsLoading(false);
         onclose();
       })

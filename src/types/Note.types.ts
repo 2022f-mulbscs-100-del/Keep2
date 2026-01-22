@@ -10,3 +10,10 @@ export interface NoteType {
   category?: string;
   list?: { id: number; data: string }[];
 }
+
+export type LoadingType = {
+  intialLoading: boolean;
+  deleteLoading: boolean;
+  updateLoading: boolean;
+  archiveLoading: boolean;
+};

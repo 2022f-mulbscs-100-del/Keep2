@@ -11,16 +11,14 @@ import axiosClient from "../../api/axiosClient";
 import { Logger } from "../../utils/Logger";
 import { useParams } from "react-router";
 import { toast } from "react-toastify";
-
+interface NoteType {
+  id: number;
+  title: string;
+  description: string;
+  pinned: boolean;
+  catgeory: string;
+}
 export const NoteInput = () => {
-  interface NoteType {
-    id: number;
-    title: string;
-    description: string;
-    pinned: boolean;
-    catgeory: string;
-  }
-
   const [NotesData, setNotesData] = useState<NoteType>({
     id: 0,
     title: "",

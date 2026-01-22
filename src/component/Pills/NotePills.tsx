@@ -3,7 +3,6 @@ type PillProps = {
   color?: string;
 };
 const NotePills = ({ title, color }: PillProps) => {
-  console.log("Pill color:", color);
   return (
     <>
       <div

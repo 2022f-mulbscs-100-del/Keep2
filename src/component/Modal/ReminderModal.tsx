@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { useModal } from "../../Context/ModalProvider";
 import axiosClient from "../../api/axiosClient";
 import { toast } from "react-toastify";
+import { useNote } from "../../Context/noteContext";
 
 export const ReminderModal = () => {
   const { setReminderModal, noteId } = useModal();
   const [loading, setLoading] = useState(false);
   const [updating, setUpdating] = useState(false);
+  const { getNotes } = useNote();
 
   const [reminderData, setReminderData] = useState({
     title: "",
@@ -53,6 +55,7 @@ export const ReminderModal = () => {
       .then(() => {
         setLoading(false);
         setReminderModal(false);
+        getNotes();
       })
       .catch((error) => {
         setLoading(false);
