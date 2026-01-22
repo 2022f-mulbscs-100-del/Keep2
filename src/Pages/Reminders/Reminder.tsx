@@ -1,19 +1,18 @@
 import { FaBell } from "react-icons/fa";
-import NoteInput from "../../component/NoteMakingInputField/NoteInput";
 import Note from "../../component/Note/Note";
 import { useEffect, useState } from "react";
 import axiosClient from "../../api/axiosClient";
 import { useNavbar } from "../../Context/navbarContext";
 import Loader from "../../component/Note/Loader/Loader";
 import type { AssociationNoteType } from "../../types/AsocciationNote.types";
+import { Logger } from "../../utils/Logger";
 
 const Reminder = () => {
   const [reminderNotes, setReminderNotes] = useState<AssociationNoteType[]>([]);
   const { layout } = useNavbar();
   const [loading, setLoading] = useState<boolean>(true);
-
+  console.log("Reminder rendering");
   useEffect(() => {
-    // window.document.title = "Reminders - Keep2";
     setLoading(true);
     axiosClient
       .get("/getRemainderNotes")
@@ -24,16 +23,13 @@ const Reminder = () => {
       .catch((error) => {
         setLoading(false);
         setReminderNotes([]);
-        console.error("Error fetching remainder notes:", error);
+        Logger("Error fetching remainder notes:", error);
       });
   }, []);
 
   if (loading) {
     return (
       <>
-        <div className="p-4">
-          <NoteInput />
-        </div>
         <div>
           <Loader />
         </div>
@@ -43,10 +39,6 @@ const Reminder = () => {
 
   return (
     <>
-      <div className="p-4">
-        <NoteInput />
-      </div>
-
       <div className="px-4 mt-10">
         {reminderNotes.length == 0 ? (
           <div className="mt-50 flex flex-col justify-center items-center gap-4">

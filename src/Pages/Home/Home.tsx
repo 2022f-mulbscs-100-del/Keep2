@@ -6,9 +6,27 @@ import FilterButton from "../../component/Buttons/FilterButton/FilterButton";
 import type { NoteType } from "../../types/Note.types";
 import type { FilterState } from "../../types/FilterType";
 import NotesSection from "../../component/NotesSection/NotesSection";
+import Loader from "../../component/Note/Loader/Loader";
+import axiosClient from "../../api/axiosClient";
+import { Logger } from "../../utils/Logger";
 
 export default function Home() {
-  const { items, fetchApiData, loading } = useNote();
+  const { items, setItems } = useNote();
+  const [loadingState, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    axiosClient
+      .get("/notes")
+      .then((res) => {
+        setItems(res.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        Logger("Error fetching notes:", error);
+        setLoading(false);
+      });
+  }, []);
 
   const [filters, setFilters] = useState<FilterState>({
     archived: false,
@@ -16,6 +34,7 @@ export default function Home() {
     bin: false,
     labels: [],
   });
+
   const filteredItems = items?.filter((item: NoteType) => {
     // No filters selected → show normal notes only
     const noFilterSelected = !filters.archived && !filters.bin;
@@ -31,49 +50,31 @@ export default function Home() {
     if (filters.bin && item.isDeleted) {
       return true;
     }
-
-    // if (filters.reminder && item.reminder) {
-    //   return true;
-    // }
   });
-
-  useEffect(() => {
-    fetchApiData();
-  }, []);
-
-  // if (loading) {
-  //   return <Loader />;
-  // }
-
-  if (!loading && items.length === 0) {
-    return (
-      <>
-        <div className="p-4">
-          <NoteInput />
-        </div>
-        <div className="flex flex-col items-center justify-center mt-20">
-          <h2 className="text-xl italic  opacity-50">
-            No notes available. Start by creating a new note!
-          </h2>
-        </div>
-      </>
-    );
-  }
 
   return (
     <>
       <div
         className="flex justify-end 
     md:p-4
-    xsm:p-2
-    "
+    xsm:p-2"
       >
         <FilterButton filters={filters} setFilters={setFilters} />
       </div>
       <div className="p-4">
         <NoteInput />
       </div>
-      <NotesSection filteredItems={filteredItems} />
+      {loadingState ? (
+        <Loader />
+      ) : filteredItems.length > 0 ? (
+        <NotesSection filteredItems={filteredItems} />
+      ) : (
+        <div className="flex flex-col items-center justify-center mt-20">
+          <h2 className="text-xl italic  opacity-50">
+            No notes available. Start by creating a new note!
+          </h2>
+        </div>
+      )}
     </>
   );
 }

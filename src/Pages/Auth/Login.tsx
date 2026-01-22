@@ -77,7 +77,7 @@ function Login() {
     if (!TwoFa) {
       if (loginStage === "success") {
         toast.success("Login successful");
-        navigate("/");
+        window.location.href = "/";
         setLoginStage("login");
       }
 

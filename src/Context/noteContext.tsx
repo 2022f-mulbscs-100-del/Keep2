@@ -1,7 +1,7 @@
 import React, { useContext, useState, createContext, useEffect } from "react";
 import axiosClient from "../api/axiosClient";
 import { Logger } from "../utils/Logger";
-import type { NoteType } from "../types/Note.types";
+import type { LoadingType, NoteType } from "../types/Note.types";
 
 type noteContextprops = {
   setArchieveNote: React.Dispatch<React.SetStateAction<NoteType[]>>;
@@ -13,7 +13,8 @@ type noteContextprops = {
   deletedNotes: NoteType[];
   DeletedNotes: () => Promise<void>;
   archievedNote: NoteType[];
-  loading: boolean;
+  loading: LoadingType;
+  getNotes: () => Promise<void>;
   setItems: React.Dispatch<React.SetStateAction<NoteType[]>>;
   UpdateNote: (id: number, updatedNote: NoteType) => Promise<void>;
 };
@@ -25,62 +26,78 @@ export const NoteContext = ({ children }: { children: React.ReactNode }) => {
   const [Ispinned, setIspinned] = useState<boolean>(false);
   const [items, setItems] = useState<NoteType[]>([]);
   const [deletedNotes, setDeletedNotes] = useState<NoteType[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<LoadingType>({
+    intialLoading: false,
+    deleteLoading: false,
+    updateLoading: false,
+    archiveLoading: false,
+  });
   const fetchApiData = async () => {
-    setLoading(true);
+    setLoading((prev) => ({ ...prev, intialLoading: true }));
     axiosClient
       .get("/notes")
       .then((res) => {
         setItems(res.data);
-        setLoading(false);
+        setLoading((prev) => ({ ...prev, intialLoading: false }));
       })
       .catch((error) => {
         Logger("Error fetching notes:", error);
-        setLoading(false);
+        setLoading((prev) => ({ ...prev, intialLoading: false }));
       });
   };
 
-  const DeletedNotes = async () => {
-    setLoading(true);
+  const getNotes = async () => {
     axiosClient
-      .get("/deletedNotes")
+      .get("/notes")
       .then((res) => {
-        setDeletedNotes(res.data);
         setItems(res.data);
-        setLoading(false);
       })
       .catch((error) => {
-        Logger("Error fetching deleted notes:", error);
-        setLoading(false);
+        Logger("Error fetching notes:", error);
       });
   };
 
   const UpdateNote = async (id: number, updatedNote: NoteType) => {
     try {
-      await axiosClient.put(`/UpdateNotes/${id}`, updatedNote);
+      setLoading((prev) => ({ ...prev, updateLoading: true }));
+      await axiosClient.put(`/UpdateNotes/${id}`, updatedNote).then(() => {
+        setLoading((prev) => ({ ...prev, updateLoading: false }));
+      });
     } catch (error) {
+      setLoading((prev) => ({ ...prev, updateLoading: false }));
       Logger("Error updating note:", error);
     }
   };
+  const DeletedNotes = async () => {
+    setLoading((prev) => ({ ...prev, deleteLoading: true }));
+    axiosClient
+      .get("/deletedNotes")
+      .then((res) => {
+        setDeletedNotes(res.data);
+        setLoading((prev) => ({ ...prev, deleteLoading: false }));
+      })
+      .catch((error) => {
+        Logger("Error fetching deleted notes:", error);
+        setLoading((prev) => ({ ...prev, deleteLoading: false }));
+      });
+  };
 
   const ArchivedNotes = async () => {
-    setLoading(true);
+    setLoading((prev) => ({ ...prev, archiveLoading: true }));
     axiosClient
       .get("/getArchivedNotes")
       .then((res) => {
-        setLoading(false);
+        setLoading((prev) => ({ ...prev, archiveLoading: false }));
         setArchieveNote(res.data);
       })
       .catch((error) => {
-        setLoading(false);
+        setLoading((prev) => ({ ...prev, archiveLoading: false }));
         Logger("Error fetching archived notes:", error);
       });
   };
 
   useEffect(() => {
     fetchApiData();
-    DeletedNotes();
-    ArchivedNotes();
   }, []);
 
   return (
@@ -99,6 +116,7 @@ export const NoteContext = ({ children }: { children: React.ReactNode }) => {
           loading,
           setItems,
           UpdateNote,
+          getNotes,
         } as noteContextprops
       }
     >

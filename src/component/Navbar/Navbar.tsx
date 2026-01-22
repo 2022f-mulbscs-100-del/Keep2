@@ -143,14 +143,14 @@ const Navbar = () => {
 
           <div data-tooltip-id="profile-tooltip" data-tooltip-content="Profile">
             <div
-              className="w-[30px] h-[30px] bg-amber-900 rounded-full cursor-pointer overflow-hidden"
+              className="w-[30px] h-[30px] bg-secondary rounded-full cursor-pointer overflow-hidden"
               onClick={() => {
                 navigate("/profile");
               }}
             >
               <img
                 className="object-cover w-full h-full "
-                src={profileData?.profileImage || "HN-PAT-ALK-2000X2000-2.jpg"}
+                src={profileData?.profileImage || "/HN-PAT-ALK-2000X2000-2.jpg"}
                 alt=""
               />
             </div>
