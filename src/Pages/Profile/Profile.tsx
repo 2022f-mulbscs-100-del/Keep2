@@ -1,19 +1,30 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import axiosClient from "../../api/axiosClient";
 // import { useAuth } from "../../Context/AuthContext";
 import axios from "axios";
 import { useUser } from "../../Context/UserContext";
-import Input from "../../component/InputFields/Input";
 import Pills from "../../component/Pills/Pill";
 import ProfileLowerSidebar from "./ProfileLowerSIdebar";
 import { useScreenSize } from "../../component/CustomHooks/useScreenSize";
 import { toast } from "react-toastify";
 import { Logger } from "../../utils/Logger";
+import LiveSearchInput from "../../component/InputFields/LiverSearchInput";
+import AutoLogoutBlock from "../Settings/UserPrefrences/AutoLogutBlock";
+import DateFormatBlock from "../Settings/UserPrefrences/DateFormatBlock";
+import TwoFABlock from "../Settings/Security/TwoFABlock";
+import ResetPasswordBlock from "../Settings/Security/ResetPasswordBlock";
+import MFABlock from "../Settings/Security/MFABlock";
+import Theme from "../Settings/Theme";
+import Logout from "../Settings/Logout";
+import DeleteAccount from "../Settings/DeleteAccount";
+import PersonalInfo from "../Settings/Personal-info/PersonalInfo";
+// import ChangeSubscriptionPlan from "../Settings/SubscriptionPage/ChangeSubcriptionPlan";
+// import UpdatePaymentMethod from "../Settings/SubscriptionPage/UpdatePaymentMethod";
 
 const Profile = () => {
   const { size } = useScreenSize();
   const imageRef = useRef<HTMLInputElement>(null);
-  //   const { userData } = useAuth();
+  const [query, setQuery] = useState("");
 
   const {
     profileData,
@@ -22,13 +33,148 @@ const Profile = () => {
     setError,
     error: ProfileError,
   } = useUser();
-  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //     const { name, value } = e.target;
-  //     setProfileData({
-  //         ...profileData!,
-  //         [name]: value,
-  //     });
-  // };
+
+  const itemsToFilter = [
+    {
+      id: 1,
+      name: "auto logout",
+      Component: <AutoLogoutBlock />,
+      metaData: [
+        "autologout",
+        "logouttime",
+        "sessiontimeout",
+        "idletimeout",
+        "autosignout",
+        "inactivelogout",
+        "security",
+        "userpreferences",
+      ],
+    },
+    {
+      id: 2,
+      name: "date format",
+      Component: <DateFormatBlock />,
+      metaData: [
+        "dateformat",
+        "timeformat",
+        "datetime",
+        "clockformat",
+        "12hour",
+        "24hour",
+        "locale",
+        "regionalsettings",
+        "userpreferences",
+      ],
+    },
+    {
+      id: 3,
+      name: "TWOFA",
+      Component: <TwoFABlock />,
+      metaData: [
+        "twofactorauthentication",
+        "2fa",
+        "twostepverification",
+        "otp",
+        "onetimepassword",
+        "security",
+        "loginsecurity",
+        "accountprotection",
+      ],
+    },
+    {
+      id: 4,
+      name: "Reset Password",
+      Component: <ResetPasswordBlock />,
+      metaData: [
+        "resetpassword",
+        "changepassword",
+        "forgotpassword",
+        "updatepassword",
+        "passwordrecovery",
+        "security",
+        "credentials",
+      ],
+    },
+    {
+      id: 5,
+      name: "MFA",
+      Component: <MFABlock />,
+      metaData: [
+        "multifactorauthentication",
+        "mfa",
+        "advancedsecurity",
+        "loginverification",
+        "authenticatorapp",
+        "security",
+        "accountsafety",
+      ],
+    },
+    {
+      id: 6,
+      name: "appearance",
+      Component: <Theme />,
+      metaData: [
+        "theme",
+        "appearance",
+        "darkmode",
+        "lightmode",
+        "uitheme",
+        "displaysettings",
+        "colorscheme",
+      ],
+    },
+    {
+      id: 7,
+      name: "Logout",
+      Component: <Logout />,
+      metaData: ["logout", "logout", "signout", "exitaccount", "endsession"],
+    },
+    {
+      id: 8,
+      name: "Delete Account",
+      Component: <DeleteAccount />,
+      metaData: [
+        "deleteaccount",
+        "removeaccount",
+        "closeaccount",
+        "accountdeletion",
+        "deleteprofile",
+        "permanentlydelete",
+        "dangerzone",
+      ],
+    },
+    {
+      id: 9,
+      name: "Personal Info",
+      Component: <PersonalInfo />,
+      metaData: [
+        "personalinfo",
+        "profile",
+        "userprofile",
+        "accountdetails",
+        "editprofile",
+        "name",
+        "email",
+        "phone",
+        "address",
+        "contactinformation",
+      ],
+    },
+  ];
+
+  const filterItem = itemsToFilter.filter((item) => {
+    const normalizeQuery = query.toLowerCase().replace(/\s+/g, "").trim();
+    return (
+      normalizeQuery.toLowerCase() !== "" &&
+      (item.name.toLowerCase().includes(normalizeQuery) ||
+        item.metaData.some((meta: string) =>
+          meta.toLowerCase().includes(normalizeQuery),
+        ))
+    );
+    //using some instead of map cause map returns array while some returns boolean
+    //Checks if at least one item matches a condition
+    //Returns a boolean
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -147,7 +293,7 @@ const Profile = () => {
       </div>
 
       <div className="flex flex-wrap flex-col gap-4 m-auto p-2  ">
-        <Input />
+        <LiveSearchInput query={query} setQuery={setQuery} />
         <div className="flex flex-wrap justify-center items-center gap-4">
           <Pills title="Passwords" />
           <Pills title="Delete Account" />
@@ -156,7 +302,20 @@ const Profile = () => {
         </div>
       </div>
 
-      {size < 1000 && (
+      {query.length >= 1 && (
+        <div className="flex flex-col w-full justify-center items-center m-4">
+          {query.length >= 1 && filterItem.length === 0 ? (
+            <p className="p-2">No results found</p>
+          ) : (
+            filterItem.map((item) => (
+              <div key={item.id} className=" w-full m-2">
+                <p className="text-caption text-gray-400">{item.Component}</p>
+              </div>
+            ))
+          )}
+        </div>
+      )}
+      {size < 1000 && query.length < 1 && (
         <div className="flex justify-center items-center mt-4">
           <ProfileLowerSidebar />
         </div>
