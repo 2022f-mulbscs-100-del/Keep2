@@ -5,6 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../Context/AuthContext";
 import { toast } from "react-toastify";
 import PrimaryButton from "../../component/Buttons/PrimaryButton";
+import SocialLoginButton from "./SocialLoginButton";
+import { FcGoogle } from "react-icons/fc";
+import { LiaGithub } from "react-icons/lia";
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -182,78 +185,101 @@ function Login() {
   return (
     <>
       {!TwoFa && !emailVerifcation && !MFA && (
-        <form
-          ref={formRef}
-          onSubmit={HandleLogin}
-          className="flex justify-center items-center h-full mt-10"
-        >
-          <div className="">
-            <div className="flex flex-col items-center mb-4">
-              <h1 className="font-bold text-subheading2">Login In</h1>
-              <p className="text-body2">to continue to Keeper</p>
-            </div>
-            <div className="flex justify-end text-[12px] mr-2 mb-2 ">
-              <button
-                className="cursor-pointer"
-                type="button"
-                onClick={() => {
-                  navigate("/sign-up");
-                }}
-              >
-                Sign Up
-              </button>
-            </div>
-            <div className="flex flex-col gap-4 ">
-              <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
-                <input
-                  ref={inputRef}
-                  className="outline-none w-full text-body2"
-                  type="text"
-                  placeholder="Email"
-                  name="email"
-                  onChange={HandleLoginFormData}
-                />
+        <div className="flex flex-col">
+          <form
+            ref={formRef}
+            onSubmit={HandleLogin}
+            className="flex justify-center items-center h-full mt-20"
+          >
+            <div className="">
+              <div className="flex flex-col items-center mb-4">
+                <h1 className="font-bold text-subheading2">Login In</h1>
+                <p className="text-body2">to continue to Keeper</p>
               </div>
-
-              <div>
-                <div className="flex items-center gap-4  px-4 min-w-[400px]  py-2 rounded-[8px] bg-transparent border border-borderColor ">
-                  <input
-                    className="outline-none w-full text-body2"
-                    type={`${showPassword ? "text" : "password"}`}
-                    placeholder="Password"
-                    name="password"
-                    onChange={HandleLoginFormData}
-                  />
-
-                  {!showPassword ? (
-                    <FaRegEyeSlash
-                      className="cursor-pointer"
-                      onClick={handlePasswordToggle}
-                    />
-                  ) : (
-                    <FaRegEye
-                      className="cursor-pointer"
-                      onClick={handlePasswordToggle}
-                    />
-                  )}
-                </div>
-                <div
-                  className="text-[12px] ml-2 mt-2 cursor-pointer"
+              <div className="flex justify-end text-[12px] mr-2 mb-2 ">
+                <button
+                  className="cursor-pointer"
+                  type="button"
                   onClick={() => {
-                    navigate("/forget-password");
+                    navigate("/sign-up");
                   }}
                 >
-                  Forget Password?
+                  Sign Up
+                </button>
+              </div>
+              <div className="flex flex-col gap-4 ">
+                <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
+                  <input
+                    ref={inputRef}
+                    className="outline-none w-full text-body2"
+                    type="text"
+                    placeholder="Email"
+                    name="email"
+                    onChange={HandleLoginFormData}
+                  />
+                </div>
+
+                <div>
+                  <div className="flex items-center gap-4  px-4 min-w-[400px]  py-2 rounded-[8px] bg-transparent border border-borderColor ">
+                    <input
+                      className="outline-none w-full text-body2"
+                      type={`${showPassword ? "text" : "password"}`}
+                      placeholder="Password"
+                      name="password"
+                      onChange={HandleLoginFormData}
+                    />
+
+                    {!showPassword ? (
+                      <FaRegEyeSlash
+                        className="cursor-pointer"
+                        onClick={handlePasswordToggle}
+                      />
+                    ) : (
+                      <FaRegEye
+                        className="cursor-pointer"
+                        onClick={handlePasswordToggle}
+                      />
+                    )}
+                  </div>
+                  <div
+                    className="text-[12px] ml-2 mt-2 cursor-pointer"
+                    onClick={() => {
+                      navigate("/forget-password");
+                    }}
+                  >
+                    Forget Password?
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <PrimaryButton
-              title={isLoading ? "Loading..." : "Login"}
-              isLoading={isLoading}
-            />
+              <PrimaryButton
+                title={isLoading ? "Loading..." : "Login"}
+                isLoading={isLoading}
+              />
+            </div>
+          </form>
+          <div className="w-[400px] mx-auto ">
+            <div className="flex items-center justify-center gap-4">
+              <div className="border border-t w-[100px] opacity-50" />
+              <div className="text-center text-body2 ">Or continue with</div>
+              <div className="border border-t w-[100px] opacity-50" />
+            </div>
+            <div className="flex flex-col ">
+              <SocialLoginButton
+                title={"Login with Google"}
+                url="http://localhost:2404/api/auth/google"
+                provider="GoogleLogin"
+                icon={<FcGoogle />}
+              />
+              <SocialLoginButton
+                title={"Login with Github"}
+                url="http://localhost:2404/api/auth/github"
+                provider="GithubLogin"
+                icon={<LiaGithub />}
+              />
+            </div>
           </div>
-        </form>
+        </div>
       )}
 
       {TwoFa && (

@@ -5,18 +5,23 @@ import ActionIcons from "./ActionIcons";
 import axiosClient from "../../api/axiosClient";
 import { Logger } from "../../utils/Logger";
 import type { NoteType } from "../../types/Note.types";
+import { useNote } from "../../Context/noteContext";
 
 export default function NoteModal() {
   const [showModal, setShowModal] = useState(true);
   const { theme } = useTheme();
+  const { items } = useNote();
+  const { id: noteId } = useParams();
+  const FilterNote = items.find((note: NoteType) => note.id === Number(noteId));
+
   const [value, setValue] = useState<NoteType>({
-    id: 0,
-    title: "",
-    description: "",
-    pinned: false,
-    image: [],
-    isDeleted: false,
-    isArchived: false,
+    id: FilterNote!.id,
+    title: FilterNote!.title,
+    description: FilterNote!.description,
+    pinned: FilterNote!.pinned,
+    image: FilterNote!.image,
+    isDeleted: FilterNote!.isDeleted,
+    isArchived: FilterNote!.isArchived,
   });
   const ref = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -80,12 +85,12 @@ export default function NoteModal() {
   const image = value.image || [];
   return (
     <div
-      className="fixed bg-black/60 top-0 left-0 w-full h-full flex justify-center items-center z-10"
+      className="fixed bg-black/10 top-0 left-0 w-full h-full flex justify-center items-center z-10"
       onClick={handleOverlayClick}
     >
       <div
         ref={ref}
-        className={` border-borderColor border rounded-[8px] w-[100%] m-8 p-4  ${theme !== "dark" ? " bg-white" : " bg-black"} relative`}
+        className={` border-borderColor border rounded-[8px] min-w-[600px] min-h-[200px]  m-8 p-4  ${theme !== "dark" ? " bg-white" : " bg-black"} relative`}
       >
         {image && image.length > 0 && (
           <div className="flex  items-center p-4 gap-4">
