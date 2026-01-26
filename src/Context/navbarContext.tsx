@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import React, { useEffect, useState } from "react";
+import { useUser } from "./UserContext";
 
 type navbarContextProps = {
   layout: boolean;
@@ -8,15 +9,25 @@ type navbarContextProps = {
 };
 
 const navbarContext = React.createContext<navbarContextProps | undefined>(
-  undefined
+  undefined,
 );
 
-export const NavbarProvider = ({children}: {children: React.ReactNode}) => {
+export const NavbarProvider = ({ children }: { children: React.ReactNode }) => {
+  const { profileData } = useUser();
   const [layout, setLayout] = useState(false);
   const [selecting, setselecting] = useState(false);
+
+  useEffect(() => {
+    if (profileData?.layout === "list") {
+      setLayout(true);
+    } else {
+      setLayout(false);
+    }
+  }, [profileData]);
+
   return (
     <navbarContext.Provider
-      value={{layout, setLayout, selecting, setselecting}}
+      value={{ layout, setLayout, selecting, setselecting }}
     >
       {children}
     </navbarContext.Provider>
@@ -27,7 +38,7 @@ export const NavbarProvider = ({children}: {children: React.ReactNode}) => {
 export const useNavbar = () => {
   const context = React.useContext(navbarContext);
   if (!context) {
-    throw new Error('useNavbar must be used within a NavbarProvider');
+    throw new Error("useNavbar must be used within a NavbarProvider");
   }
   return context;
 };
