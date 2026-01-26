@@ -95,7 +95,7 @@ const Navbar = () => {
                 <IconStyling
                   icon={TbLayoutList}
                   id={1}
-                  tooltip="Layout"
+                  tooltip={`${layout ? "Grid View" : "List View"}`}
                   onclick={() => {
                     setLayout(true);
                   }}

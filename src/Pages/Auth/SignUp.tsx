@@ -7,6 +7,9 @@ import TurnstileWidget from "../../component/turnstile/Turnstile";
 import axios from "axios";
 import { Logger } from "../../utils/Logger";
 import PrimaryButton from "../../component/Buttons/PrimaryButton";
+import SocialLoginButton from "./SocialLoginButton";
+import { FcGoogle } from "react-icons/fc";
+import { LiaGithub } from "react-icons/lia";
 
 function SignUp() {
   const { SignUpHandler, isLoading, signUpStage, error, setError } = useAuth();
@@ -182,104 +185,127 @@ function SignUp() {
   return (
     <>
       {stage === "signUp" && (
-        <div className="flex justify-center items-center h-full mt-10">
-          <form onSubmit={SignUpHandleFunction}>
-            <div className="">
-              <div className="flex flex-col items-center mb-4">
-                <h1 className="font-bold text-heading2">Sign Up</h1>
-                <p className="text-body2">to continue to Keeper</p>
-              </div>
-
-              <div className="flex flex-col gap-4 ">
-                <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
-                  <input
-                    ref={inputRef}
-                    className="outline-none w-full text-body2"
-                    type="text"
-                    placeholder="Name"
-                    name="name"
-                    value={signUpForm.name}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
-                  <input
-                    className="outline-none w-full text-body2"
-                    type="text"
-                    placeholder="Email"
-                    name="email"
-                    value={signUpForm.email}
-                    onChange={handleChange}
-                  />
+        <>
+          <div className="flex justify-center items-center h-full mt-10">
+            <form onSubmit={SignUpHandleFunction}>
+              <div className="">
+                <div className="flex flex-col items-center mb-4">
+                  <h1 className="font-bold text-heading2">Sign Up</h1>
+                  <p className="text-body2">to continue to Keeper</p>
                 </div>
 
-                <div>
-                  <div className="flex items-center gap-4  px-4 min-w-[400px]  py-2 rounded-[8px] bg-transparent border border-borderColor ">
+                <div className="flex flex-col gap-4 ">
+                  <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
                     <input
+                      ref={inputRef}
                       className="outline-none w-full text-body2"
-                      type={`${showPassword ? "text" : "password"}`}
-                      placeholder="Password"
-                      name="password"
-                      value={signUpForm.password}
+                      type="text"
+                      placeholder="Name"
+                      name="name"
+                      value={signUpForm.name}
                       onChange={handleChange}
                     />
-
-                    {!showPassword ? (
-                      <FaRegEyeSlash
-                        className="cursor-pointer"
-                        onClick={() => handlePasswordToggle(1)}
-                      />
-                    ) : (
-                      <FaRegEye
-                        className="cursor-pointer"
-                        onClick={() => handlePasswordToggle(1)}
-                      />
-                    )}
                   </div>
-                  <div className="flex items-center gap-4  px-4 min-w-[400px]  py-2 rounded-[8px] bg-transparent border border-borderColor mt-4">
+                  <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
                     <input
                       className="outline-none w-full text-body2"
-                      type={`${showConfirmPassword ? "text" : "password"}`}
-                      placeholder="Confirm Password"
-                      name="confirmPassword"
-                      value={signUpForm.confirmPassword}
+                      type="text"
+                      placeholder="Email"
+                      name="email"
+                      value={signUpForm.email}
                       onChange={handleChange}
                     />
-
-                    {!showConfirmPassword ? (
-                      <FaRegEyeSlash
-                        className="cursor-pointer"
-                        onClick={() => handlePasswordToggle(2)}
-                      />
-                    ) : (
-                      <FaRegEye
-                        className="cursor-pointer"
-                        onClick={() => handlePasswordToggle(2)}
-                      />
-                    )}
                   </div>
-                  <div
-                    className="text-[12px] ml-2 mt-2 cursor-pointer"
-                    onClick={() => {
-                      navigate("/login");
-                    }}
-                  >
-                    Already have account?
+
+                  <div>
+                    <div className="flex items-center gap-4  px-4 min-w-[400px]  py-2 rounded-[8px] bg-transparent border border-borderColor ">
+                      <input
+                        className="outline-none w-full text-body2"
+                        type={`${showPassword ? "text" : "password"}`}
+                        placeholder="Password"
+                        name="password"
+                        value={signUpForm.password}
+                        onChange={handleChange}
+                      />
+
+                      {!showPassword ? (
+                        <FaRegEyeSlash
+                          className="cursor-pointer"
+                          onClick={() => handlePasswordToggle(1)}
+                        />
+                      ) : (
+                        <FaRegEye
+                          className="cursor-pointer"
+                          onClick={() => handlePasswordToggle(1)}
+                        />
+                      )}
+                    </div>
+                    <div className="flex items-center gap-4  px-4 min-w-[400px]  py-2 rounded-[8px] bg-transparent border border-borderColor mt-4">
+                      <input
+                        className="outline-none w-full text-body2"
+                        type={`${showConfirmPassword ? "text" : "password"}`}
+                        placeholder="Confirm Password"
+                        name="confirmPassword"
+                        value={signUpForm.confirmPassword}
+                        onChange={handleChange}
+                      />
+
+                      {!showConfirmPassword ? (
+                        <FaRegEyeSlash
+                          className="cursor-pointer"
+                          onClick={() => handlePasswordToggle(2)}
+                        />
+                      ) : (
+                        <FaRegEye
+                          className="cursor-pointer"
+                          onClick={() => handlePasswordToggle(2)}
+                        />
+                      )}
+                    </div>
+                    <div
+                      className="text-[12px] ml-2 mt-2 cursor-pointer"
+                      onClick={() => {
+                        navigate("/login");
+                      }}
+                    >
+                      Already have account?
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="mt-2 ">
-                <TurnstileWidget onVerify={handleVerify} />
-              </div>
+                <div className="mt-2 ">
+                  <TurnstileWidget onVerify={handleVerify} />
+                </div>
 
-              <PrimaryButton
-                title={isLoading ? "Loading..." : "SignUp"}
-                onClick={SignUpHandleFunction}
-                isLoading={isLoading}
+                <PrimaryButton
+                  title={isLoading ? "Loading..." : "SignUp"}
+                  onClick={SignUpHandleFunction}
+                  isLoading={isLoading}
+                />
+              </div>
+            </form>
+          </div>
+          <div className="w-[400px] mx-auto ">
+            <div className="flex items-center justify-center gap-4">
+              <div className="border border-t w-[100px] opacity-50" />
+              <div className="text-center text-body2 ">Or continue with</div>
+              <div className="border border-t w-[100px] opacity-50" />
+            </div>
+            <div className="flex flex-col ">
+              <SocialLoginButton
+                title={"Login with Google"}
+                url="http://localhost:2404/api/auth/google"
+                provider="GoogleLogin"
+                icon={<FcGoogle />}
+              />
+              <SocialLoginButton
+                title={"Login with Github"}
+                url="http://localhost:2404/api/auth/github"
+                provider="GithubLogin"
+                icon={<LiaGithub />}
               />
             </div>
-          </form>
-        </div>
+          </div>
+        </>
       )}
 
       {stage === "verifyEmail" && (

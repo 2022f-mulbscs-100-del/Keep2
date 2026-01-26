@@ -6,6 +6,8 @@ type modalContextType = {
   setReminderModal: React.Dispatch<React.SetStateAction<boolean>>;
   noteId: number | null;
   setNoteId: React.Dispatch<React.SetStateAction<number | null>>;
+  backgroundColorModal: number | null;
+  setBackgroundColorModal: React.Dispatch<React.SetStateAction<number | null>>;
 };
 
 const modalContext = createContext<modalContextType | null>(null);
@@ -13,11 +15,16 @@ const modalContext = createContext<modalContextType | null>(null);
 export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
   const [reminderModal, setReminderModal] = useState(false);
   const [noteId, setNoteId] = useState<number | null>(null);
+  const [backgroundColorModal, setBackgroundColorModal] = useState<
+    number | null
+  >(null);
   return (
     <modalContext.Provider
       value={{
         reminderModal,
         setReminderModal,
+        backgroundColorModal,
+        setBackgroundColorModal,
         noteId,
         setNoteId,
       }}

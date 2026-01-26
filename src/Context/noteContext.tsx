@@ -32,6 +32,7 @@ export const NoteContext = ({ children }: { children: React.ReactNode }) => {
     updateLoading: false,
     archiveLoading: false,
   });
+
   const fetchApiData = async () => {
     setLoading((prev) => ({ ...prev, intialLoading: true }));
     axiosClient
@@ -68,6 +69,7 @@ export const NoteContext = ({ children }: { children: React.ReactNode }) => {
       Logger("Error updating note:", error);
     }
   };
+
   const DeletedNotes = async () => {
     setLoading((prev) => ({ ...prev, deleteLoading: true }));
     axiosClient

@@ -4,30 +4,39 @@ import { useNote } from "../../Context/noteContext";
 import IconsArray, { DeleteIconsArray } from "../../../public/Data.js";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useRef, type ChangeEvent } from "react";
+import React, { useRef, type ChangeEvent } from "react";
 import axiosClient from "../../api/axiosClient.js";
 import axios from "axios";
 import { Logger } from "../../utils/Logger.js";
 import { useModal } from "../../Context/ModalProvider.js";
 import { BiSolidBellMinus } from "react-icons/bi";
-
 type ActionIconsProps = {
   IsHover: boolean;
   id: number;
   onClick?: () => void;
   hasReminder?: boolean;
+  setIsHover?: React.Dispatch<React.SetStateAction<boolean>>;
+  bgRef?: React.RefObject<HTMLDivElement | null>;
 };
 
 const ActionIcons = ({
   IsHover,
+  setIsHover,
   id,
   onClick,
   hasReminder,
+  bgRef,
 }: ActionIconsProps) => {
   const { getNotes, DeletedNotes } = useNote();
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { setReminderModal, setNoteId } = useModal();
+  const {
+    setReminderModal,
+    setNoteId,
+    backgroundColorModal: backgroundModal,
+    setBackgroundColorModal,
+  } = useModal();
+  console.log("backgroundModal", backgroundModal);
   const deleteNote = (id: number) => {
     axiosClient
       .put(`${import.meta.env.VITE_API_BASE_URL}/api/UpdateNotes/${id}`, {
@@ -175,7 +184,7 @@ const ActionIcons = ({
 
   const { pathname } = useLocation();
   return (
-    <>
+    <div className="relative">
       <div
         className={` flex ${pathname != "/bin" ? "justify-between" : "justify-start"}  items-center gap-2 px-2 py-1  transition-all duration-500 opacity-0 ${IsHover && `opacity-100`}`}
       >
@@ -183,23 +192,33 @@ const ActionIcons = ({
           ? IconsArray.map((item) => {
               return (
                 <div
+                  ref={item.id === 2 ? bgRef : null}
                   key={item.id}
-                  onClick={() => {
-                    if (item.id === 6) {
-                      deleteNote(id);
-                    }
-                    if (item.id === 5) {
-                      ArchieveDescion(id);
-                    }
-                    if (item.id === 4) {
-                      openFileDialog();
-                    }
-                    if (item.id === 3) {
-                      if (pathname === "/reminders") {
-                        // Remove reminder logic here
-                      }
-                      setReminderModal(true);
-                      setNoteId(id);
+                  onClick={(e) => {
+                    setIsHover?.(true);
+                    e.stopPropagation();
+                    switch (item.id) {
+                      case 2:
+                        {
+                          setBackgroundColorModal(id);
+                        }
+                        break;
+                      case 3:
+                        {
+                          setReminderModal(true);
+                          setNoteId(id);
+                        }
+                        break;
+                      case 4:
+                        openFileDialog();
+                        break;
+                      case 5:
+                        ArchieveDescion(id);
+                        break;
+                      case 6:
+                        deleteNote(id);
+                        break;
+                      default:
                     }
                   }}
                 >
@@ -259,7 +278,7 @@ const ActionIcons = ({
           className="hidden"
         />
       </div>
-    </>
+    </div>
   );
 };
 
