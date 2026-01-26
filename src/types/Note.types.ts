@@ -9,6 +9,7 @@ export interface NoteType {
   hasReminder?: boolean;
   category?: string;
   list?: { id: number; data: string }[];
+  bgColor?: string;
 }
 
 export type LoadingType = {

@@ -22,6 +22,7 @@ type NoteProps = {
   hasReminder?: boolean;
   list?: { id: number; data: string }[];
   category?: string;
+  BgColor?: string;
 };
 
 const Note = ({
@@ -33,6 +34,7 @@ const Note = ({
   hasReminder,
   list,
   category,
+  BgColor,
 }: NoteProps) => {
   const [LocalIsPinned, setLocalIsPinned] = useState(false);
   const [IsHover, setIsHover] = useState<boolean>(false);
@@ -41,7 +43,9 @@ const Note = ({
   const { fetchApiData, UpdateNote } = useNote();
   const location = useLocation();
   const { backgroundColorModal } = useModal();
-  const [color, setColor] = useState("");
+  const [color, setColor] = useState(BgColor || "");
+  console.log("BgColor in Note component:", BgColor);
+
   useEffect(() => {
     setLocalIsPinned(NotePinned);
   }, [NotePinned]);
@@ -157,7 +161,11 @@ const Note = ({
         />
       </div>
       {backgroundColorModal === id && (
-        <BackgroundPaletteModal iconRef={bgRef} setColor={setColor} />
+        <BackgroundPaletteModal
+          noteID={id}
+          iconRef={bgRef}
+          setColor={setColor}
+        />
       )}
     </div>
   );

@@ -9,8 +9,9 @@ import IconsArray from "../../../public/Data";
 import { useNote } from "../../Context/noteContext";
 import axiosClient from "../../api/axiosClient";
 import { Logger } from "../../utils/Logger";
-import { useParams } from "react-router";
+import { useLocation, useParams } from "react-router";
 import { toast } from "react-toastify";
+import NotePills from "../Pills/NotePills";
 interface NoteType {
   id: number;
   title: string;
@@ -40,7 +41,8 @@ export const NoteInput = () => {
     },
   ]);
   const { fetchApiData } = useNote();
-
+  const { pathname } = useLocation();
+  const SHOW_LABEL_PILL = pathname.startsWith("/editlabel");
   const HandleNoteData = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -236,6 +238,11 @@ export const NoteInput = () => {
               </>
             )}
             {/* list of icon */}
+            {SHOW_LABEL_PILL && label && (
+              <div className="ml-2">
+                <NotePills title={label} color="" />
+              </div>
+            )}
             <div className=" flex items-center  justify-between px-4">
               <div className=" flex justify-between items-center gap-8 ">
                 {IconsArray.map((item) => {

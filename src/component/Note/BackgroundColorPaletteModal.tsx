@@ -4,15 +4,17 @@ import { useModal } from "../../Context/ModalProvider";
 type BackgroundPaletteModalProps = {
   setColor: React.Dispatch<React.SetStateAction<string>>;
   iconRef?: React.RefObject<HTMLDivElement | null>;
+  noteID?: number;
 };
 
 const BackgroundPaletteModal = ({
   setColor,
   iconRef,
+  noteID,
 }: BackgroundPaletteModalProps) => {
   const { setBackgroundColorModal } = useModal();
   // const ref = useRef<HTMLDivElement>(null);
-
+  console.log("noteID in background modal:", noteID);
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -42,7 +44,7 @@ const BackgroundPaletteModal = ({
       ref={modalRef}
       className="fixed bg-secondary p-4 rounded-lg shadow-2xl flex justify-center items-center z-20"
     >
-      <ColorPalette setColor={setColor} />
+      <ColorPalette noteID={noteID} setColor={setColor} />
     </div>
   );
 };

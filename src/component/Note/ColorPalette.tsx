@@ -1,11 +1,23 @@
 import { useState } from "react";
 import { MdBlockFlipped } from "react-icons/md";
+import { useNote } from "../../Context/noteContext";
 
 type ColorPaletteProps = {
   setColor: React.Dispatch<React.SetStateAction<string>>;
+  noteID?: number;
 };
-const ColorPalette = ({ setColor }: ColorPaletteProps) => {
+const ColorPalette = ({ setColor, noteID }: ColorPaletteProps) => {
   const [active, setActive] = useState<number>(0);
+  const { UpdateNote } = useNote();
+
+  const handleColorChange = async (color: string, id: number) => {
+    setActive(id);
+    setColor(color);
+    await UpdateNote(noteID as number, {
+      bgColor: color,
+    });
+  };
+
   const ColorPaletteArray = [
     { id: 0, color: "" },
     { id: 1, color: "bg-[#DC2626]" },
@@ -26,8 +38,7 @@ const ColorPalette = ({ setColor }: ColorPaletteProps) => {
           key={item.id}
           className={`rounded-full h-[35px]   ${active == item.id ? " border-transparent w-[38px] h-[38px] border-4 scale-110 " : "border-transparent"} w-[35px] ${item.color} cursor-pointer hover:scale-110 transition-all duration-200 mx-1`}
           onClick={() => {
-            setActive(item.id);
-            setColor(item.color);
+            handleColorChange(item.color, item.id);
           }}
         >
           {item.id === 0 && (

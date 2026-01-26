@@ -36,6 +36,7 @@ const UnpinnedNotes = ({
                   hasReminder={item.hasReminder || false}
                   list={item?.list || []}
                   category={item?.category || ""}
+                  BgColor={item?.bgColor || ""}
                 />
               </div>
             ))}

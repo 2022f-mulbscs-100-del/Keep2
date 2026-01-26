@@ -11,4 +11,5 @@ export type ProfileDataType = {
   subscriptionPlan?: string;
   subscriptionExpiry?: string;
   layout?: "grid" | "list";
+  passKeyEnabled?: boolean;
 };
