@@ -190,6 +190,7 @@ const Dialougebox = ({
             <PrimaryButton
               title={"Done"}
               onClick={() => {
+                // InputHandler();
                 setisActive(4);
               }}
             />

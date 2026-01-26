@@ -5,6 +5,7 @@ import TwoFABlock from "./TwoFABlock";
 import ResetPasswordBlock from "./ResetPasswordBlock";
 import MFABlock from "./MFABlock";
 import { useUser } from "../../../Context/UserContext";
+import PassKeyBlock from "./PassKeyBlock";
 
 const Security = () => {
   const [showBlock, setShowBlock] = useState<string[] | null>([
@@ -15,6 +16,7 @@ const Security = () => {
 
   const CAN_SHOW_MFA_BLOCK = profileData?.MfaEnabled;
   const CAN_SHOW_2FA_BLOCK = profileData?.isTwoFaEnabled;
+  const CAN_SHOW_PASS_KEY_BLOCK = profileData?.passKeyEnabled;
 
   return (
     <div
@@ -57,6 +59,17 @@ const Security = () => {
         >
           <Pills title="MFA" />
         </div>
+        <div
+          onClick={() => {
+            setShowBlock((prev) =>
+              prev?.includes("Pass-key")
+                ? prev.filter((item) => item !== "Pass-key")
+                : [...(prev ?? []), "Pass-key"],
+            );
+          }}
+        >
+          <Pills title="Pass-key" />
+        </div>
       </div>
       {showBlock!.includes("reset-password") && <ResetPasswordBlock />}
       {(showBlock!.includes("two-factor-authentication") ||
@@ -64,6 +77,9 @@ const Security = () => {
         <TwoFABlock />
       )}
       {(showBlock!.includes("MFA") || CAN_SHOW_MFA_BLOCK) && <MFABlock />}
+      {(showBlock!.includes("Pass-key") || CAN_SHOW_PASS_KEY_BLOCK) && (
+        <PassKeyBlock />
+      )}
     </div>
   );
 };

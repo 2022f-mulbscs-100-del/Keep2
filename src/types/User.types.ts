@@ -10,4 +10,6 @@ export type ProfileDataType = {
   subscriptionStatus?: string;
   subscriptionPlan?: string;
   subscriptionExpiry?: string;
+  layout?: "grid" | "list";
+  passKeyEnabled?: boolean;
 };

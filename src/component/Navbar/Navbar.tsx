@@ -25,6 +25,15 @@ const Navbar = () => {
   const { layout, setLayout } = useNavbar();
   const { profileData } = useUser();
   const navigate = useNavigate();
+  const { UpdateUserProfile } = useUser();
+
+  const updateLayout = async (newLayout: boolean) => {
+    setLayout(newLayout);
+    await UpdateUserProfile({
+      layout: newLayout ? "list" : "grid",
+    });
+    console.log("layout updated to user profile");
+  };
 
   const { isMobile, isTablet } = useScreenSize();
 
@@ -86,18 +95,18 @@ const Navbar = () => {
                 <IconStyling
                   icon={LuLayoutGrid}
                   id={2}
-                  tooltip="Layout"
+                  tooltip="Grid View"
                   onclick={() => {
-                    setLayout(false);
+                    updateLayout(false);
                   }}
                 />
               ) : (
                 <IconStyling
                   icon={TbLayoutList}
                   id={1}
-                  tooltip={`${layout ? "Grid View" : "List View"}`}
+                  tooltip={"List View"}
                   onclick={() => {
-                    setLayout(true);
+                    updateLayout(true);
                   }}
                 />
               )}

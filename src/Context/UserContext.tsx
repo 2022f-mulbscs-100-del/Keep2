@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import axiosClient from "../api/axiosClient";
 import type { ProfileDataType } from "../types/User.types";
 import { Logger } from "../utils/Logger";
-import { UserInputSchema } from "../validation/validation";
+// import { UserInputSchema } from "../validation/validation";
 
 const UserContext = createContext<userContextType | null>(null);
 export type userContextType = {
@@ -56,7 +56,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   ): Promise<ProfileDataType> => {
     try {
       setIsLoading(true);
-      UserInputSchema.parse(profileData);
+      // UserInputSchema.parse(profileData);
       const res = await axiosClient.patch("/updateProfile", { profileData });
       setProfileData(res.data);
       return res.data;
