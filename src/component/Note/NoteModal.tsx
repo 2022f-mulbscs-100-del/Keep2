@@ -6,6 +6,8 @@ import axiosClient from "../../api/axiosClient";
 import { Logger } from "../../utils/Logger";
 import type { NoteType } from "../../types/Note.types";
 import { useNote } from "../../Context/noteContext";
+import { io, Socket } from "socket.io-client";
+import { useUser } from "../../Context/UserContext";
 
 export default function NoteModal() {
   const [showModal, setShowModal] = useState(true);
@@ -13,7 +15,7 @@ export default function NoteModal() {
   const { items } = useNote();
   const { id: noteId } = useParams();
   const FilterNote = items.find((note: NoteType) => note.id === Number(noteId));
-
+  const { profileData } = useUser();
   const [value, setValue] = useState<NoteType>({
     id: FilterNote!.id,
     title: FilterNote!.title,
@@ -25,10 +27,12 @@ export default function NoteModal() {
   });
   const ref = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const didFocus = useRef(false);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   useEffect(() => {
-    if (textAreaRef.current) {
+    if (!didFocus.current && textAreaRef.current) {
       textAreaRef.current.focus();
+      didFocus.current = true;
     }
   }, []);
 
@@ -46,7 +50,44 @@ export default function NoteModal() {
     };
     fetchNote();
   }, [id]);
-  if (!showModal) return null;
+
+  const socketRef = useRef<Socket | null>(null);
+  useEffect(() => {
+    if (!noteId || !items.length) return;
+
+    const note = items.find((n) => n.id === Number(noteId));
+    if (!note?.collaborators?.length) return;
+
+    const socket = io("http://localhost:2404");
+    socketRef.current = socket;
+
+    socket.on("connect", () => {
+      console.log("Connected:", socket.id);
+      socket.emit("noteRoom", `note-${noteId}`);
+    });
+
+    const handleMessage = (data: {
+      from: string;
+      title: string;
+      description: string;
+    }) => {
+      if (data.from === profileData?.email) return;
+
+      setValue((prev) => ({
+        ...prev,
+        title: data.title,
+        description: data.description,
+      }));
+    };
+
+    socket.on("NoteRoomMessage", handleMessage);
+
+    return () => {
+      socket.off("NoteRoomMessage", handleMessage);
+      socket.disconnect();
+      socketRef.current = null;
+    };
+  }, [noteId, items, profileData?.email]);
 
   // Overlay click handler
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -62,25 +103,30 @@ export default function NoteModal() {
     }
   };
 
-  const handleChange = async (
+  const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value: fieldValue } = e.target;
 
-    const updatedNote = {
-      ...value,
-      [name]: fieldValue,
-    };
+    // 1️⃣ ALWAYS update local state immediately
+    setValue((prev) => {
+      const updated = {
+        ...prev,
+        [name]: fieldValue,
+      };
 
-    setValue(updatedNote);
+      socketRef.current?.emit("NoteRoomMessage", {
+        noteId: `note-${noteId}`,
+        title: updated.title,
+        description: updated.description,
+        from: profileData?.email,
+      });
 
-    // try {
-    //   axiosClient.put(`/notes/${id}`, updatedNote);
-    //   fetchApiData();
-    // } catch (error) {
-    //   Logger("Error updating note:", error);
-    // }
+      return updated;
+    });
   };
+
+  if (!showModal) return null;
 
   const image = value.image || [];
   return (
@@ -132,6 +178,7 @@ export default function NoteModal() {
             </div>
           )}
           <textarea
+            ref={textAreaRef}
             className="border-0 w-full h-full bg-transparent resize-none focus:outline-none customScrollBar "
             value={value?.description}
             name="description"

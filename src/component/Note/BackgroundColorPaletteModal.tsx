@@ -14,7 +14,6 @@ const BackgroundPaletteModal = ({
 }: BackgroundPaletteModalProps) => {
   const { setBackgroundColorModal } = useModal();
   // const ref = useRef<HTMLDivElement>(null);
-  console.log("noteID in background modal:", noteID);
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

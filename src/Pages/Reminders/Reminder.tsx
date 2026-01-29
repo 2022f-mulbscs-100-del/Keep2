@@ -11,7 +11,6 @@ const Reminder = () => {
   const [reminderNotes, setReminderNotes] = useState<AssociationNoteType[]>([]);
   const { layout } = useNavbar();
   const [loading, setLoading] = useState<boolean>(true);
-  console.log("Reminder rendering");
   useEffect(() => {
     setLoading(true);
     axiosClient

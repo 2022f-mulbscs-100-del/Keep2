@@ -32,7 +32,6 @@ const Navbar = () => {
     await UpdateUserProfile({
       layout: newLayout ? "list" : "grid",
     });
-    console.log("layout updated to user profile");
   };
 
   const { isMobile, isTablet } = useScreenSize();

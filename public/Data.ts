@@ -5,6 +5,7 @@ import { IoMdArchive } from "react-icons/io";
 import { FaImage } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
 import { MdDeleteSweep } from "react-icons/md";
+import { MdPersonAddAlt1 } from "react-icons/md";
 
 const IconsArray = [
     {
@@ -16,6 +17,11 @@ const IconsArray = [
         tooltip: "Background",
         id: 2,
         icon: IoIosColorPalette
+    },
+    {
+        tooltip: "Add Collaborator",
+        id: 7,
+        icon: MdPersonAddAlt1 
     },
     {
         tooltip: "Remind me",
