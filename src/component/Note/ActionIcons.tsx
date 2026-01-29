@@ -33,10 +33,9 @@ const ActionIcons = ({
   const {
     setReminderModal,
     setNoteId,
-    backgroundColorModal: backgroundModal,
     setBackgroundColorModal,
+    setCollaboratorModal,
   } = useModal();
-  console.log("backgroundModal", backgroundModal);
   const deleteNote = (id: number) => {
     axiosClient
       .put(`${import.meta.env.VITE_API_BASE_URL}/api/UpdateNotes/${id}`, {
@@ -217,6 +216,12 @@ const ActionIcons = ({
                         break;
                       case 6:
                         deleteNote(id);
+                        break;
+                      case 7:
+                        {
+                          setCollaboratorModal(true);
+                          setNoteId(id);
+                        }
                         break;
                       default:
                     }

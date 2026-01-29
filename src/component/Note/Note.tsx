@@ -44,7 +44,6 @@ const Note = ({
   const location = useLocation();
   const { backgroundColorModal } = useModal();
   const [color, setColor] = useState(BgColor || "");
-  console.log("BgColor in Note component:", BgColor);
 
   useEffect(() => {
     setLocalIsPinned(NotePinned);

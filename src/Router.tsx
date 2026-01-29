@@ -17,6 +17,7 @@ import SettingLayout from "./Pages/Profile/SettingLayout";
 import PersonalInfo from "./Pages/Settings/Personal-info/PersonalInfo";
 import Reminder from "./Pages/Reminders/Reminder";
 import EditLabels from "./Pages/EditLabels/EditLabels";
+import WebSocketIntegration from "./Pages/WebSocketIntegration/WebSocketIntegration";
 // import PublicRoute from "./PublicRoute";
 
 interface ProviderWrapperProps {
@@ -120,6 +121,14 @@ const router = createBrowserRouter([
       {
         path: "/setting",
         element: <Setting />,
+      },
+      {
+        path: "/WebSocket-Integration",
+        element: (
+          <ProtectedRoute>
+            <WebSocketIntegration />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/profile",

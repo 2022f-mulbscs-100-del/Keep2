@@ -93,6 +93,7 @@ const Profile = () => {
         "passwordrecovery",
         "security",
         "credentials",
+        "password",
       ],
     },
     {
@@ -138,9 +139,9 @@ const Profile = () => {
         "removeaccount",
         "closeaccount",
         "accountdeletion",
-        "deleteprofile",
         "permanentlydelete",
         "dangerzone",
+        "delete",
       ],
     },
     {
@@ -158,6 +159,7 @@ const Profile = () => {
         "phone",
         "address",
         "contactinformation",
+        "username",
       ],
     },
   ];

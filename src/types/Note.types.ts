@@ -10,6 +10,17 @@ export interface NoteType {
   category?: string;
   list?: { id: number; data: string }[];
   bgColor?: string;
+  collaborators?: {
+    id: number;
+    noteId: number;
+    collaborator: string;
+    role: string;
+  }[];
+  OwnerAttributes?: {
+    id: number;
+    name: string;
+    email: string;
+  };
 }
 
 export type LoadingType = {

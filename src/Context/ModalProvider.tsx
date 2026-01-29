@@ -8,6 +8,8 @@ type modalContextType = {
   setNoteId: React.Dispatch<React.SetStateAction<number | null>>;
   backgroundColorModal: number | null;
   setBackgroundColorModal: React.Dispatch<React.SetStateAction<number | null>>;
+  collaboratorModal: boolean;
+  setCollaboratorModal: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const modalContext = createContext<modalContextType | null>(null);
@@ -15,6 +17,7 @@ const modalContext = createContext<modalContextType | null>(null);
 export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
   const [reminderModal, setReminderModal] = useState(false);
   const [noteId, setNoteId] = useState<number | null>(null);
+  const [collaboratorModal, setCollaboratorModal] = useState(false);
   const [backgroundColorModal, setBackgroundColorModal] = useState<
     number | null
   >(null);
@@ -27,6 +30,8 @@ export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
         setBackgroundColorModal,
         noteId,
         setNoteId,
+        collaboratorModal,
+        setCollaboratorModal,
       }}
     >
       {children}

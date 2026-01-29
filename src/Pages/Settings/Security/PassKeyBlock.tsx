@@ -42,7 +42,6 @@ const PassKeyBlock = () => {
       );
 
       const credential = await navigator.credentials.create({ publicKey });
-      console.log("Credential created:", credential);
       await axiosClient.post("/passkey-verification", {
         attestationResponse: credential,
       });
