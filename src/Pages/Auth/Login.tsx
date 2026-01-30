@@ -272,13 +272,13 @@ function Login() {
             <div className="flex flex-col ">
               <SocialLoginButton
                 title={"Login with Google"}
-                url="http://localhost:2404/api/auth/google"
+                url={`${import.meta.env.VITE_API_BASE_URL}/api/auth/google`}
                 provider="GoogleLogin"
                 icon={<FcGoogle />}
               />
               <SocialLoginButton
                 title={"Login with Github"}
-                url="http://localhost:2404/api/auth/github"
+                url={`${import.meta.env.VITE_API_BASE_URL}/api/auth/github`}
                 provider="GithubLogin"
                 icon={<LiaGithub />}
               />
