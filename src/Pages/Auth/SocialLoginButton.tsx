@@ -37,7 +37,7 @@ const SocialLoginButton = ({
     );
 
     const handleMessage = (event: MessageEvent<GoogleAuthMessage>) => {
-      if (event.origin !== "http://localhost:2404") return;
+      if (event.origin !== import.meta.env.VITE_API_BASE_URL) return;
 
       const { token, user } = event.data;
 

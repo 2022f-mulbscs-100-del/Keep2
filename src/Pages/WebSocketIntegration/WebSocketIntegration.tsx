@@ -14,7 +14,7 @@ const WebSocketIntegration = () => {
 
   useEffect(() => {
     // Create socket ONCE
-    socketRef.current = io("http://localhost:2404");
+    socketRef.current = io(import.meta.env.VITE_API_BASE_URL);
 
     // When connected
     socketRef.current.on("connect", () => {

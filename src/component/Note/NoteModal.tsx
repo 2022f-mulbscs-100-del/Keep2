@@ -62,7 +62,7 @@ export default function NoteModal() {
     const note = items.find((n) => n.id === Number(noteId));
     if (!note?.collaborators?.length) return;
 
-    const socket = io("http://localhost:2404");
+    const socket = io(import.meta.env.VITE_API_BASE_URL);
     socketRef.current = socket;
 
     socket.on("connect", () => {
