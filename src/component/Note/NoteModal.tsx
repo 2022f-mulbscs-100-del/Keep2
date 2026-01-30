@@ -16,15 +16,19 @@ export default function NoteModal() {
   const { id: noteId } = useParams();
   const FilterNote = items.find((note: NoteType) => note.id === Number(noteId));
   const { profileData } = useUser();
-  const [value, setValue] = useState<NoteType>({
-    id: FilterNote!.id,
-    title: FilterNote!.title,
-    description: FilterNote!.description,
-    pinned: FilterNote!.pinned,
-    image: FilterNote!.image,
-    isDeleted: FilterNote!.isDeleted,
-    isArchived: FilterNote!.isArchived,
-  });
+  const [value, setValue] = useState<NoteType | null>(
+    FilterNote
+      ? {
+          id: FilterNote.id,
+          title: FilterNote.title,
+          description: FilterNote.description,
+          pinned: FilterNote.pinned,
+          image: FilterNote.image,
+          isDeleted: FilterNote.isDeleted,
+          isArchived: FilterNote.isArchived,
+        }
+      : null,
+  );
   const ref = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const didFocus = useRef(false);
@@ -127,6 +131,7 @@ export default function NoteModal() {
   };
 
   if (!showModal) return null;
+  if (!value) return null; // Wait for note to load
 
   const image = value.image || [];
   return (

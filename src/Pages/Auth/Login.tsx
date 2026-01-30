@@ -8,6 +8,7 @@ import PrimaryButton from "../../component/Buttons/PrimaryButton";
 import SocialLoginButton from "./SocialLoginButton";
 import { FcGoogle } from "react-icons/fc";
 import { LiaGithub } from "react-icons/lia";
+import AuthenticationOptions from "./AuthenticationOptions";
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -76,11 +77,13 @@ function Login() {
       return () => clearTimeout(timer);
     }
   }, [MFAcode, twoFaCode, verificationCode]);
+
   useEffect(() => {
     if (!TwoFa) {
       if (loginStage === "success") {
         toast.success("Login successful");
-        window.location.href = "/";
+        // window.location.href = "/";
+        navigate("/");
         setLoginStage("login");
       }
 
@@ -100,6 +103,7 @@ function Login() {
       }
     }
   }, [loginStage]);
+
   useEffect(() => {
     if (TwoFa) {
       if (loginStage === "success") {
@@ -113,6 +117,7 @@ function Login() {
       }
     }
   }, [loginStage]);
+
   useEffect(() => {
     if (error.MFAError) {
       toast.error(typeof error === "string" ? error : error.MFAError);
@@ -283,102 +288,116 @@ function Login() {
       )}
 
       {TwoFa && (
-        <form ref={formRef} onSubmit={Handle2FASubmit}>
-          <div className="flex justify-center items-center h-full mt-10">
-            <div className="">
-              <div className="flex flex-col items-center mb-4">
-                <h1 className="font-bold text-subheading2">
-                  Two-Factor Authentication
-                </h1>
-                <p className="text-body2">
-                  Enter the 2FA code sent to your email to continue
-                </p>
-              </div>
-              <div className="flex flex-col gap-4 ">
-                <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
-                  <input
-                    ref={inputRef}
-                    className="outline-none w-full text-body2"
-                    type="number"
-                    placeholder="Enter 2FA Code"
-                    name="2faCode"
-                    value={twoFaCode}
-                    onChange={(e) => setTwoFaCode(e.target.value)}
-                  />
+        <>
+          <form ref={formRef} onSubmit={Handle2FASubmit}>
+            <div className="flex justify-center items-center h-full mt-10">
+              <div className="">
+                <div className="flex flex-col items-center mb-4">
+                  <h1 className="font-bold text-subheading2">
+                    Two-Factor Authentication
+                  </h1>
+                  <p className="text-body2">
+                    Enter the 2FA code sent to your email to continue
+                  </p>
                 </div>
-              </div>
+                <div className="flex flex-col gap-4 ">
+                  <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
+                    <input
+                      ref={inputRef}
+                      className="outline-none w-full text-body2"
+                      type="number"
+                      placeholder="Enter 2FA Code"
+                      name="2faCode"
+                      value={twoFaCode}
+                      onChange={(e) => setTwoFaCode(e.target.value)}
+                    />
+                  </div>
+                </div>
 
-              <PrimaryButton
-                title={isLoading ? "Loading..." : "Verify"}
-                isLoading={isLoading}
-              />
+                <PrimaryButton
+                  title={isLoading ? "Loading..." : "Verify"}
+                  isLoading={isLoading}
+                />
+              </div>
             </div>
+          </form>
+          <div className="flex justify-center">
+            <AuthenticationOptions
+              option1="Authenticator App"
+              option2="Pass Key"
+            />
           </div>
-        </form>
+        </>
       )}
 
       {emailVerifcation && (
-        <form ref={formRef} onSubmit={HandleEmailVerification}>
-          <div className="flex justify-center items-center h-full mt-10">
-            <div className="">
-              <div className="flex flex-col items-center mb-4">
-                <h1 className="font-bold text-subheading2">
-                  Email Verification
-                </h1>
-                <p className="text-body2">
-                  Enter the verification code sent to your email to continue
-                </p>
-              </div>
-              <div className="flex flex-col gap-4 ">
-                <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
-                  <input
-                    ref={inputRef}
-                    className="outline-none w-full text-body2"
-                    type="number"
-                    placeholder="Enter Verification Code"
-                    name="verificationCode"
-                    value={verificationCode}
-                    onChange={(e) => setVerificationCode(e.target.value)}
-                  />
+        <>
+          <form ref={formRef} onSubmit={HandleEmailVerification}>
+            <div className="flex justify-center items-center h-full mt-10">
+              <div className="">
+                <div className="flex flex-col items-center mb-4">
+                  <h1 className="font-bold text-subheading2">
+                    Email Verification
+                  </h1>
+                  <p className="text-body2">
+                    Enter the verification code sent to your email to continue
+                  </p>
                 </div>
-              </div>
+                <div className="flex flex-col gap-4 ">
+                  <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
+                    <input
+                      ref={inputRef}
+                      className="outline-none w-full text-body2"
+                      type="number"
+                      placeholder="Enter Verification Code"
+                      name="verificationCode"
+                      value={verificationCode}
+                      onChange={(e) => setVerificationCode(e.target.value)}
+                    />
+                  </div>
+                </div>
 
-              <PrimaryButton
-                title={isLoading ? "Loading..." : "Verify"}
-                isLoading={isLoading}
-              />
+                <PrimaryButton
+                  title={isLoading ? "Loading..." : "Verify"}
+                  isLoading={isLoading}
+                />
+              </div>
             </div>
-          </div>
-        </form>
+          </form>
+        </>
       )}
 
       {MFA && (
-        <form ref={formRef} onSubmit={HandleMFAVerification}>
-          <div className="flex justify-center items-center h-full mt-10">
-            <div className="">
-              <div className="flex flex-col items-center mb-4">
-                <h1 className="font-bold text-subheading2">MFA Verification</h1>
-                <p className="text-body2">Enter the MFA code to continue</p>
-              </div>
-              <div className="flex flex-col gap-4 ">
-                <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
-                  <input
-                    ref={inputRef}
-                    className="outline-none w-full text-body2"
-                    type="number"
-                    placeholder="Enter MFA Code"
-                    name="mfaCode"
-                    value={MFAcode}
-                    onChange={(e) => setMFAcode(e.target.value)}
-                  />
+        <>
+          <form ref={formRef} onSubmit={HandleMFAVerification}>
+            <div className="flex justify-center items-center h-full mt-10">
+              <div className="">
+                <div className="flex flex-col items-center mb-4">
+                  <h1 className="font-bold text-subheading2">
+                    MFA Verification
+                  </h1>
+                  <p className="text-body2">Enter the MFA code to continue</p>
                 </div>
-              </div>
+                <div className="flex flex-col gap-4 ">
+                  <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
+                    <input
+                      ref={inputRef}
+                      className="outline-none w-full text-body2"
+                      type="number"
+                      placeholder="Enter MFA Code"
+                      name="mfaCode"
+                      value={MFAcode}
+                      onChange={(e) => setMFAcode(e.target.value)}
+                    />
+                  </div>
+                </div>
 
-              <PrimaryButton
-                title={isLoading ? "Loading..." : "Verify"}
-                isLoading={isLoading}
-              />
-              {/* <button
+                <PrimaryButton
+                  title={isLoading ? "Loading..." : "Verify"}
+                  isLoading={isLoading}
+                />
+
+                {/* <button
                 type="submit"
                 disabled={isLoading}
                 className="hover:bg-secondary mt-4 cursor-pointer flex justify-center p-2 mt-  4 rounded-lg w-full disabled:cursor-not-allowed disabled:opacity-60
@@ -386,9 +405,13 @@ function Login() {
               >
                 {isLoading ? "Loading..." : "Verify"}
               </button> */}
+              </div>
             </div>
+          </form>
+          <div className="flex justify-center">
+            <AuthenticationOptions option1="Email" option2="Pass Key" />
           </div>
-        </form>
+        </>
       )}
     </>
   );

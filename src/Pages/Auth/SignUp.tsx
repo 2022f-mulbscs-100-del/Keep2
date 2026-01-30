@@ -12,7 +12,14 @@ import { FcGoogle } from "react-icons/fc";
 import { LiaGithub } from "react-icons/lia";
 
 function SignUp() {
-  const { SignUpHandler, isLoading, signUpStage, error, setError } = useAuth();
+  const {
+    SignUpHandler,
+    isLoading,
+    signUpStage,
+    error,
+    setError,
+    SignUpConfirmation,
+  } = useAuth();
   const [stage, setStage] = useState("signUp");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -127,18 +134,11 @@ function SignUp() {
       toast.error("Enter the 2FA code");
       return;
     }
-    try {
-      const signUpData = {
-        email: signUpForm.email,
-        code: SignUpCode,
-        name: signUpForm.name,
-      };
 
-      await SignUpHandler(signUpData);
-      if (signUpStage === "success") {
-        toast.success("Signup successful");
-        navigate("/");
-      }
+    try {
+      await SignUpConfirmation(signUpForm.email, SignUpCode);
+      window.location.href = "/";
+      toast.success("Email verified successfully");
     } catch (error) {
       toast.error("Invalid 2FA code. Please try again.");
       Logger("Error during email verification:", error);

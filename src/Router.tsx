@@ -4,7 +4,6 @@ import ErrorBoundary from "./ErrorHandling/ErrorBoundary";
 import Home from "./Pages/Home/Home";
 import Layout from "./Layout";
 import NoteModal from "./component/Note/NoteModal";
-import BackgroundLayout from "./component/Note/BackgroundLayout";
 import Bin from "./Pages/Bin/Bin";
 import Archieve from "./Pages/Archieve/Archieve";
 import Login from "./Pages/Auth/Login";
@@ -38,6 +37,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: (
+      // wrap the children with ProviderWrapper using outlet
       <ProviderWrapper>
         <div />
       </ProviderWrapper>
@@ -52,13 +52,12 @@ const router = createBrowserRouter([
         ),
       },
       {
-        element: <BackgroundLayout />,
-        children: [
-          {
-            path: "notes/:id",
-            element: <NoteModal />,
-          },
-        ],
+        path: "notes/:id",
+        element: (
+          <ProtectedRoute>
+            <NoteModal />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/reminders",

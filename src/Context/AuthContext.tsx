@@ -81,17 +81,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
   }, []);
 
-  // const ResetErrors = () => {
-  //   setError({
-  //     loginError: null,
-  //     MFAError: null,
-  //     twoFaError: null,
-  //     signUpConfirmationError: null,
-  //     signUpError: null,
-  //     refreshError: null,
-  //   });
-  // }
-
   const LoginHandler = async (loginData: LoginDatatype) => {
     try {
       const loginParseData = LoginDatatypeSchema.parse(loginData);

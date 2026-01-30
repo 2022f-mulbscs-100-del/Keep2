@@ -1,5 +1,5 @@
 type PrimaryButtonProps = {
-  title: string;
+  title: string | undefined;
   onClick?: () => void;
   isLoading?: boolean;
   disabled?: boolean;

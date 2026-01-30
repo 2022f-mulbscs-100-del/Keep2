@@ -16,7 +16,7 @@ const MFABlock = () => {
     setError,
   } = useUser();
   const [enableMFA, setEnableMFA] = useState(false);
-  const [MFAcode, setMFAcode] = useState("");
+  const [TOTPcode, setTOTPcode] = useState("");
   const [qrCode, setQrCode] = useState("");
   const formRef = useRef<HTMLFormElement | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -44,18 +44,18 @@ const MFABlock = () => {
   };
 
   const CodeVerification = () => {
-    if (MFAcode.length !== 6) {
-      Logger("MFA code must be 6 digits long");
+    if (TOTPcode.length !== 6) {
+      Logger("TOTP code must be 6 digits long");
       return;
     }
 
     try {
       setIsLoading(true);
-      MFAcodeValidation.parse({ mfaCode: MFAcode });
+      MFAcodeValidation.parse({ mfaCode: TOTPcode });
       axiosClient
         .post("/verify-mfa", {
           email: profileData?.email,
-          token: MFAcode,
+          token: TOTPcode,
         })
         .then(() => {
           setIsLoading(false);
@@ -96,7 +96,7 @@ const MFABlock = () => {
     if (formRef.current === null) {
       return;
     }
-    if (formRef.current && MFAcode.length === 6) {
+    if (formRef.current && TOTPcode.length === 6) {
       const timer = setTimeout(() => {
         if (formRef.current) {
           formRef.current.dispatchEvent(
@@ -107,7 +107,7 @@ const MFABlock = () => {
 
       return () => clearTimeout(timer);
     }
-  }, [MFAcode]);
+  }, [TOTPcode]);
 
   useEffect(() => {
     if (!userError?.ProfileError) return;
@@ -125,27 +125,27 @@ const MFABlock = () => {
         <div className="flex items-center gap-4 mb-4">
           <IoShieldCheckmarkOutline className="text-subheading2 text-gray-400" />
           <h2 className="text-subheading2 font-semibold">
-            Multi-Factor Authentication{" "}
+            TOTP Authentication{" "}
           </h2>
         </div>
 
         <p className="text-body text-gray-400 mb-6">
           Add an extra layer of protection to your account by enabling
-          Multi-Factor Authentication (MFA).
+          Time-based One-Time Password (TOTP).
         </p>
         <div className="flex justify-center items-center flex-col gap-4 mb-4">
           {qrCode && (
             <>
-              <img src={qrCode} alt="MFA QR Code" />
+              <img src={qrCode} alt="TOTP QR Code" />
               <form ref={formRef} onSubmit={CodeVerification}>
                 <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
                   <input
                     className="outline-none w-full  text-body2"
                     type="number"
-                    placeholder="Enter MFA Code"
-                    name="mfaCode"
-                    value={MFAcode}
-                    onChange={(e) => setMFAcode(e.target.value)}
+                    placeholder="Enter TOTP Code"
+                    name="totpCode"
+                    value={TOTPcode}
+                    onChange={(e) => setTOTPcode(e.target.value)}
                   />
                 </div>
               </form>

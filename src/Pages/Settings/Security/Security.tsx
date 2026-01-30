@@ -29,6 +29,18 @@ const Security = () => {
         <div
           onClick={() => {
             setShowBlock((prev) =>
+              prev?.includes("reset-password")
+                ? prev.filter((item) => item !== "reset-password")
+                : [...(prev ?? []), "reset-password"],
+            );
+          }}
+        >
+          <Pills title="Reset password" />
+        </div>
+
+        <div
+          onClick={() => {
+            setShowBlock((prev) =>
               prev?.includes("two-factor-authentication")
                 ? prev.filter((item) => item !== "two-factor-authentication")
                 : [...(prev ?? []), "two-factor-authentication"],
@@ -40,24 +52,13 @@ const Security = () => {
         <div
           onClick={() => {
             setShowBlock((prev) =>
-              prev?.includes("reset-password")
-                ? prev.filter((item) => item !== "reset-password")
-                : [...(prev ?? []), "reset-password"],
-            );
-          }}
-        >
-          <Pills title="Reset password" />
-        </div>
-        <div
-          onClick={() => {
-            setShowBlock((prev) =>
               prev?.includes("MFA")
                 ? prev.filter((item) => item !== "MFA")
                 : [...(prev ?? []), "MFA"],
             );
           }}
         >
-          <Pills title="MFA" />
+          <Pills title="TOTP" />
         </div>
         <div
           onClick={() => {
