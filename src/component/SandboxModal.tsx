@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { PiCodesandboxLogo } from "react-icons/pi";
-import { useNote } from "../Context/noteContext";
 import { toast } from "react-toastify";
 import axiosClient from "../api/axiosClient";
 import { Logger } from "../utils/Logger";
 import PrimaryButton from "./Buttons/PrimaryButton";
+import { useNotesApi } from "./CustomHooks/useNotesApi";
 
 interface SandboxMoadlProps {
   onclose: () => void;
@@ -16,7 +16,7 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
   const [useRandomData, setUseRandomData] = useState(false);
   const [useRandomImages, setUseRandomImages] = useState(false);
   const clickRef = useRef<HTMLDivElement>(null);
-  const { getNotes } = useNote();
+  const { getNotes } = useNotesApi();
 
   const generateData = () => {
     if (numNotes === 0) {

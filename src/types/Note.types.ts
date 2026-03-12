@@ -21,6 +21,8 @@ export interface NoteType {
     name: string;
     email: string;
   };
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export type LoadingType = {

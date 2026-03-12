@@ -7,17 +7,19 @@ import Note from "../../component/Note/Note";
 import { useParams } from "react-router-dom";
 import { useNote } from "../../Context/noteContext";
 import { toast } from "react-toastify";
+import { useNotesApi } from "../../component/CustomHooks/useNotesApi";
 
 const EditLabels = () => {
   const { layout } = useNavbar();
   const [loading, setLoading] = useState<boolean>(false);
   const { label } = useParams();
-  const { fetchApiData, items } = useNote();
+  const { Notes } = useNote();
+  const { fetchNotes } = useNotesApi();
 
   useEffect(() => {
     setLoading(true);
     try {
-      fetchApiData();
+      fetchNotes();
       setLoading(false);
     } catch (_error) {
       toast.error(_error as string);
@@ -25,7 +27,7 @@ const EditLabels = () => {
     }
   }, [label]);
 
-  const filteredNotes = items.filter((item) => {
+  const filteredNotes = Notes.filter((item) => {
     return (
       item.category === label &&
       item.isDeleted === false &&

@@ -5,13 +5,15 @@ import Note from "../../component/Note/Note";
 import { useNote } from "../../Context/noteContext";
 import { useEffect } from "react";
 import Loader from "../../component/Note/Loader/Loader";
+import { useNotesApi } from "../../component/CustomHooks/useNotesApi";
 
 const Bin = () => {
   const { layout } = useNavbar();
-  const { deletedNotes, DeletedNotes, loading } = useNote();
+  const { deletedNotes, loading } = useNote();
+  const { fetchDeletedNotes } = useNotesApi();
 
   useEffect(() => {
-    DeletedNotes();
+    fetchDeletedNotes();
   }, []);
 
   return (

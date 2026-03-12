@@ -1,7 +1,6 @@
 import NoteInput from "../../component/NoteMakingInputField/NoteInput";
 import { useNote } from "../../Context/noteContext";
 import { useEffect, useState } from "react";
-// import Loader from "../../component/Note/Loader/Loader";
 import FilterButton from "../../component/Buttons/FilterButton/FilterButton";
 import type { NoteType } from "../../types/Note.types";
 import type { FilterState } from "../../types/FilterType";
@@ -9,17 +8,21 @@ import NotesSection from "../../component/NotesSection/NotesSection";
 import Loader from "../../component/Note/Loader/Loader";
 import axiosClient from "../../api/axiosClient";
 import { Logger } from "../../utils/Logger";
+import { FilterByDateAndTime } from "../../utils/FilterByDateAndTime";
 
 export default function Home() {
-  const { items, setItems } = useNote();
+  // Local state
   const [loadingState, setLoading] = useState(true);
+  // State from context
+  const { Notes, setNotes } = useNote();
 
+  // Fetch notes on component mount
   useEffect(() => {
     setLoading(true);
     axiosClient
       .get("/notes")
       .then((res) => {
-        setItems(res.data);
+        setNotes(FilterByDateAndTime(res.data));
         setLoading(false);
       })
       .catch((error) => {
@@ -28,6 +31,7 @@ export default function Home() {
       });
   }, []);
 
+  // Filter state
   const [filters, setFilters] = useState<FilterState>({
     archived: false,
     reminder: false,
@@ -35,7 +39,8 @@ export default function Home() {
     labels: [],
   });
 
-  const filteredItems = items?.filter((item: NoteType) => {
+  // Filter notes based on selected filters
+  const filteredItems = Notes?.filter((item: NoteType) => {
     // No filters selected → show normal notes only
     const noFilterSelected = !filters.archived && !filters.bin;
 
@@ -65,7 +70,9 @@ export default function Home() {
         <NoteInput />
       </div>
       {loadingState ? (
-        <Loader />
+        <div className="flex flex-col">
+          <Loader />
+        </div>
       ) : filteredItems.length > 0 ? (
         <NotesSection filteredItems={filteredItems} />
       ) : (

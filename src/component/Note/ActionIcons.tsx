@@ -10,6 +10,8 @@ import axios from "axios";
 import { Logger } from "../../utils/Logger.js";
 import { useModal } from "../../Context/ModalProvider.js";
 import { BiSolidBellMinus } from "react-icons/bi";
+import { useNotesApi } from "../CustomHooks/useNotesApi.js";
+import type { NoteType } from "../../types/Note.types.js";
 type ActionIconsProps = {
   IsHover: boolean;
   id: number;
@@ -23,49 +25,55 @@ const ActionIcons = ({
   IsHover,
   setIsHover,
   id,
-  onClick,
   hasReminder,
   bgRef,
 }: ActionIconsProps) => {
-  const { getNotes, DeletedNotes } = useNote();
+  // states
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Contexts
+  const { setNotes, setDeletedNotes, setArchivedNotes } = useNote();
   const {
     setReminderModal,
     setNoteId,
     setBackgroundColorModal,
     setCollaboratorModal,
   } = useModal();
-  const deleteNote = (id: number) => {
-    axiosClient
-      .put(`${import.meta.env.VITE_API_BASE_URL}/api/UpdateNotes/${id}`, {
-        isDeleted: true,
-      })
-      .then(() => {
-        getNotes();
-        if (onClick) onClick();
-        toast.success("Note trashed");
-      })
-      .catch((error) => {
-        Logger("Error deleting note:", error);
-      });
+
+  //Hooks
+  const {
+    getNotes,
+    restoreNoteApi,
+    archieveNoteApi,
+    unArchieveNoteApi,
+    deleteNoteApi,
+    deleteForever,
+  } = useNotesApi();
+
+  const { pathname } = useLocation();
+
+  // Delete Note
+  const deleteNote = async (id: number) => {
+    setNotes((prevNotes: NoteType[]) =>
+      prevNotes.map((note) => {
+        if (note.id === id) {
+          return { ...note, isDeleted: true };
+        }
+        return note;
+      }),
+    );
+    await deleteNoteApi(id);
   };
 
+  // Restore Note from Bin
   const RestoreNote = (id: number) => {
-    axiosClient
-      .put(`${import.meta.env.VITE_API_BASE_URL}/api/UpdateNotes/${id}`, {
-        isDeleted: false,
-      })
-      .then(() => {
-        DeletedNotes();
-        if (onClick) onClick();
-        toast.success("Note restored");
-      })
-      .catch((error) => {
-        Logger("Error restoring note:", error);
-      });
+    setDeletedNotes((prevNotes: NoteType[]) =>
+      prevNotes.filter((note) => note.id !== id),
+    );
+    restoreNoteApi(id);
   };
 
+  // Archieve Note
   const ArchieveDescion = (id: number) => {
     if (pathname === "/archieve") {
       UnarchievedNote(id);
@@ -74,33 +82,36 @@ const ActionIcons = ({
     }
   };
 
-  const ForeverDelete = (id: number) => {
-    axiosClient
-      .delete(`${import.meta.env.VITE_API_BASE_URL}/api/deleteNotes/${id}`)
-      .then(() => {
-        DeletedNotes();
-        toast.success("Note deleted permanently");
-      })
-      .catch((error) => {
-        Logger("Error permanently deleting note:", error);
-      });
+  // Permanently delete note from bin
+  const ForeverDelete = async (id: number) => {
+    setDeletedNotes((prevNotes: NoteType[]) =>
+      prevNotes.filter((note) => note.id !== id),
+    );
+    await deleteForever(id);
   };
 
-  const archieveNote = (id: number) => {
-    axiosClient
-      .put(`${import.meta.env.VITE_API_BASE_URL}/api/UpdateNotes/${id}`, {
-        isArchived: true,
-      })
-      .then(() => {
-        getNotes();
-        if (onClick) onClick();
-        toast.success("Note archived successfully");
-      })
-      .catch((error) => {
-        Logger("Error archiving note:", error);
-      });
+  // Archieve Note
+  const archieveNote = async (id: number) => {
+    setNotes((prevNotes: NoteType[]) =>
+      prevNotes.map((note) => {
+        if (note.id === id) {
+          return { ...note, isArchived: true };
+        }
+        return note;
+      }),
+    );
+    await archieveNoteApi(id);
   };
 
+  // Unarchieve Note
+  const UnarchievedNote = (id: number) => {
+    setArchivedNotes((prevNotes: NoteType[]) =>
+      prevNotes.filter((note) => note.id !== id),
+    );
+    unArchieveNoteApi(id);
+  };
+
+  //image upload to cloudinary and backend
   const openFileDialog = () => {
     inputRef.current?.click();
   };
@@ -167,21 +178,7 @@ const ActionIcons = ({
         Logger("Error uploading image to note:", error);
       });
   };
-  const UnarchievedNote = (id: number) => {
-    axiosClient
-      .put(`${import.meta.env.VITE_API_BASE_URL}/api/UpdateNotes/${id}`, {
-        isArchived: false,
-      })
-      .then(() => {
-        if (onClick) onClick();
-        toast.success("Note unarchived successfully");
-      })
-      .catch((error) => {
-        Logger("Error unarchiving note:", error);
-      });
-  };
 
-  const { pathname } = useLocation();
   return (
     <div className="relative">
       <div
