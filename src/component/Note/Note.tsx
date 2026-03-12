@@ -1,17 +1,16 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import SelectIcon from "./SelectIcon";
 import NoteDescription from "./NoteDescription";
 import ActionIcons from "./ActionIcons";
 import NoteTitle from "./NoteTitle";
 import { useLocation, useNavigate } from "react-router-dom";
 import { TiPin, TiPinOutline } from "react-icons/ti";
-
-import { useNote } from "../../Context/noteContext";
 import "react-tooltip/dist/react-tooltip.css";
 import { Tooltip } from "react-tooltip";
 import NotePills from "../Pills/NotePills";
 import BackgroundPaletteModal from "./BackgroundColorPaletteModal";
 import { useModal } from "../../Context/ModalProvider";
+import { useNotesApi } from "../CustomHooks/useNotesApi";
 
 type NoteProps = {
   id: number;
@@ -40,8 +39,8 @@ const Note = ({
   const [IsHover, setIsHover] = useState<boolean>(false);
   const NoteRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const { fetchApiData, UpdateNote } = useNote();
   const location = useLocation();
+  const { fetchNotes, updateNote } = useNotesApi();
   const { backgroundColorModal } = useModal();
   const [color, setColor] = useState(BgColor || "");
 
@@ -49,6 +48,7 @@ const Note = ({
     setLocalIsPinned(NotePinned);
   }, [NotePinned]);
 
+  // Handle hover state for showing icons
   useEffect(() => {
     const HandleHover = (e: MouseEvent) => {
       const isThisNote = backgroundColorModal === id;
@@ -68,23 +68,25 @@ const Note = ({
     };
   }, [backgroundColorModal]);
 
-  const HandlePinned = async () => {
+  // Handle pinning/unpinning the note
+  const handlePinned = useCallback(async () => {
     try {
-      await UpdateNote(id, {
+      await updateNote(id, {
         pinned: !LocalIsPinned,
       });
-      fetchApiData();
+      setLocalIsPinned(!LocalIsPinned);
+      fetchNotes();
     } catch (error) {
       console.error("Error updating pin status:", error);
     }
-    setLocalIsPinned(!LocalIsPinned);
-  };
+  }, [id, LocalIsPinned, updateNote, fetchNotes]);
 
-  const HandleClick = () => {
+  // Handle background color change
+  const handleClick = useCallback(() => {
     navigate(`/notes/${id}`, {
       state: { backgroundLocation: location },
     });
-  };
+  }, [id, location]);
   const bgRef = useRef<HTMLDivElement | null>(null);
 
   return (
@@ -103,10 +105,10 @@ const Note = ({
           <div
             data-tooltip-id={`pin-tooltip${id}`}
             data-tooltip-content={LocalIsPinned ? "Unpin note" : "Pin note"}
-            onClick={HandlePinned}
+            onClick={handlePinned}
             className={`rounded-full flex justify-center items-center cursor-pointer w-9 h-9 m-1 transition-opacity duration-200 ${
               IsHover || LocalIsPinned ? "opacity-100" : "opacity-0"
-            }  dark:hover:bg-secondary`}
+            } dark:hover:bg-secondary`}
           >
             {LocalIsPinned ? (
               <TiPin className="w-5 h-5 text-gray-700 dark:text-gray-300" />
@@ -142,7 +144,7 @@ const Note = ({
         )}
 
         {/* Title and Description */}
-        <div className="p-4" onClick={HandleClick}>
+        <div className="p-4" onClick={handleClick}>
           <NoteTitle title={title} IsHover={IsHover} />
           <NoteDescription description={description} list={list} />
         </div>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { MdBlockFlipped } from "react-icons/md";
-import { useNote } from "../../Context/noteContext";
+import { useNotesApi } from "../CustomHooks/useNotesApi";
 
 type ColorPaletteProps = {
   setColor: React.Dispatch<React.SetStateAction<string>>;
@@ -8,12 +8,12 @@ type ColorPaletteProps = {
 };
 const ColorPalette = ({ setColor, noteID }: ColorPaletteProps) => {
   const [active, setActive] = useState<number>(0);
-  const { UpdateNote } = useNote();
+  const { updateNote } = useNotesApi();
 
   const handleColorChange = async (color: string, id: number) => {
     setActive(id);
     setColor(color);
-    await UpdateNote(noteID as number, {
+    await updateNote(noteID as number, {
       bgColor: color,
     });
   };

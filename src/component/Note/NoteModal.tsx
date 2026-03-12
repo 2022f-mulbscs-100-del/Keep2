@@ -12,9 +12,9 @@ import { useUser } from "../../Context/UserContext";
 export default function NoteModal() {
   const [showModal, setShowModal] = useState(true);
   const { theme } = useTheme();
-  const { items } = useNote();
+  const { Notes } = useNote();
   const { id: noteId } = useParams();
-  const FilterNote = items.find((note: NoteType) => note.id === Number(noteId));
+  const FilterNote = Notes.find((note: NoteType) => note.id === Number(noteId));
   const { profileData } = useUser();
   const [value, setValue] = useState<NoteType | null>(
     FilterNote
@@ -41,6 +41,8 @@ export default function NoteModal() {
   }, []);
 
   const { id } = useParams();
+  const socketRef = useRef<Socket | null>(null);
+
   useEffect(() => {
     const fetchNote = async () => {
       setShowModal(true);
@@ -55,43 +57,42 @@ export default function NoteModal() {
     fetchNote();
   }, [id]);
 
-  const socketRef = useRef<Socket | null>(null);
+  // WebSocket integration for real-time collaboration
   useEffect(() => {
-    if (!noteId || !items.length) return;
+    if (!noteId || !profileData?.email) return;
 
-    const note = items.find((n) => n.id === Number(noteId));
-    if (!note?.collaborators?.length) return;
+    // Create socket connection
+    socketRef.current = io(import.meta.env.VITE_API_BASE_URL);
 
-    const socket = io(import.meta.env.VITE_API_BASE_URL);
-    socketRef.current = socket;
-
-    socket.on("connect", () => {
-      console.log("Connected:", socket.id);
-      socket.emit("noteRoom", `note-${noteId}`);
+    socketRef.current.on("connect", () => {
+      console.log("Connected to note room:", socketRef.current?.id);
+      // Join note-specific room
+      socketRef.current?.emit("JoinRoom", `note-${noteId}`);
     });
 
-    const handleMessage = (data: {
-      from: string;
-      title: string;
-      description: string;
-    }) => {
-      if (data.from === profileData?.email) return;
-
-      setValue((prev) => ({
-        ...prev,
-        title: data.title,
-        description: data.description,
-      }));
-    };
-
-    socket.on("NoteRoomMessage", handleMessage);
+    // Listen for note updates from other collaborators
+    socketRef.current.on(
+      "NoteRoomMessage",
+      (data: { title: string; description: string; from: string }) => {
+        // Only update if message is from another user
+        if (data.from !== profileData?.email) {
+          setValue((prev) => {
+            if (!prev) return prev;
+            return {
+              ...prev,
+              title: data.title,
+              description: data.description,
+            };
+          });
+        }
+      },
+    );
 
     return () => {
-      socket.off("NoteRoomMessage", handleMessage);
-      socket.disconnect();
+      socketRef.current?.disconnect();
       socketRef.current = null;
     };
-  }, [noteId, items, profileData?.email]);
+  }, [noteId, profileData?.email]);
 
   // Overlay click handler
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -112,13 +113,16 @@ export default function NoteModal() {
   ) => {
     const { name, value: fieldValue } = e.target;
 
-    // 1️⃣ ALWAYS update local state immediately
+    // Update local state immediately
     setValue((prev) => {
+      if (!prev) return prev;
+
       const updated = {
         ...prev,
         [name]: fieldValue,
       };
 
+      // Emit changes to other collaborators via WebSocket
       socketRef.current?.emit("NoteRoomMessage", {
         noteId: `note-${noteId}`,
         title: updated.title,

@@ -10,24 +10,39 @@ import { useNote } from "../../Context/noteContext";
 import axiosClient from "../../api/axiosClient";
 import { Logger } from "../../utils/Logger";
 import { useLocation, useParams } from "react-router";
-import { toast } from "react-toastify";
 import NotePills from "../Pills/NotePills";
-interface NoteType {
-  id: number;
-  title: string;
-  description: string;
-  pinned: boolean;
-  catgeory: string;
-}
+import type { NoteType } from "../../types/Note.types";
+import BackgroundPaletteModal from "../Note/BackgroundColorPaletteModal";
+import { useModal } from "../../Context/ModalProvider";
+
 export const NoteInput = () => {
-  const [NotesData, setNotesData] = useState<NoteType>({
-    id: 0,
+  // Define initial state as a constant
+  const INITIAL_NOTE_STATE: NoteType = {
+    id: new Date().getTime() || 0,
     title: "",
     description: "",
     pinned: false,
-    catgeory: "",
-  });
+    category: "",
+    bgColor: "",
+    collaborators: [],
+    hasReminder: false,
+    image: [],
+    list: [],
+    isDeleted: false,
+    isArchived: false,
+    OwnerAttributes: {
+      id: 0,
+      name: "",
+      email: "",
+    },
+    createdAt: "",
+    updatedAt: "",
+  };
 
+  // Local state for note data
+  const [NotesData, setNotesData] = useState<NoteType>(INITIAL_NOTE_STATE);
+
+  // Local state
   const inputRef = useRef<HTMLDivElement>(null);
   const [LocalIsPinned, setLocalIsPinned] = useState(false);
   const [InputClick, setInputClick] = useState(false);
@@ -40,9 +55,20 @@ export const NoteInput = () => {
       data: "",
     },
   ]);
-  const { fetchApiData } = useNote();
+
+  //Context state
+  const { setNotes, Notes } = useNote();
+  const { backgroundColorModal, setBackgroundColorModal } = useModal();
+
+  const bgRef = useRef<HTMLDivElement | null>(null);
+  const [color, setColor] = useState("");
+
   const { pathname } = useLocation();
+  const { label } = useParams();
+
   const SHOW_LABEL_PILL = pathname.startsWith("/editlabel");
+
+  // Handle input changes for title and description
   const HandleNoteData = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -55,31 +81,36 @@ export const NoteInput = () => {
     }
   };
 
-  const { label } = useParams();
-
+  // Update category in NotesData when label or InputClick changes
   useEffect(() => {
     setNotesData({
       ...NotesData,
-      catgeory: NotesData.catgeory ? NotesData.catgeory : label || "",
+      category: NotesData.category ? NotesData.category : label || "",
     });
   }, [label, InputClick]);
 
+  // Handle click outside to save note and reset state
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (inputRef.current && !inputRef.current.contains(e.target as Node)) {
+        console.log("Clicked outside", NotesData, "Previous notes", Notes);
+
+        setNotes((prevNotes) => [
+          ...prevNotes,
+          {
+            ...NotesData,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          },
+        ]);
         const stableData = { ...NotesData };
         apiCall(stableData);
         setInputClick(false);
         setLocalIsPinned(false);
         setListClick(false);
         setListArray([]);
-        setNotesData({
-          title: "",
-          description: "",
-          id: Date.now(),
-          pinned: false,
-          catgeory: "",
-        });
+        setNotesData(INITIAL_NOTE_STATE);
+        setBackgroundColorModal(null);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -89,50 +120,43 @@ export const NoteInput = () => {
     };
   });
 
+  // API call to save note
   const apiCall = (NotesData: NoteType) => {
     if (listArray.length <= 1) {
       if (
-        NotesData.title.trim() === "" &&
-        NotesData.description.trim() === ""
-      ) {
-        toast.info("Note is empty, not saved.");
+        (NotesData.title ?? "").trim() === "" &&
+        (NotesData.description ?? "").trim() === ""
+      )
         return;
-      }
     }
     const sendNotwe = {
       title: NotesData.title,
       description: NotesData.description,
       id: NotesData.id,
       pinned: NotesData.pinned,
-      catgeory: NotesData.catgeory,
+      category: NotesData.category,
       list: listArray.length > 0 && listArray[0].data !== "" ? listArray : [],
     };
 
     try {
       axiosClient
         .post(`${import.meta.env.VITE_API_BASE_URL}/api/addnotes`, sendNotwe)
-        .then(() => {
-          fetchApiData();
-        })
+        .then(() => {})
         .catch((error) => {
           Logger("Error adding note:", error);
         });
 
-      setNotesData({
-        title: "",
-        description: "",
-        id: Date.now(),
-        pinned: false,
-        catgeory: "",
-      });
+      setNotesData(INITIAL_NOTE_STATE);
       setListArray([]);
       setLocalIsPinned(false);
       setListClick(false);
+      setBackgroundColorModal(null);
     } catch (error) {
       Logger("Error in apiCall:", error);
     }
   };
 
+  // Initialize list array when list icon is clicked
   useEffect(() => {
     if (listClick) {
       setListArray([
@@ -143,9 +167,17 @@ export const NoteInput = () => {
       ]);
     }
   }, [listClick]);
+
+  useEffect(() => {
+    setNotesData((prevData) => ({
+      ...prevData,
+      bgColor: color,
+    }));
+  }, [color]);
+
   return (
     <>
-      <div className="flex justify-center items-center">
+      <div className="flex justify-center items-center ">
         {!InputClick ? (
           <div className="shadow-lg w-full max-w-[600px] py-2  px-4 border rounded-[5px] border-borderColor flex flex-col gap-2">
             <div className="flex w-full ">
@@ -179,7 +211,7 @@ export const NoteInput = () => {
           // open input field
           <div
             ref={inputRef}
-            className="shadow-2xl min-w-[600px] py-4 border rounded-[8px] border-[#5F6368] flex flex-col gap-2"
+            className={`shadow-lg w-full max-w-[600px] py-2  px-4 border rounded-[5px] border-borderColor flex flex-col gap-2 ${color}`}
           >
             {/* title input field */}
             <div className="flex w-full px-4">
@@ -247,25 +279,45 @@ export const NoteInput = () => {
               <div className=" flex justify-between items-center gap-8 ">
                 {IconsArray.map((item) => {
                   return (
-                    <IconStyling key={item.id} id={item.id} icon={item.icon} />
+                    <IconStyling
+                      key={item.id}
+                      id={item.id}
+                      icon={item.icon}
+                      onclick={(e: React.MouseEvent<HTMLDivElement>) => {
+                        switch (item.id) {
+                          case 2:
+                            {
+                              e?.stopPropagation();
+                              console.log("Image icon clicked", NotesData.id);
+                              setBackgroundColorModal(NotesData.id || 0);
+                            }
+                            break;
+                          default:
+                            break;
+                        }
+                      }}
+                    />
                   );
                 })}
               </div>
-
+              {backgroundColorModal === NotesData.id && (
+                <div className="absolute top-[305px] right-[780px] z-10">
+                  <BackgroundPaletteModal
+                    noteID={NotesData.id}
+                    iconRef={bgRef}
+                    setColor={setColor}
+                  />
+                </div>
+              )}
               {/* close icon */}
               <div
                 className="pr-6 cursor-pointer hover:bg-secondary px-5 py-2"
                 onClick={() => {
                   setListArray([]);
                   apiCall(NotesData);
-                  setNotesData({
-                    id: Date.now(),
-                    title: "",
-                    description: "",
-                    pinned: false,
-                    catgeory: "",
-                  });
+                  setNotesData(INITIAL_NOTE_STATE);
                   setInputClick(false);
+                  setBackgroundColorModal(null);
                 }}
               >
                 close

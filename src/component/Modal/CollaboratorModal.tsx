@@ -18,7 +18,7 @@ const CollaboratorModal = () => {
   const { profileData } = useUser();
   const { noteId, setCollaboratorModal } = useModal();
   const [email, setEmail] = useState("");
-  const { items } = useNote();
+  const { Notes } = useNote();
   const ref = useRef<HTMLDivElement | null>(null);
 
   // const emailParsing = z.email("Invalid email address");
@@ -58,7 +58,7 @@ const CollaboratorModal = () => {
       });
   }, [noteId]);
 
-  const openNote = items.find((note) => note.id === noteId);
+  const openNote = Notes.find((note) => note.id === noteId);
 
   console.log(openNote);
 

@@ -4,7 +4,7 @@ type IconStylingProps = {
   icon: React.ElementType;
   id: number;
   tooltip?: string;
-  onclick?: () => void;
+  onclick?: (e: React.MouseEvent<HTMLDivElement>) => void;
 };
 
 const IconStyling = ({ icon, tooltip, onclick }: IconStylingProps) => {

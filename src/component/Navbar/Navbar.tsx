@@ -11,8 +11,8 @@ import ThemeSwitcherButton from "../Buttons/ThemeSwitcherButton";
 import { PiCodesandboxLogo } from "react-icons/pi";
 import SandboxModal from "../SandboxModal";
 import { useState } from "react";
-import { useNote } from "../../Context/noteContext";
 import { useUser } from "../../Context/UserContext";
+import { useNotesApi } from "../CustomHooks/useNotesApi";
 import { Tooltip } from "react-tooltip";
 import { useScreenSize } from "../CustomHooks/useScreenSize";
 import IconStyling from "../IconStyling";
@@ -20,7 +20,7 @@ import IconStyling from "../IconStyling";
 const Navbar = () => {
   const { pathname: path } = useLocation();
   const [sandboxOpen, setSandboxOpen] = useState(false);
-  const { fetchApiData } = useNote();
+  const { fetchNotes } = useNotesApi();
   const { isOpen, setIsOpen } = useSidebar();
   const { layout, setLayout } = useNavbar();
   const { profileData } = useUser();
@@ -85,7 +85,7 @@ const Navbar = () => {
                   id={1}
                   tooltip="Refresh"
                   onclick={() => {
-                    fetchApiData();
+                    fetchNotes();
                   }}
                 />
               </div>

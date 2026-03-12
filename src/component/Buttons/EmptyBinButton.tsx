@@ -1,12 +1,12 @@
 import { toast } from "react-toastify";
-import { useNote } from "../../Context/noteContext";
 import axiosClient from "../../api/axiosClient";
 import { Logger } from "../../utils/Logger";
 import PrimaryButton from "./PrimaryButton";
 import { useState } from "react";
+import { useNotesApi } from "../CustomHooks/useNotesApi";
 
 const EmptyBin = () => {
-  const { DeletedNotes } = useNote();
+  const { fetchDeletedNotes } = useNotesApi();
   const [isLoading, setIsLoading] = useState(false);
   const EmptyBin = () => {
     setIsLoading(true);
@@ -15,7 +15,7 @@ const EmptyBin = () => {
       .then(() => {
         setIsLoading(false);
         toast.success("Bin empty successfully");
-        DeletedNotes();
+        fetchDeletedNotes();
       })
       .catch((error) => {
         setIsLoading(false);

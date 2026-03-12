@@ -25,10 +25,10 @@ const UnpinnedNotes = ({
             className={` ${!layout ? "columns-1" : "columns-1 notes-sm:columns-2 notes-lg:columns-3 notes-xl:columns-4 2xl:columns-5"}
                     gap-4 space-y-4`}
           >
-            {unpinnedNotes.map((item: NoteType) => (
+            {unpinnedNotes.map((item: NoteType, index: number) => (
               <div key={item.id} className="break-inside-avoid">
                 <Note
-                  id={item.id || 0}
+                  id={item.id || index}
                   title={item.title || ""}
                   description={item.description || ""}
                   NotePinned={item.pinned || false}

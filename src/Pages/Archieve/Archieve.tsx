@@ -4,14 +4,17 @@ import { useNote } from "../../Context/noteContext";
 import Note from "../../component/Note/Note";
 import { useEffect } from "react";
 import Loader from "../../component/Note/Loader/Loader";
+import { useNotesApi } from "../../component/CustomHooks/useNotesApi";
 
 const Archieve = () => {
-  const { archievedNote, ArchivedNotes, loading } = useNote();
+  const { archivedNotes, loading } = useNote();
+  const { fetchArchivedNotes } = useNotesApi();
   const { layout } = useNavbar();
 
   useEffect(() => {
-    ArchivedNotes();
+    fetchArchivedNotes();
   }, []);
+
   return (
     <>
       <main
@@ -19,12 +22,13 @@ const Archieve = () => {
       >
         {loading.archiveLoading ? (
           <Loader />
-        ) : archievedNote.length == 0 ? (
+        ) : archivedNotes.length !== 0 ? (
           <div
             className={` ${!layout ? "columns-1" : "columns-1 notes-sm:columns-2 notes-lg:columns-3 notes-xl:columns-4 2xl:columns-5"}
             gap-4 space-y-4 transition-all transform duration-500`}
           >
-            {archievedNote.map((item, index) => {
+            {archivedNotes.map((item, index) => {
+              console.log("archived item", item);
               return (
                 <div key={item.id} className="break-inside-avoid">
                   <Note
