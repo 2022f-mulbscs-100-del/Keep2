@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { useTheme } from "../../Context/themeSwitcherContext";
 import ActionIcons from "./ActionIcons";
 import axiosClient from "../../api/axiosClient";
@@ -10,12 +10,18 @@ import { io, Socket } from "socket.io-client";
 import { useUser } from "../../Context/UserContext";
 
 export default function NoteModal() {
-  const [showModal, setShowModal] = useState(true);
-  const { theme } = useTheme();
-  const { Notes } = useNote();
-  const { id: noteId } = useParams();
-  const FilterNote = Notes.find((note: NoteType) => note.id === Number(noteId));
+  // Context
   const { profileData } = useUser();
+  const { setNotes, Notes } = useNote();
+  const { theme } = useTheme();
+
+  // Router state
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const noteId = Number(searchParams.get("note"));
+  const FilterNote = Notes.find((note: NoteType) => note.id === noteId);
+
+  // Local state
   const [value, setValue] = useState<NoteType | null>(
     FilterNote
       ? {
@@ -30,32 +36,16 @@ export default function NoteModal() {
       : null,
   );
   const ref = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
   const didFocus = useRef(false);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const socketRef = useRef<Socket | null>(null);
+
   useEffect(() => {
     if (!didFocus.current && textAreaRef.current) {
       textAreaRef.current.focus();
       didFocus.current = true;
     }
   }, []);
-
-  const { id } = useParams();
-  const socketRef = useRef<Socket | null>(null);
-
-  useEffect(() => {
-    const fetchNote = async () => {
-      setShowModal(true);
-      try {
-        axiosClient.get(`/notes/${id}`).then((response) => {
-          setValue(response.data);
-        });
-      } catch (error) {
-        Logger("Error fetching note:", error);
-      }
-    };
-    fetchNote();
-  }, [id]);
 
   // WebSocket integration for real-time collaboration
   useEffect(() => {
@@ -96,16 +86,27 @@ export default function NoteModal() {
 
   // Overlay click handler
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (ref.current && ref.current.contains(e.target as Node)) {
+      return;
+    }
     try {
-      axiosClient.put(`/UpdateNotes/${id}`, value);
+      setNotes((prevNotes) =>
+        prevNotes.map((note) =>
+          note.id === noteId
+            ? {
+                ...note,
+                title: value?.title || "",
+                description: value?.description || "",
+              }
+            : note,
+        ),
+      );
+      axiosClient.put(`/UpdateNotes/${noteId}`, value);
     } catch (error) {
       Logger("Error updating note:", error);
     }
 
-    if (ref.current && !ref.current.contains(e.target as Node)) {
-      setShowModal(false);
-      navigate(-1);
-    }
+    setSearchParams({});
   };
 
   const handleChange = (
@@ -134,17 +135,17 @@ export default function NoteModal() {
     });
   };
 
-  if (!showModal) return null;
   if (!value) return null; // Wait for note to load
 
   const image = value.image || [];
   return (
     <div
-      className="fixed bg-black/10 top-0 left-0 w-full h-full flex justify-center items-center z-10"
+      className="fixed bg-black/50 top-0 left-0 w-full h-full flex justify-center items-center z-10"
       onClick={handleOverlayClick}
     >
       <div
         ref={ref}
+        onClick={(e) => e.stopPropagation()}
         className={` border-borderColor border rounded-[8px] min-w-[600px] min-h-[200px]  m-8 p-4  ${theme !== "dark" ? " bg-white" : " bg-black"} relative`}
       >
         {image && image.length > 0 && (
@@ -198,8 +199,8 @@ export default function NoteModal() {
         <div className="">
           <ActionIcons
             IsHover={true}
-            id={Number(id)}
-            onClick={() => setShowModal(false)}
+            id={noteId}
+            onClick={() => setSearchParams({})}
           />
         </div>
       </div>
