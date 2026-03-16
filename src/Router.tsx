@@ -3,7 +3,6 @@ import { createBrowserRouter, Outlet } from "react-router-dom";
 import ErrorBoundary from "./ErrorHandling/ErrorBoundary";
 import Home from "./Pages/Home/Home";
 import Layout from "./Layout";
-import NoteModal from "./component/Note/NoteModal";
 import Bin from "./Pages/Bin/Bin";
 import Archieve from "./Pages/Archieve/Archieve";
 import Login from "./Pages/Auth/Login";
@@ -51,14 +50,7 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
-      {
-        path: "notes/:id",
-        element: (
-          <ProtectedRoute>
-            <NoteModal />
-          </ProtectedRoute>
-        ),
-      },
+
       {
         path: "/reminders",
         element: (

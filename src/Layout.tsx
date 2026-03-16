@@ -1,13 +1,16 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import Navbar from "./component/Navbar/Navbar";
 import Sidebar from "./component/sidebar/Sidebar";
 import ReminderModal from "./component/Modal/ReminderModal";
+import NoteModal from "./component/Note/NoteModal";
 import { useModal } from "./Context/ModalProvider";
 import CollaboratorModal from "./component/Modal/CollaboratorModal";
 
 function Layout({ children }: { children: React.ReactNode }) {
   const { reminderModal, collaboratorModal } = useModal();
   const { pathname } = useLocation();
+  const [searchParams] = useSearchParams();
+  const noteParam = searchParams.get("note");
 
   return (
     <>
@@ -24,6 +27,7 @@ function Layout({ children }: { children: React.ReactNode }) {
           >
             {reminderModal && <ReminderModal />}
             {collaboratorModal && <CollaboratorModal />}
+            {noteParam && <NoteModal />}
             {children}
           </div>
         </div>

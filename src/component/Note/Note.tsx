@@ -1,9 +1,10 @@
 import { useRef, useState, useEffect, useCallback } from "react";
+import { useSearchParams } from "react-router-dom";
 import SelectIcon from "./SelectIcon";
 import NoteDescription from "./NoteDescription";
 import ActionIcons from "./ActionIcons";
 import NoteTitle from "./NoteTitle";
-import { useLocation, useNavigate } from "react-router-dom";
+
 import { TiPin, TiPinOutline } from "react-icons/ti";
 import "react-tooltip/dist/react-tooltip.css";
 import { Tooltip } from "react-tooltip";
@@ -38,8 +39,7 @@ const Note = ({
   const [LocalIsPinned, setLocalIsPinned] = useState(false);
   const [IsHover, setIsHover] = useState<boolean>(false);
   const NoteRef = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
-  const location = useLocation();
+  const [, setSearchParams] = useSearchParams();
   const { fetchNotes, updateNote } = useNotesApi();
   const { backgroundColorModal } = useModal();
   const [color, setColor] = useState(BgColor || "");
@@ -83,10 +83,8 @@ const Note = ({
 
   // Handle background color change
   const handleClick = useCallback(() => {
-    navigate(`/notes/${id}`, {
-      state: { backgroundLocation: location },
-    });
-  }, [id, location]);
+    setSearchParams({ note: String(id) });
+  }, [id, setSearchParams]);
   const bgRef = useRef<HTMLDivElement | null>(null);
 
   return (
@@ -101,7 +99,7 @@ const Note = ({
         </div>
 
         {/* Pin Icon */}
-        <div className="absolute top-0 right-0 z-10">
+        <div className="absolute top-0 right-0 z-5">
           <div
             data-tooltip-id={`pin-tooltip${id}`}
             data-tooltip-content={LocalIsPinned ? "Unpin note" : "Pin note"}

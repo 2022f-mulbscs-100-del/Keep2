@@ -41,6 +41,7 @@ export const NoteInput = () => {
 
   // Local state for note data
   const [NotesData, setNotesData] = useState<NoteType>(INITIAL_NOTE_STATE);
+  // const temporaryNotes = new Map<number, NoteType>();
 
   // Local state
   const inputRef = useRef<HTMLDivElement>(null);
@@ -57,7 +58,7 @@ export const NoteInput = () => {
   ]);
 
   //Context state
-  const { setNotes, Notes } = useNote();
+  const { setNotes } = useNote();
   const { backgroundColorModal, setBackgroundColorModal } = useModal();
 
   const bgRef = useRef<HTMLDivElement | null>(null);
@@ -92,9 +93,20 @@ export const NoteInput = () => {
   // Handle click outside to save note and reset state
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
+      if (
+        NotesData.title === "" &&
+        NotesData.description === "" &&
+        listArray.length <= 1
+      ) {
+        setInputClick(false);
+        setLocalIsPinned(false);
+        setListClick(false);
+        setListArray([]);
+        setNotesData(INITIAL_NOTE_STATE);
+        setBackgroundColorModal(null);
+        return;
+      }
       if (inputRef.current && !inputRef.current.contains(e.target as Node)) {
-        console.log("Clicked outside", NotesData, "Previous notes", Notes);
-
         setNotes((prevNotes) => [
           ...prevNotes,
           {
@@ -121,7 +133,7 @@ export const NoteInput = () => {
   });
 
   // API call to save note
-  const apiCall = (NotesData: NoteType) => {
+  const apiCall = async (NotesData: NoteType) => {
     if (listArray.length <= 1) {
       if (
         (NotesData.title ?? "").trim() === "" &&
@@ -139,12 +151,23 @@ export const NoteInput = () => {
     };
 
     try {
-      axiosClient
-        .post(`${import.meta.env.VITE_API_BASE_URL}/api/addnotes`, sendNotwe)
-        .then(() => {})
-        .catch((error) => {
-          Logger("Error adding note:", error);
-        });
+      const response = await axiosClient.post(
+        `${import.meta.env.VITE_API_BASE_URL}/api/addnotes`,
+        sendNotwe,
+      );
+
+      // Reconcile optimistic temporary id with the id returned by the API.
+      const responseData = response?.data;
+      const serverId = responseData?.id;
+      console.log("API response:", responseData.id);
+
+      if (serverId !== null && NotesData.id) {
+        setNotes((prevNotes) =>
+          prevNotes.map((note) =>
+            note.id === NotesData.id ? { ...note, id: serverId } : note,
+          ),
+        );
+      }
 
       setNotesData(INITIAL_NOTE_STATE);
       setListArray([]);
