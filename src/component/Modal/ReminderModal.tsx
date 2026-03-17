@@ -11,6 +11,7 @@ export const ReminderModal = () => {
   const { getNotes } = useNotesApi();
 
   const [reminderData, setReminderData] = useState({
+    remainderId: null as number | null,
     title: "",
     date: "",
     time: "",
@@ -24,8 +25,13 @@ export const ReminderModal = () => {
       axiosClient
         .get(`/remainder-notes/${noteId}`)
         .then((response) => {
-          const reminderData = response.data[0];
+          const reminderData = response.data?.[0];
+          if (!reminderData) {
+            setUpdating(false);
+            return;
+          }
           setReminderData({
+            remainderId: reminderData.id,
             title: reminderData.reminderTitle,
             date: reminderData.nextReminderDate.split("T")[0].toString(),
             time: reminderData.remainderTime,
@@ -70,10 +76,11 @@ export const ReminderModal = () => {
     e.preventDefault();
     setUpdating(true);
     axiosClient
-      .put(`/remainder-notes/update/${reminderData.noteId}`, reminderData)
+      .put(`/remainder-notes/update/${reminderData.remainderId}`, reminderData)
       .then(() => {
         setUpdating(false);
         setReminderModal(false);
+        getNotes();
       })
       .catch((error) => {
         setUpdating(false);
@@ -117,7 +124,7 @@ export const ReminderModal = () => {
 
         {/* Form */}
         <form
-          onSubmit={reminderData.noteId ? UpdateReminder : handleSubmit}
+          onSubmit={reminderData.remainderId ? UpdateReminder : handleSubmit}
           className="space-y-4"
         >
           {/* Title Input */}
@@ -206,7 +213,7 @@ export const ReminderModal = () => {
             >
               {updating
                 ? "Loading..."
-                : reminderData.noteId
+                : reminderData.remainderId
                   ? "Update Reminder"
                   : "Create Reminder"}
             </button>
