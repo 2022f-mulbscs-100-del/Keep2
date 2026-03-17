@@ -18,7 +18,7 @@ import { useModal } from "../../Context/ModalProvider";
 export const NoteInput = () => {
   // Define initial state as a constant
   const INITIAL_NOTE_STATE: NoteType = {
-    id: new Date().getTime() || 0,
+    id: (Date.now() + Math.floor(Math.random() * 1000)) % 100000,
     title: "",
     description: "",
     pinned: false,
@@ -142,9 +142,9 @@ export const NoteInput = () => {
         return;
     }
     const sendNotwe = {
+      id: NotesData.id,
       title: NotesData.title,
       description: NotesData.description,
-      id: NotesData.id,
       pinned: NotesData.pinned,
       category: NotesData.category,
       list: listArray.length > 0 && listArray[0].data !== "" ? listArray : [],

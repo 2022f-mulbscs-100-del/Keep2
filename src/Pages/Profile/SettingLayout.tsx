@@ -2,6 +2,7 @@ import type React from "react";
 import ProfileSidebar from "./ProfileSidebar";
 import { useParams } from "react-router-dom";
 import Security from "../Settings/Security/Security";
+import ApiKeys from "../Settings/ApiKeys/ApiKeys";
 import DeleteAccount from "../Settings/DeleteAccount";
 import Theme from "../Settings/Theme";
 import Logout from "../Settings/Logout";
@@ -21,6 +22,7 @@ const SettingLayout = ({ children }: { children: React.ReactNode }) => {
         {id === "subscription" && <SubscriptionPage />}
         {id === "user-preferences" && <UserPrefrence />}
         {id === "security" && <Security />}
+        {id === "api-keys" && <ApiKeys />}
         {id === "delete-account" && <DeleteAccount />}
         {id === "appearance" && <Theme />}
         {id === "logout" && <Logout />}
