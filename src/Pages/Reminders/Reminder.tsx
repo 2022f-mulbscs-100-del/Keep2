@@ -52,20 +52,26 @@ const Reminder = () => {
                       gap-4 space-y-4 transition-all ease-in duration-300`}
           >
             {reminderNotes.length > 0 &&
-              reminderNotes.map((noteItem) => (
-                <div key={noteItem?.note.id} className="break-inside-avoid ">
-                  <Note
-                    id={noteItem?.note.id || 0}
-                    title={noteItem?.note.title || ""}
-                    description={noteItem?.note.description || ""}
-                    NotePinned={noteItem?.note.pinned || false}
-                    image={noteItem?.note.image || []}
-                    hasReminder={noteItem?.note.hasReminder || undefined}
-                    list={noteItem?.note.list || []}
-                    category={noteItem?.note.category || ""}
-                  />
-                </div>
-              ))}
+              reminderNotes
+                .map((noteItem) => noteItem?.note)
+                .filter(
+                  (note): note is NonNullable<typeof note> & { id: number } =>
+                    typeof note?.id === "number",
+                )
+                .map((note) => (
+                  <div key={note.id} className="break-inside-avoid ">
+                    <Note
+                      id={note.id}
+                      title={note.title || ""}
+                      description={note.description || ""}
+                      NotePinned={note.pinned || false}
+                      image={note.image || []}
+                      hasReminder={note.hasReminder || undefined}
+                      list={note.list || []}
+                      category={note.category || ""}
+                    />
+                  </div>
+                ))}
           </div>
         )}
       </div>

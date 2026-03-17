@@ -341,6 +341,14 @@ export const NoteInput = () => {
                   setNotesData(INITIAL_NOTE_STATE);
                   setInputClick(false);
                   setBackgroundColorModal(null);
+                  setNotes((prevNotes) => [
+                    ...prevNotes,
+                    {
+                      ...NotesData,
+                      createdAt: new Date().toISOString(),
+                      updatedAt: new Date().toISOString(),
+                    },
+                  ]);
                 }}
               >
                 close
