@@ -2,6 +2,7 @@
 import {
   FaCreditCard,
   FaIdCard,
+  FaKey,
   FaPalette,
   FaShieldAlt,
   FaSignOutAlt,
@@ -40,18 +41,24 @@ const ProfileSidebar = () => {
     },
     {
       id: 5,
+      title: "API Keys",
+      path: "/setting/api-keys",
+      icons: <FaKey />,
+    },
+    {
+      id: 6,
       title: "Appearance",
       path: "/setting/appearance",
       icons: <FaPalette />,
     },
     {
-      id: 6,
+      id: 7,
       title: "Logout",
       path: "/setting/logout",
       icons: <FaSignOutAlt />,
     },
     {
-      id: 7,
+      id: 8,
       title: "Delete Account",
       path: "/setting/delete-account",
       icons: <FaTrashAlt />,
