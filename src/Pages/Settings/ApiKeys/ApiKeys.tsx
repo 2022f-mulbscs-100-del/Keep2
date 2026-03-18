@@ -26,13 +26,33 @@ const ApiKeys = () => {
   const [apiKeys, setApiKeys] = useState<ApiKeyType[]>([]);
   const [isFetching, setIsFetching] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [revokingKeyId, setRevokingKeyId] = useState<number | null>(null);
   const [label, setLabel] = useState("");
   const [recentKey, setRecentKey] = useState<string | null>(null);
 
-  const handleCopy = async (value: string) => {
+  const handleCopy = async (value: string, apiKeyId?: number) => {
     if (!value) return;
     try {
       await navigator.clipboard.writeText(value);
+
+      if (apiKeyId) {
+        await axiosClient
+          .patch(`/api-keys/${apiKeyId}/last-used`)
+          .then((res) => {
+            const lastUsedAt = res.data?.lastUsedAt;
+            if (!lastUsedAt) return;
+            setApiKeys((prev) =>
+              prev.map((key) =>
+                key.id === apiKeyId ? { ...key, lastUsedAt } : key,
+              ),
+            );
+            Logger("API key usage updated");
+          })
+          .catch((error) => {
+            Logger("Failed to update API key usage", error);
+          });
+      }
+
       toast.success("Key copied to clipboard");
     } catch (error) {
       Logger("Unable to copy API key", error);
@@ -44,8 +64,12 @@ const ApiKeys = () => {
     try {
       setIsFetching(true);
       const res = await axiosClient.get("/api-keys");
-      const payload = res.data?.apiKeys ?? res.data?.keys ?? res.data;
-      const entries: ApiKeyType[] = Array.isArray(payload) ? payload : [];
+      const entries: ApiKeyType[] = (res.data?.apiKeys || []).map(
+        (item: ApiKeyType) => ({
+          ...item,
+          name: item.name ?? item.apiKeyName ?? null,
+        }),
+      );
       setApiKeys(entries);
     } catch (error) {
       Logger("Failed to load API keys", error);
@@ -59,6 +83,24 @@ const ApiKeys = () => {
     fetchApiKeys();
   }, []);
 
+  const handleRevoke = async (apiKeyId: number) => {
+    if (!window.confirm("Revoke this API key? This action cannot be undone.")) {
+      return;
+    }
+
+    try {
+      setRevokingKeyId(apiKeyId);
+      await axiosClient.patch(`/api-keys/${apiKeyId}/revoke`);
+      setApiKeys((prev) => prev.filter((key) => key.id !== apiKeyId));
+      toast.success("API key revoked");
+    } catch (error) {
+      Logger("Failed to revoke API key", error);
+      toast.error("Unable to revoke this API key right now");
+    } finally {
+      setRevokingKeyId(null);
+    }
+  };
+
   const handleGenerate = async () => {
     if (label.trim() === "") {
       toast.error("Please give the key a label so you can identify it later");
@@ -67,11 +109,11 @@ const ApiKeys = () => {
 
     try {
       setIsGenerating(true);
-      const res = await axiosClient.post("/api-keys", {
+      const res = await axiosClient.post("/generateApiKey", {
         name: label.trim(),
       });
 
-      const payload = res.data?.apiKey ?? res.data;
+      const payload = res.data;
       if (!payload) {
         throw new Error("Unexpected response from the server");
       }
@@ -83,8 +125,12 @@ const ApiKeys = () => {
 
       setRecentKey(generatedKey);
       setApiKeys((prev) => {
-        const deduped = prev.filter((key) => key.id !== payload.id);
-        return [payload, ...deduped];
+        const normalized: ApiKeyType = {
+          ...payload,
+          name: payload.name ?? payload.apiKeyName ?? null,
+        };
+        const deduped = prev.filter((key) => key.id !== normalized.id);
+        return [normalized, ...deduped];
       });
       setLabel("");
       toast.success(
@@ -113,7 +159,7 @@ const ApiKeys = () => {
           </div>
           <div>
             <h2 className="text-[22px] font-semibold">Create a new key</h2>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-white-400">
               Use API keys to read or write notes without going through the web
               app. Treat keys like passwords and avoid sharing them in public
               places.
@@ -175,55 +221,68 @@ const ApiKeys = () => {
             You haven’t generated any API keys yet.
           </p>
         ) : (
-          <div className="flex flex-col gap-4">
-            {apiKeys.map((key) => (
-              <div
-                key={key.id}
-                className="border border-borderColor rounded-[10px] p-4 space-y-3"
-              >
-                <div className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
-                  <div>
-                    <p className="text-body font-semibold">
-                      {key.name || "Untitled key"}
-                    </p>
-                    <p className="text-xs text-gray-400">
-                      Created {formatDate(key.createdAt)}
-                    </p>
+          <div>
+            <div className="flex flex-col gap-4 h-[300px] overflow-y-auto pr-1 customScrollBar">
+              {apiKeys.map((key) => (
+                <div
+                  key={key.id}
+                  className="border border-borderColor rounded-[10px] p-4 space-y-3"
+                >
+                  <div className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
+                    <div>
+                      <p className="text-body font-semibold">
+                        {key.name || key.apiKeyName || "Untitled key"}
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        Created {formatDate(key.createdAt)}
+                      </p>
+                    </div>
+                    <span
+                      className={`text-[11px] font-semibold uppercase tracking-wide rounded-full px-3 py-1 ${
+                        key.isActive
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-gray-500 text-white"
+                      }`}
+                    >
+                      {key.isActive ? "Active" : "Revoked"}
+                    </span>
                   </div>
-                  <span
-                    className={`text-[11px] font-semibold uppercase tracking-wide rounded-full px-3 py-1 ${
-                      key.isActive
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-gray-500 text-white"
-                    }`}
-                  >
-                    {key.isActive ? "Active" : "Revoked"}
-                  </span>
-                </div>
 
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div className="min-w-[220px] flex-1">
-                    <p className="text-[11px] text-gray-400">Key</p>
-                    <p className="text-sm font-mono">{maskKey(key.key)}</p>
-                  </div>
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <p className="text-[11px] text-gray-400">
-                      Last used {formatDate(key.lastUsedAt)}
-                    </p>
-                    {key.key && (
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div className="min-w-[220px] flex-1">
+                      <p className="text-[11px] text-gray-400">Key</p>
+                      <p className="text-sm font-mono">{maskKey(key.key)}</p>
+                    </div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="text-[11px] text-gray-400">
+                        Last used:{" "}
+                        {key.lastUsedAt
+                          ? formatDate(key.lastUsedAt)
+                          : "Never used"}
+                      </p>
+                      {key.key && (
+                        <button
+                          type="button"
+                          className="flex cursor-pointer items-center gap-2 rounded-full border border-borderColor px-3 py-1 text-sm"
+                          onClick={() => handleCopy(key.key!, key.id)}
+                        >
+                          <FaCopy />
+                          Copy
+                        </button>
+                      )}
                       <button
                         type="button"
-                        className="flex items-center gap-2 rounded-full border border-borderColor px-3 py-1 text-sm"
-                        onClick={() => handleCopy(key.key!)}
+                        className="rounded-full border border-red-500/70 px-3 py-1 text-sm text-red-300 disabled:cursor-not-allowed disabled:opacity-60"
+                        onClick={() => handleRevoke(key.id)}
+                        disabled={revokingKeyId === key.id}
                       >
-                        <FaCopy />
-                        Copy
+                        {revokingKeyId === key.id ? "Revoking..." : "Revoke"}
                       </button>
-                    )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         )}
       </div>
