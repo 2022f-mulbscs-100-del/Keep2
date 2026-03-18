@@ -1,6 +1,7 @@
 export type ApiKeyType = {
   id: number;
   name?: string | null;
+  apiKeyName?: string | null;
   key?: string | null;
   isActive?: boolean;
   createdAt?: string | null;
