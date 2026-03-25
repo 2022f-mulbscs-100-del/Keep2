@@ -112,6 +112,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             setUserData(res.data.rest);
             setAccessToken(res.data.accessToken);
             sessionStorage.setItem("accessToken", res.data.accessToken);
+            if (res.data.refreshToken) {
+              localStorage.setItem("refreshToken", res.data.refreshToken);
+            }
             localStorage.setItem("userData", JSON.stringify(res.data.rest));
             setIsLoading(false);
           }
@@ -153,6 +156,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUserData(res.data.rest);
       setAccessToken(res.data.accessToken);
       sessionStorage.setItem("accessToken", res.data.accessToken);
+      if (res.data.refreshToken) {
+        localStorage.setItem("refreshToken", res.data.refreshToken);
+      }
       localStorage.setItem("userData", JSON.stringify(res.data.rest));
       setIsLoading(false);
       setLoginStage("success");
@@ -187,19 +193,33 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           email,
           code: verificationCode,
         },
+        {
+          withCredentials: true,
+        },
       );
       setLoginStage("success");
       setUserData(res.data.rest);
       setAccessToken(res.data.accessToken);
       sessionStorage.setItem("accessToken", res.data.accessToken);
+      if (res.data.refreshToken) {
+        localStorage.setItem("refreshToken", res.data.refreshToken);
+      }
       localStorage.setItem("userData", JSON.stringify(res.data.rest));
       setIsLoading(false);
-      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/send-email`, {
-        email: email,
-        name: res.data.rest?.name,
-        templateId: 1,
-        params: { name: res.data.rest?.name },
-      });
+
+      try {
+        await axios.post(
+          `${import.meta.env.VITE_API_BASE_URL}/api/send-email`,
+          {
+            email,
+            name: res.data.rest?.name,
+            templateId: "1",
+            params: { name: res.data.rest?.name },
+          },
+        );
+      } catch (emailErr) {
+        Logger("Post-signup welcome email failed", emailErr);
+      }
 
       //eslint-disable-next-line
     } catch (err: any) {
@@ -219,6 +239,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         signUpConfirmationError:
           err.response?.data?.message || "Error during sign up confirmation",
       });
+      throw err;
     }
   };
 
@@ -238,6 +259,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUserData(res.data.rest);
       setAccessToken(res.data.accessToken);
       sessionStorage.setItem("accessToken", res.data.accessToken);
+      if (res.data.refreshToken) {
+        localStorage.setItem("refreshToken", res.data.refreshToken);
+      }
       localStorage.setItem("userData", JSON.stringify(res.data.rest));
       setIsLoading(false);
       setLoginStage("success");
@@ -278,7 +302,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           {
             email: signUpData.email,
             name: signUpData.name,
-            templateId: 1,
+            templateId: "1",
             params: { name: signUpData.name },
           },
         );

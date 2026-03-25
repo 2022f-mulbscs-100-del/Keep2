@@ -39,7 +39,6 @@ axiosClient.interceptors.response.use(
       originalRequest.headers.Authorization = `Bearer ${res.data.accessToken}`;
       return axios(originalRequest);
     }
-
     return Promise.reject(error);
   },
 );

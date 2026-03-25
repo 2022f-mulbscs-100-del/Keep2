@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 // import { toast } from "react-toastify"
@@ -26,6 +26,16 @@ function Login() {
     password: "",
   });
 
+  const callbackRedirect = useMemo(() => {
+    const redirect = new URLSearchParams(window.location.search).get(
+      "redirect",
+    );
+    if (!redirect || !redirect.startsWith("http://localhost:")) {
+      return null;
+    }
+    return redirect;
+  }, []);
+
   const {
     LoginHandler,
     isLoading,
@@ -37,6 +47,22 @@ function Login() {
     error,
     setError,
   } = useAuth();
+
+  const redirectToCallbackWithTokens = () => {
+    if (!callbackRedirect) return false;
+
+    const accessToken = sessionStorage.getItem("accessToken");
+    const refreshToken = localStorage.getItem("refreshToken");
+    if (!accessToken || !refreshToken) {
+      return false;
+    }
+
+    const callbackUrl = new URL(callbackRedirect);
+    callbackUrl.searchParams.set("accessToken", accessToken);
+    callbackUrl.searchParams.set("refreshToken", refreshToken);
+    window.location.href = callbackUrl.toString();
+    return true;
+  };
 
   useEffect(() => {
     if (formRef.current === null) {
@@ -82,8 +108,9 @@ function Login() {
     if (!TwoFa) {
       if (loginStage === "success") {
         toast.success("Login successful");
-        // window.location.href = "/";
-        navigate("/");
+        if (!redirectToCallbackWithTokens()) {
+          navigate("/");
+        }
         setLoginStage("login");
       }
 
@@ -108,7 +135,9 @@ function Login() {
     if (TwoFa) {
       if (loginStage === "success") {
         toast.success("login successfull");
-        navigate("/");
+        if (!redirectToCallbackWithTokens()) {
+          navigate("/");
+        }
         setLoginStage("login");
       } else if (loginStage === "failed") {
         toast.error("Invalid 2FA code. Please try again.");
@@ -272,13 +301,13 @@ function Login() {
             <div className="flex flex-col ">
               <SocialLoginButton
                 title={"Login with Google"}
-                url={`${import.meta.env.VITE_API_BASE_URL}/api/auth/google`}
+                url={`${import.meta.env.VITE_API_BASE_URL}/api/auth/google${callbackRedirect ? `?redirect=${encodeURIComponent(callbackRedirect)}` : ""}`}
                 provider="GoogleLogin"
                 icon={<FcGoogle />}
               />
               <SocialLoginButton
                 title={"Login with Github"}
-                url={`${import.meta.env.VITE_API_BASE_URL}/api/auth/github`}
+                url={`${import.meta.env.VITE_API_BASE_URL}/api/auth/github${callbackRedirect ? `?redirect=${encodeURIComponent(callbackRedirect)}` : ""}`}
                 provider="GithubLogin"
                 icon={<LiaGithub />}
               />
