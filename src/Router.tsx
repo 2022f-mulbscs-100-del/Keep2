@@ -16,6 +16,7 @@ import PersonalInfo from "./Pages/Settings/Personal-info/PersonalInfo";
 import Reminder from "./Pages/Reminders/Reminder";
 import EditLabels from "./Pages/EditLabels/EditLabels";
 import WebSocketIntegration from "./Pages/WebSocketIntegration/WebSocketIntegration";
+import PublicRoute from "./PublicRoute";
 // import PublicRoute from "./PublicRoute";
 
 interface ProviderWrapperProps {
@@ -88,25 +89,25 @@ const router = createBrowserRouter([
       {
         path: "/login",
         element: (
-          // <PublicRoute>
-          <Login />
-          // </PublicRoute>
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
         ),
       },
       {
         path: "/sign-up",
         element: (
-          // <PublicRoute>
-          <SignUp />
-          // </PublicRoute>
+          <PublicRoute>
+            <SignUp />
+          </PublicRoute>
         ),
       },
       {
         path: "/forget-password",
         element: (
-          // <PublicRoute>
-          <ForgetPassword />
-          // </PublicRoute>
+          <PublicRoute>
+            <ForgetPassword />
+          </PublicRoute>
         ),
       },
       {

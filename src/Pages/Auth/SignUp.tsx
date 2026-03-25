@@ -137,10 +137,10 @@ function SignUp() {
 
     try {
       await SignUpConfirmation(signUpForm.email, SignUpCode);
-      window.location.href = "/";
       toast.success("Email verified successfully");
+      navigate("/");
     } catch (error) {
-      toast.error("Invalid 2FA code. Please try again.");
+      toast.error("Invalid verification code. Please try again.");
       Logger("Error during email verification:", error);
     }
   };
