@@ -101,7 +101,6 @@ const Dialougebox = ({
                 />
 
                 <input
-                  ref={ref}
                   className="py-1 w-full border-b border-transparent focus:border-b focus:border-borderColor outline-none "
                   type="text"
                   value={input}
