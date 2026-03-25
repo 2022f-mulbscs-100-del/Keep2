@@ -8,6 +8,7 @@ import { useTheme } from "../Context/themeSwitcherContext";
 import PrimaryButton from "./Buttons/PrimaryButton";
 import { toast } from "react-toastify";
 import axiosClient from "../api/axiosClient";
+import axios from "axios";
 
 const Dialougebox = ({
   setisActive,
@@ -60,10 +61,17 @@ const Dialougebox = ({
       });
   };
 
-  const deleteNote = (id: number) => {
-    setLabel((prev) => {
-      return prev.filter((_, index) => index !== id);
-    });
+  const deleteLabel = async (id: number) => {
+    try {
+      await axiosClient.delete(`/deleteLabelCategories/${id}`);
+      setLabel((prev) => prev.filter((item) => item.id !== id));
+      toast.success("Label deleted successfully");
+    } catch (error: unknown) {
+      const message = axios.isAxiosError<{ message?: string }>(error)
+        ? error.response?.data?.message
+        : undefined;
+      toast.error(message || "Failed to delete label");
+    }
   };
 
   return (
@@ -120,7 +128,7 @@ const Dialougebox = ({
                   >
                     <MdDelete
                       onClick={() => {
-                        deleteNote(index);
+                        deleteLabel(item.id);
                       }}
                       className="cursor-pointer rounded-full w-[25px] h-[25px] p-1 hover:bg-secondary"
                     />
