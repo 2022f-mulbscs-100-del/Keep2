@@ -14,7 +14,7 @@ const Reminder = () => {
   useEffect(() => {
     setLoading(true);
     axiosClient
-      .get("/getRemainderNotes")
+      .get("/getRemairNotes")
       .then((response) => {
         setLoading(false);
         setReminderNotes(response.data);
