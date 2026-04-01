@@ -5,7 +5,10 @@ import { toast } from "react-toastify";
 import { IntegerSchema } from "../../../validation/validation";
 import { Logger } from "../../../utils/Logger";
 import { z } from "zod";
+import { useTranslation } from "react-i18next";
+
 const AutoLogoutBlock = () => {
+  const { t } = useTranslation();
   const {
     UpdateUserProfile,
     profileData,
@@ -77,10 +80,12 @@ const AutoLogoutBlock = () => {
         <div>
           <div className="flex items-center gap-4">
             <IoTimerOutline className="text-subheading2 text-gray-400 mt-1" />
-            <h2 className="text-subheading2 font-semibold mb-1">Auto Logout</h2>
+            <h2 className="text-subheading2 font-semibold mb-1">
+              {t("userPreferences.autoLogout")}
+            </h2>
           </div>
           <p className="text-body text-gray-400 ">
-            Automatically sign out after a period of inactivity.
+            {t("userPreferences.autoLogoutDescription")}
           </p>
         </div>
         <div className="flex items-center gap-4">
@@ -90,7 +95,7 @@ const AutoLogoutBlock = () => {
             <input
               className={` outline-none  text-body2 w-full text-white ${autoLogout === false ? " cursor-not-allowed" : ""}`}
               type="text"
-              placeholder="Enter value in minutes"
+              placeholder={t("userPreferences.enterValueInMinutes")}
               name="value"
               value={autoLogoutTime || ""}
               disabled={autoLogout === false}

@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import {
   MdFilterList,
   MdArchive,
@@ -15,10 +16,14 @@ type FilterButtonProps = {
 };
 
 const FilterButton: React.FC<FilterButtonProps> = ({ filters, setFilters }) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const availableLabels: string[] = ["Work", "Personal"];
+  const availableLabels: string[] = [
+    t("filters.labels.work"),
+    t("filters.labels.personal"),
+  ];
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -76,7 +81,7 @@ const FilterButton: React.FC<FilterButtonProps> = ({ filters, setFilters }) => {
         className="px-4 py-2 cursor-pointer rounded hover:bg-secondary transition flex items-center gap-2 relative "
       >
         <MdFilterList size={20} />
-        <span>Filter Notes</span>
+        <span>{t("filters.filterNotes")}</span>
         {activeFilterCount > 0 && (
           <span className="absolute bg-secondary -top-1 -right-1   text-xs rounded-full w-5 h-5 flex items-center justify-center font-semibold">
             {activeFilterCount}
@@ -89,14 +94,14 @@ const FilterButton: React.FC<FilterButtonProps> = ({ filters, setFilters }) => {
           className={`absolute top-full  mt-2 right-0 rounded-lg shadow-lg border border-borderColor w-64 z-50 bg-background`}
         >
           <div className="p-3 border-b border-borderColor flex items-center justify-between">
-            <h3 className="font-semibold ">Filter Notes</h3>
+            <h3 className="font-semibold ">{t("filters.filterNotes")}</h3>
             {hasActiveFilters && (
               <button
                 onClick={clearAllFilters}
                 className="text-xs hover:bg-secondary p-2  flex items-center gap-1 cursor-pointer"
               >
                 <MdClose size={16} />
-                Clear
+                {t("filters.clear")}
               </button>
             )}
           </div>
@@ -105,7 +110,7 @@ const FilterButton: React.FC<FilterButtonProps> = ({ filters, setFilters }) => {
             {/* Status Filters */}
             <div className="mb-3">
               <p className="text-xs font-semibold uppercase px-2 mb-2">
-                Status
+                {t("filters.status")}
               </p>
 
               <button
@@ -115,7 +120,9 @@ const FilterButton: React.FC<FilterButtonProps> = ({ filters, setFilters }) => {
                 }`}
               >
                 <MdArchive size={18} />
-                <span className="flex-1 text-left">Archived</span>
+                <span className="flex-1 text-left">
+                  {t("filters.archived")}
+                </span>
                 {filters.archived && (
                   <div className="w-2 h-2  bg-black rounded-full"></div>
                 )}
@@ -128,7 +135,7 @@ const FilterButton: React.FC<FilterButtonProps> = ({ filters, setFilters }) => {
                 }`}
               >
                 <MdDelete size={18} className="" />
-                <span className="flex-1 text-left">Bin</span>
+                <span className="flex-1 text-left">{t("filters.bin")}</span>
                 {filters.bin && (
                   <div className="w-2 h-2  bg-black rounded-full"></div>
                 )}
@@ -141,7 +148,9 @@ const FilterButton: React.FC<FilterButtonProps> = ({ filters, setFilters }) => {
                 }`}
               >
                 <MdNotifications size={18} />
-                <span className="flex-1 text-left">Has Reminder</span>
+                <span className="flex-1 text-left">
+                  {t("filters.hasReminder")}
+                </span>
                 {filters.reminder && (
                   <div className="w-2 h-2  bg-black rounded-full"></div>
                 )}
@@ -151,7 +160,7 @@ const FilterButton: React.FC<FilterButtonProps> = ({ filters, setFilters }) => {
             {/* Labels Filter */}
             <div className="border-t border-borderColor pt-3">
               <p className="text-xs font-semibold  uppercase px-2 mb-2">
-                Labels
+                {t("filters.labels.title")}
               </p>
 
               {availableLabels.map((label: string) => (
@@ -176,8 +185,7 @@ const FilterButton: React.FC<FilterButtonProps> = ({ filters, setFilters }) => {
           {hasActiveFilters && (
             <div className="p-3 border-t border-borderColor ">
               <p className="text-xs ">
-                {activeFilterCount} filter{activeFilterCount !== 1 ? "s" : ""}{" "}
-                active
+                {t("filters.activeFilters", { count: activeFilterCount })}
               </p>
             </div>
           )}

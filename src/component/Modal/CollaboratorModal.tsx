@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useUser } from "../../Context/UserContext";
 // import { z } from "zod";
 import { RxCross2 } from "react-icons/rx";
@@ -15,6 +16,7 @@ type CollaboratorType = {
   profileImage: string;
 };
 const CollaboratorModal = () => {
+  const { t } = useTranslation();
   const { profileData } = useUser();
   const { noteId, setCollaboratorModal } = useModal();
   const [email, setEmail] = useState("");
@@ -53,7 +55,7 @@ const CollaboratorModal = () => {
         });
       })
       .catch((error) => {
-        toast.error("Failed to fetch collaborators");
+        toast.error(t("collaboration.failedToFetchCollaborators"));
         Logger("Error fetching collaborators:", error);
       });
   }, [noteId]);
@@ -74,12 +76,12 @@ const CollaboratorModal = () => {
   const addCollaborator = async () => {
     if (email.trim() === "") return;
     if (email === profileData?.email) {
-      toast.error("You cannot add yourself as a collaborator");
+      toast.error(t("collaboration.cannotAddYourself"));
       setEmail("");
       return;
     }
     if (CollaboratorList.find((collab) => collab.collaborator === email)) {
-      toast.error("Collaborator already added");
+      toast.error(t("collaboration.collaboratorAlreadyAdded"));
       setEmail("");
       return;
     }
@@ -133,7 +135,9 @@ const CollaboratorModal = () => {
                     "
         >
           <div className=" border-b p-2">
-            <h1 className="text-subheading2 bold">Collaborators</h1>
+            <h1 className="text-subheading2 bold">
+              {t("collaboration.collaborators")}
+            </h1>
           </div>
 
           <div className="flex items-center gap-3 py-4 w-full">
@@ -147,7 +151,7 @@ const CollaboratorModal = () => {
               <div>
                 <h2 className="bold">
                   {openNote?.OwnerAttributes?.name || profileData?.name}
-                  <span>(Owner)</span>
+                  <span>{t("collaboration.owner")}</span>
                 </h2>
               </div>
               <p className="opacity-50">
@@ -203,7 +207,7 @@ const CollaboratorModal = () => {
             <div className="flex items-center justify-between w-full">
               <input
                 className="focus:outline-0 w-full"
-                placeholder="Email to share with"
+                placeholder={t("collaboration.emailPlaceholder")}
                 value={email}
                 onChange={HandleChange}
                 type="text"

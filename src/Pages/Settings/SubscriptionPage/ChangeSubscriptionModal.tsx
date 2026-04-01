@@ -4,6 +4,7 @@ import Placeholder from "../../../component/Placeholder/Placeholder";
 import { useUser } from "../../../Context/UserContext";
 import axiosClient from "../../../api/axiosClient";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 // import PrimaryButton from "../../../component/Buttons/PrimaryButton";
 
 type changeSubscriptionModalProps = {
@@ -11,6 +12,7 @@ type changeSubscriptionModalProps = {
 };
 
 const ChangeSubscriptionModal = ({ onClose }: changeSubscriptionModalProps) => {
+  const { t } = useTranslation();
   const [isLoading] = useState(false);
   const {
     profileData,
@@ -122,7 +124,9 @@ const ChangeSubscriptionModal = ({ onClose }: changeSubscriptionModalProps) => {
                   type="submit"
                   className=" disabled:opacity-50 disabled:cursor-not-allowed hover:bg-secondary cursor-pointer flex justify-center p-2 rounded-lg mt-4 w-full"
                 >
-                  {isLoading ? "Loading..." : "Cancel Subscription"}
+                  {isLoading
+                    ? t("common.loading")
+                    : t("buttons.cancelSubscription")}
                 </button>
                 {/* 
         <PrimaryButton title={isLoading ? "Loading..." : "Cancel Subscription"}
@@ -140,7 +144,7 @@ const ChangeSubscriptionModal = ({ onClose }: changeSubscriptionModalProps) => {
                   className=" disabled:opacity-50 disabled:cursor-not-allowed hover:bg-secondary cursor-pointer flex justify-center p-2 rounded-lg mt-4 w-full"
                 >
                   {isLoading
-                    ? "Loading..."
+                    ? t("common.loading")
                     : `Change to ${profileData?.subscriptionPlan === "monthly" ? "Yearly" : "Monthly"} Plan`}
                 </button>
               </div>

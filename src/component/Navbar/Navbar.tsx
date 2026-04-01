@@ -10,7 +10,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import ThemeSwitcherButton from "../Buttons/ThemeSwitcherButton";
 import { PiCodesandboxLogo } from "react-icons/pi";
 import SandboxModal from "../SandboxModal";
+import LanguageSwitcher from "../LanguageSwitcher/LanguageSwitcher";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useUser } from "../../Context/UserContext";
 import { useNotesApi } from "../CustomHooks/useNotesApi";
 import { Tooltip } from "react-tooltip";
@@ -18,6 +20,7 @@ import { useScreenSize } from "../CustomHooks/useScreenSize";
 import IconStyling from "../IconStyling";
 
 const Navbar = () => {
+  const { t } = useTranslation();
   const { pathname: path } = useLocation();
   const [sandboxOpen, setSandboxOpen] = useState(false);
   const { fetchNotes } = useNotesApi();
@@ -83,7 +86,7 @@ const Navbar = () => {
                 <IconStyling
                   icon={IoMdRefresh}
                   id={1}
-                  tooltip="Refresh"
+                  tooltip={t("navigation.refresh")}
                   onclick={() => {
                     fetchNotes();
                   }}
@@ -94,7 +97,7 @@ const Navbar = () => {
                 <IconStyling
                   icon={LuLayoutGrid}
                   id={2}
-                  tooltip="Grid View"
+                  tooltip={t("navigation.gridView")}
                   onclick={() => {
                     updateLayout(false);
                   }}
@@ -103,7 +106,7 @@ const Navbar = () => {
                 <IconStyling
                   icon={TbLayoutList}
                   id={1}
-                  tooltip={"List View"}
+                  tooltip={t("navigation.listView")}
                   onclick={() => {
                     updateLayout(true);
                   }}
@@ -114,7 +117,7 @@ const Navbar = () => {
                 <IconStyling
                   icon={IoSettingsOutline}
                   id={1}
-                  tooltip="Setting"
+                  tooltip={t("navigation.setting")}
                   onclick={() => {
                     navigate("/setting/personal-info");
                   }}
@@ -123,13 +126,14 @@ const Navbar = () => {
 
               <div
                 data-tooltip-id="theme-switcher-tooltip"
-                data-tooltip-content="Change Theme"
+                data-tooltip-content={t("navigation.changeTheme")}
               >
                 <ThemeSwitcherButton />
               </div>
+              <LanguageSwitcher />
               <div
                 data-tooltip-id="sandbox-tooltip"
-                data-tooltip-content="Sandbox"
+                data-tooltip-content={t("navigation.sandbox")}
               >
                 <PiCodesandboxLogo
                   className="cursor-pointer"

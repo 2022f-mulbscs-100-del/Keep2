@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useModal } from "../../Context/ModalProvider";
 import axiosClient from "../../api/axiosClient";
 import { toast } from "react-toastify";
 import { useNotesApi } from "../CustomHooks/useNotesApi";
 
 export const ReminderModal = () => {
+  const { t } = useTranslation();
   const { setReminderModal, noteId } = useModal();
   const [loading, setLoading] = useState(false);
   const [updating, setUpdating] = useState(false);
@@ -67,7 +69,7 @@ export const ReminderModal = () => {
         setLoading(false);
         setReminderModal(false);
         toast.error(
-          error.response?.data?.message || "Failed to create reminder",
+          error.response?.data?.message || t("modals.reminder.failedCreate"),
         );
       });
   };
@@ -86,7 +88,7 @@ export const ReminderModal = () => {
         setUpdating(false);
         setReminderModal(false);
         toast.error(
-          error.response?.data?.message || "Failed to update reminder",
+          error.response?.data?.message || t("modals.reminder.failedUpdate"),
         );
       });
   };
@@ -101,7 +103,9 @@ export const ReminderModal = () => {
       >
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold text-white">Set Reminder</h2>
+          <h2 className="text-xl font-semibold text-white">
+            {t("modals.reminder.title")}
+          </h2>
           <button
             onClick={() => setReminderModal(false)}
             className="text-gray-400 hover:text-white transition-colors cursor-pointer"
@@ -130,7 +134,7 @@ export const ReminderModal = () => {
           {/* Title Input */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              Reminder Title
+              {t("modals.reminder.reminderTitle")}
             </label>
             <input
               type="text"
@@ -139,7 +143,7 @@ export const ReminderModal = () => {
                 setReminderData({ ...reminderData, title: e.target.value })
               }
               className="w-full px-3 py-2  border border-borderColor rounded-md text-white placeholder-gray-500 "
-              placeholder="Enter reminder title"
+              placeholder={t("modals.reminder.enterTitle")}
               required
             />
           </div>
@@ -147,7 +151,7 @@ export const ReminderModal = () => {
           {/* Date Input */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              Date
+              {t("modals.reminder.date")}
             </label>
             <input
               type="date"
@@ -163,7 +167,7 @@ export const ReminderModal = () => {
           {/* Time Input */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              Time
+              {t("modals.reminder.time")}
             </label>
             <input
               type="time"
@@ -179,7 +183,7 @@ export const ReminderModal = () => {
           {/* Repeat Pattern */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              Repeat
+              {t("modals.reminder.repeat")}
             </label>
             <select
               value={reminderData.repeat}
@@ -188,7 +192,7 @@ export const ReminderModal = () => {
               }
               className="w-full px-3 py-2 bg-background  border border-borderColor rounded-md text-white "
             >
-              <option value="none">Does not repeat</option>
+              <option value="none">{t("modals.reminder.noRepeat")}</option>
               <option value="daily">Daily</option>
               <option value="weekly">Weekly</option>
               <option value="monthly">Monthly</option>
@@ -212,10 +216,10 @@ export const ReminderModal = () => {
               className="flex-1 px-4 py-2 cursor-pointer bg-primary text-white rounded-md transition-colors"
             >
               {updating
-                ? "Loading..."
+                ? t("common.loading")
                 : reminderData.remainderId
-                  ? "Update Reminder"
-                  : "Create Reminder"}
+                  ? t("modals.reminder.updateReminder")
+                  : t("modals.reminder.createReminder")}
             </button>
           </div>
         </form>

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 // import { toast } from "react-toastify"
 import { useAuth } from "../../Context/AuthContext";
 import { toast } from "react-toastify";
@@ -11,6 +12,7 @@ import { LiaGithub } from "react-icons/lia";
 import AuthenticationOptions from "./AuthenticationOptions";
 
 function Login() {
+  const { t } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const [TwoFa, setTwoFa] = useState(false);
@@ -107,7 +109,7 @@ function Login() {
   useEffect(() => {
     if (!TwoFa) {
       if (loginStage === "success") {
-        toast.success("Login successful");
+        toast.success(t("success.loginSuccessful"));
         if (!redirectToCallbackWithTokens()) {
           navigate("/");
         }
@@ -115,7 +117,7 @@ function Login() {
       }
 
       if (loginStage === "failed") {
-        toast.error("Invalid credentials. Please try again.");
+        toast.error(t("errors.invalidCredentials"));
         setLoginStage("login");
       }
 
@@ -134,15 +136,15 @@ function Login() {
   useEffect(() => {
     if (TwoFa) {
       if (loginStage === "success") {
-        toast.success("login successfull");
+        toast.success(t("success.loginSuccessful"));
         if (!redirectToCallbackWithTokens()) {
           navigate("/");
         }
         setLoginStage("login");
       } else if (loginStage === "failed") {
-        toast.error("Invalid 2FA code. Please try again.");
+        toast.error(t("errors.invalid2FACode"));
       } else if (loginStage === "Invalid verification code") {
-        toast.error("Invalid verification code. Please try again.");
+        toast.error(t("errors.invalidVerificationCode"));
       }
     }
   }, [loginStage]);
@@ -190,7 +192,7 @@ function Login() {
       return;
     }
     if (verificationCode.length === 0) {
-      toast.error("Please enter the verification code.");
+      toast.error(t("errors.pleaseEnterVerificationCode"));
       return;
     }
     e.preventDefault();
@@ -227,8 +229,10 @@ function Login() {
           >
             <div className="">
               <div className="flex flex-col items-center mb-4">
-                <h1 className="font-bold text-subheading2">Login In</h1>
-                <p className="text-body2">to continue to Keeper</p>
+                <h1 className="font-bold text-subheading2">
+                  {t("auth.login")}
+                </h1>
+                <p className="text-body2">{t("auth.toContinue")}</p>
               </div>
               <div className="flex justify-end text-[12px] mr-2 mb-2 ">
                 <button
@@ -238,7 +242,7 @@ function Login() {
                     navigate("/sign-up");
                   }}
                 >
-                  Sign Up
+                  {t("auth.signUp")}
                 </button>
               </div>
               <div className="flex flex-col gap-4 ">
@@ -247,7 +251,7 @@ function Login() {
                     ref={inputRef}
                     className="outline-none w-full text-body2"
                     type="text"
-                    placeholder="Email"
+                    placeholder={t("auth.email")}
                     name="email"
                     onChange={HandleLoginFormData}
                   />
@@ -258,7 +262,7 @@ function Login() {
                     <input
                       className="outline-none w-full text-body2"
                       type={`${showPassword ? "text" : "password"}`}
-                      placeholder="Password"
+                      placeholder={t("auth.password")}
                       name="password"
                       onChange={HandleLoginFormData}
                     />
@@ -281,13 +285,13 @@ function Login() {
                       navigate("/forget-password");
                     }}
                   >
-                    Forget Password?
+                    {t("auth.forgetPassword")}
                   </div>
                 </div>
               </div>
 
               <PrimaryButton
-                title={isLoading ? "Loading..." : "Login"}
+                title={isLoading ? t("auth.login") : "Login"}
                 isLoading={isLoading}
               />
             </div>
@@ -295,18 +299,20 @@ function Login() {
           <div className="w-[400px] mx-auto ">
             <div className="flex items-center justify-center gap-4">
               <div className="border border-t w-[100px] opacity-50" />
-              <div className="text-center text-body2 ">Or continue with</div>
+              <div className="text-center text-body2 ">
+                {t("auth.orContinueWith")}
+              </div>
               <div className="border border-t w-[100px] opacity-50" />
             </div>
             <div className="flex flex-col ">
               <SocialLoginButton
-                title={"Login with Google"}
+                title={t("auth.loginWithGoogle")}
                 url={`${import.meta.env.VITE_API_BASE_URL}/api/auth/google${callbackRedirect ? `?redirect=${encodeURIComponent(callbackRedirect)}` : ""}`}
                 provider="GoogleLogin"
                 icon={<FcGoogle />}
               />
               <SocialLoginButton
-                title={"Login with Github"}
+                title={t("auth.loginWithGitHub")}
                 url={`${import.meta.env.VITE_API_BASE_URL}/api/auth/github${callbackRedirect ? `?redirect=${encodeURIComponent(callbackRedirect)}` : ""}`}
                 provider="GithubLogin"
                 icon={<LiaGithub />}
@@ -323,11 +329,9 @@ function Login() {
               <div className="">
                 <div className="flex flex-col items-center mb-4">
                   <h1 className="font-bold text-subheading2">
-                    Two-Factor Authentication
+                    {t("security.twoFactorAuthentication")}
                   </h1>
-                  <p className="text-body2">
-                    Enter the 2FA code sent to your email to continue
-                  </p>
+                  <p className="text-body2">{t("auth.enter2FACode")}</p>
                 </div>
                 <div className="flex flex-col gap-4 ">
                   <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
@@ -335,7 +339,7 @@ function Login() {
                       ref={inputRef}
                       className="outline-none w-full text-body2"
                       type="number"
-                      placeholder="Enter 2FA Code"
+                      placeholder={t("auth.enter2FACode")}
                       name="2faCode"
                       value={twoFaCode}
                       onChange={(e) => setTwoFaCode(e.target.value)}
@@ -344,7 +348,7 @@ function Login() {
                 </div>
 
                 <PrimaryButton
-                  title={isLoading ? "Loading..." : "Verify"}
+                  title={isLoading ? "Loading..." : t("auth.verify")}
                   isLoading={isLoading}
                 />
               </div>
@@ -366,10 +370,10 @@ function Login() {
               <div className="">
                 <div className="flex flex-col items-center mb-4">
                   <h1 className="font-bold text-subheading2">
-                    Email Verification
+                    {t("auth.emailVerification")}
                   </h1>
                   <p className="text-body2">
-                    Enter the verification code sent to your email to continue
+                    {t("auth.enterVerificationCode")}
                   </p>
                 </div>
                 <div className="flex flex-col gap-4 ">
@@ -378,7 +382,7 @@ function Login() {
                       ref={inputRef}
                       className="outline-none w-full text-body2"
                       type="number"
-                      placeholder="Enter Verification Code"
+                      placeholder={t("auth.enterVerificationCode")}
                       name="verificationCode"
                       value={verificationCode}
                       onChange={(e) => setVerificationCode(e.target.value)}
@@ -387,7 +391,7 @@ function Login() {
                 </div>
 
                 <PrimaryButton
-                  title={isLoading ? "Loading..." : "Verify"}
+                  title={isLoading ? "Loading..." : t("auth.verify")}
                   isLoading={isLoading}
                 />
               </div>
@@ -403,9 +407,9 @@ function Login() {
               <div className="">
                 <div className="flex flex-col items-center mb-4">
                   <h1 className="font-bold text-subheading2">
-                    MFA Verification
+                    {t("auth.mfaVerification")}
                   </h1>
-                  <p className="text-body2">Enter the MFA code to continue</p>
+                  <p className="text-body2">{t("auth.enterMFACode")}</p>
                 </div>
                 <div className="flex flex-col gap-4 ">
                   <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
@@ -413,7 +417,7 @@ function Login() {
                       ref={inputRef}
                       className="outline-none w-full text-body2"
                       type="number"
-                      placeholder="Enter MFA Code"
+                      placeholder={t("auth.enterMFACode")}
                       name="mfaCode"
                       value={MFAcode}
                       onChange={(e) => setMFAcode(e.target.value)}
@@ -422,7 +426,7 @@ function Login() {
                 </div>
 
                 <PrimaryButton
-                  title={isLoading ? "Loading..." : "Verify"}
+                  title={isLoading ? "Loading..." : t("auth.verify")}
                   isLoading={isLoading}
                 />
 

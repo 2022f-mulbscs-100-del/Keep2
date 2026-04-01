@@ -9,10 +9,12 @@ import Placeholder from "../../../component/Placeholder/Placeholder";
 import { useUser } from "../../../Context/UserContext";
 import { Logger } from "../../../utils/Logger";
 import PrimaryButton from "../../../component/Buttons/PrimaryButton";
+import { useTranslation } from "react-i18next";
 
 type Status = string;
 
 export default function CheckoutForm({ choosePlan }: { choosePlan: string }) {
+  const { t } = useTranslation();
   const [paymentStatus, setPaymentStatus] = useState<Status | undefined | null>(
     null,
   );
@@ -100,7 +102,7 @@ export default function CheckoutForm({ choosePlan }: { choosePlan: string }) {
             </div>
 
             <PrimaryButton
-              title={isLoading ? "Loading..." : "Subscribe"}
+              title={isLoading ? t("common.loading") : t("buttons.subscribe")}
               disabled={!stripe || isLoading}
               isLoading={isLoading}
             />

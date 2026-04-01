@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import PrimaryButton from "../../component/Buttons/PrimaryButton";
 
 type AuthenticationOptionsProps = {
@@ -9,6 +10,7 @@ const AuthenticationOptions = ({
   option1,
   option2,
 }: AuthenticationOptionsProps) => {
+  const { t } = useTranslation();
   const [showOptions, setShowOptions] = useState(false);
   return (
     <>
@@ -17,7 +19,7 @@ const AuthenticationOptions = ({
           className={`${showOptions ? "border-b-1 border-gray-500 pb-2" : ""}`}
         >
           <PrimaryButton
-            title="More Options"
+            title={t("auth.moreOptions")}
             onClick={() => setShowOptions(!showOptions)}
           />
         </div>

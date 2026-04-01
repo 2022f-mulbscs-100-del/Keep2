@@ -10,6 +10,7 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 import axiosClient from "../../../api/axiosClient";
 import { Logger } from "../../../utils/Logger";
 import PrimaryButton from "../../../component/Buttons/PrimaryButton";
+import { useTranslation } from "react-i18next";
 // import axiosClient from "../../api/axiosClient";
 
 // type Status = string;
@@ -59,6 +60,7 @@ export default function UpdateForm({
   onClose,
   setPaymentMethod,
 }: updateFormProps) {
+  const { t } = useTranslation();
   // const [paymentStatus, setPaymentStatus] = useState<Status | undefined | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -135,7 +137,7 @@ export default function UpdateForm({
 
             <div className="sm:flex-1   ">
               <h1 className="sm:text-3xl xs:text-[24px] font-bold text-nowrap text-center">
-                Update Payment Method
+                {t("buttons.updatePaymentMethod")}
               </h1>
             </div>
           </div>
@@ -172,7 +174,7 @@ export default function UpdateForm({
 
           <div className="sm:flex-1   ">
             <h1 className="sm:text-3xl xs:text-[24px] font-bold text-nowrap text-center">
-              Update Payment Method
+              {t("buttons.updatePaymentMethod")}
             </h1>
           </div>
         </div>
@@ -208,7 +210,9 @@ export default function UpdateForm({
           </div>
 
           <PrimaryButton
-            title={isLoading ? "Loading..." : "Update payment method"}
+            title={
+              isLoading ? t("common.loading") : t("buttons.updatePaymentMethod")
+            }
             isLoading={loading}
             disabled={!stripe || isLoading}
           />

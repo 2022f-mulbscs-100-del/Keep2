@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AiOutlineKey } from "react-icons/ai";
 import { FaCopy } from "react-icons/fa";
 import { toast } from "react-toastify";
@@ -8,21 +9,22 @@ import SettingHeader from "../../../component/settingHeader/SettingHeader";
 import { Logger } from "../../../utils/Logger";
 import type { ApiKeyType } from "../../../types/ApiKey.types";
 
-const formatDate = (value?: string | null) => {
-  if (!value) return "Never";
+const formatDate = (value?: string | null, neverText?: string) => {
+  if (!value) return neverText || "Never";
   return new Intl.DateTimeFormat(undefined, {
     dateStyle: "medium",
     timeStyle: "short",
   }).format(new Date(value));
 };
 
-const maskKey = (value?: string | null) => {
-  if (!value) return "Hidden";
+const maskKey = (value?: string | null, hiddenText?: string) => {
+  if (!value) return hiddenText || "Hidden";
   if (value.length <= 12) return value;
   return `${value.slice(0, 6)}···${value.slice(-4)}`;
 };
 
 const ApiKeys = () => {
+  const { t } = useTranslation();
   const [apiKeys, setApiKeys] = useState<ApiKeyType[]>([]);
   const [isFetching, setIsFetching] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -52,10 +54,10 @@ const ApiKeys = () => {
             Logger("Failed to update API key usage", error);
           });
       }
-
-      toast.success("Key copied to clipboard");
+      t("success.keyCopied");
     } catch (error) {
       Logger("Unable to copy API key", error);
+      toast.error(t("apiKeys.unableToCopyKey"));
       toast.error("Unable to copy the key. Try again manually.");
     }
   };
@@ -73,7 +75,7 @@ const ApiKeys = () => {
       setApiKeys(entries);
     } catch (error) {
       Logger("Failed to load API keys", error);
-      toast.error("Unable to load API keys right now");
+      toast.error(t("apiKeys.unableToLoadApiKeys"));
     } finally {
       setIsFetching(false);
     }
@@ -84,7 +86,7 @@ const ApiKeys = () => {
   }, []);
 
   const handleRevoke = async (apiKeyId: number) => {
-    if (!window.confirm("Revoke this API key? This action cannot be undone.")) {
+    if (!window.confirm(t("apiKeys.revokeWarning"))) {
       return;
     }
 
@@ -92,10 +94,10 @@ const ApiKeys = () => {
       setRevokingKeyId(apiKeyId);
       await axiosClient.patch(`/api-keys/${apiKeyId}/revoke`);
       setApiKeys((prev) => prev.filter((key) => key.id !== apiKeyId));
-      toast.success("API key revoked");
+      toast.success(t("success.apiKeyRevoked"));
     } catch (error) {
       Logger("Failed to revoke API key", error);
-      toast.error("Unable to revoke this API key right now");
+      toast.error(t("apiKeys.unableToRevokeKey"));
     } finally {
       setRevokingKeyId(null);
     }
@@ -103,7 +105,7 @@ const ApiKeys = () => {
 
   const handleGenerate = async () => {
     if (label.trim() === "") {
-      toast.error("Please give the key a label so you can identify it later");
+      toast.error(t("apiKeys.labelEmpty"));
       return;
     }
 
@@ -133,9 +135,7 @@ const ApiKeys = () => {
         return [normalized, ...deduped];
       });
       setLabel("");
-      toast.success(
-        "New API key created. Copy it now because it won’t be shown again.",
-      );
+      toast.success(t("apiKeys.keyCreated"));
     } catch (error: unknown) {
       Logger("API key generation failed", error);
       const message =
@@ -150,7 +150,7 @@ const ApiKeys = () => {
 
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-6 md:px-10">
-      <SettingHeader title="API Keys" />
+      <SettingHeader title={t("apiKeys.title")} />
 
       <div className="border border-borderColor rounded-[10px] p-6 mb-6 space-y-5">
         <div className="flex gap-3 items-start">
@@ -158,36 +158,38 @@ const ApiKeys = () => {
             <AiOutlineKey />
           </div>
           <div>
-            <h2 className="text-[22px] font-semibold">Create a new key</h2>
-            <p className="text-sm text-white-400">
-              Use API keys to read or write notes without going through the web
-              app. Treat keys like passwords and avoid sharing them in public
-              places.
-            </p>
+            <h2 className="text-[22px] font-semibold">
+              {t("apiKeys.createNewKey")}
+            </h2>
+            <p className="text-sm text-white-400">{t("apiKeys.description")}</p>
           </div>
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium text-body">Key label</label>
+          <label className="text-sm font-medium text-body">
+            {t("apiKeys.keyLabel")}
+          </label>
           <input
             className="w-full rounded-[10px] border border-borderColor px-4 py-3 text-body outline-none focus:border-primary"
-            placeholder="e.g. automation-service"
+            placeholder={t("apiKeys.keyLabelPlaceholder")}
             value={label}
             onChange={(event) => setLabel(event.target.value)}
           />
         </div>
 
         <PrimaryButton
-          title={isGenerating ? "Generating key…" : "Generate API key"}
+          title={
+            isGenerating
+              ? t("apiKeys.generatingKey")
+              : t("apiKeys.generateButton")
+          }
           onClick={handleGenerate}
           disabled={isGenerating}
         />
 
         {recentKey && (
           <div className="border border-primary rounded-[10px] bg-[#1f2937]/40 p-4 space-y-3">
-            <p className="text-xs text-gray-400">
-              This is the only time you will see this key. Copy it now.
-            </p>
+            <p className="text-xs text-gray-400">{t("apiKeys.viewWarning")}</p>
             <div className="flex flex-wrap items-center justify-between gap-3">
               <code className="w-full overflow-hidden text-sm font-mono text-primary break-all">
                 {recentKey}
@@ -198,7 +200,7 @@ const ApiKeys = () => {
                 onClick={() => handleCopy(recentKey)}
               >
                 <FaCopy />
-                Copy
+                {t("common.copy")}
               </button>
             </div>
           </div>
@@ -207,19 +209,16 @@ const ApiKeys = () => {
 
       <div className="border border-borderColor rounded-[10px] p-6 space-y-4">
         <div className="flex flex-col gap-1">
-          <h2 className="text-[22px] font-semibold">Your keys</h2>
+          <h2 className="text-[22px] font-semibold">{t("apiKeys.yourKeys")}</h2>
           <p className="text-sm text-gray-400">
-            Revoke keys when they are no longer needed or if you suspect they
-            were leaked.
+            {t("apiKeys.revokeDescription")}
           </p>
         </div>
 
         {isFetching ? (
-          <p className="text-sm text-gray-400">Loading keys…</p>
+          <p className="text-sm text-gray-400">{t("apiKeys.loadingKeys")}</p>
         ) : apiKeys.length === 0 ? (
-          <p className="text-sm text-gray-400">
-            You haven’t generated any API keys yet.
-          </p>
+          <p className="text-sm text-gray-400">{t("noData.noApiKeys")}</p>
         ) : (
           <div>
             <div className="flex flex-col gap-4 h-[300px] overflow-y-auto pr-1 customScrollBar">
@@ -231,10 +230,10 @@ const ApiKeys = () => {
                   <div className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
                     <div>
                       <p className="text-body font-semibold">
-                        {key.name || key.apiKeyName || "Untitled key"}
+                        {key.name || key.apiKeyName || t("noData.untitledKey")}
                       </p>
                       <p className="text-xs text-gray-400">
-                        Created {formatDate(key.createdAt)}
+                        {t("apiKeys.created")} {formatDate(key.createdAt)}
                       </p>
                     </div>
                     <span
@@ -244,21 +243,25 @@ const ApiKeys = () => {
                           : "bg-gray-500 text-white"
                       }`}
                     >
-                      {key.isActive ? "Active" : "Revoked"}
+                      {key.isActive
+                        ? t("apiKeys.active")
+                        : t("apiKeys.revoked")}
                     </span>
                   </div>
 
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div className="min-w-[220px] flex-1">
-                      <p className="text-[11px] text-gray-400">Key</p>
+                      <p className="text-[11px] text-gray-400">
+                        {t("apiKeys.key")}
+                      </p>
                       <p className="text-sm font-mono">{maskKey(key.key)}</p>
                     </div>
                     <div className="flex items-center gap-2 flex-wrap">
                       <p className="text-[11px] text-gray-400">
-                        Last used:{" "}
+                        {t("apiKeys.lastUsed")}:{" "}
                         {key.lastUsedAt
-                          ? formatDate(key.lastUsedAt)
-                          : "Never used"}
+                          ? formatDate(key.lastUsedAt, t("common.never"))
+                          : `${t("common.never")} used`}
                       </p>
                       {key.key && (
                         <button
@@ -267,7 +270,7 @@ const ApiKeys = () => {
                           onClick={() => handleCopy(key.key!, key.id)}
                         >
                           <FaCopy />
-                          Copy
+                          {t("common.copy")}
                         </button>
                       )}
                       <button
@@ -276,7 +279,9 @@ const ApiKeys = () => {
                         onClick={() => handleRevoke(key.id)}
                         disabled={revokingKeyId === key.id}
                       >
-                        {revokingKeyId === key.id ? "Revoking..." : "Revoke"}
+                        {revokingKeyId === key.id
+                          ? t("apiKeys.revoking")
+                          : t("apiKeys.revoke")}
                       </button>
                     </div>
                   </div>

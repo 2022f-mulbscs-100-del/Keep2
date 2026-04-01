@@ -10,11 +10,13 @@ import { useUser } from "../../../Context/UserContext";
 import Pills from "../../../component/Pills/Pill";
 import ChangeSubscriptionPlan from "./ChangeSubcriptionPlan";
 import UpdatePaymentMethod from "./UpdatePaymentMethod";
+import { useTranslation } from "react-i18next";
 import type { paymentMethodtype } from "../../../types/Payment.types";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 export default function SubscriptionPage() {
+  const { t } = useTranslation();
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -88,7 +90,7 @@ export default function SubscriptionPage() {
   return (
     <>
       <div className="mt-10 mx-10">
-        <SettingHeader title="Subscription" />
+        <SettingHeader title={t("subscription.subscriptionTitle")} />
         {ACTIVE_SUBSCRIPTION && (
           <div className="flex justify-end mb-5 gap-4 flex-wrap">
             <div
@@ -100,7 +102,7 @@ export default function SubscriptionPage() {
                 );
               }}
             >
-              <Pills title="Change Subscription Plan" />
+              <Pills title={t("subscription.changeSubscriptionPlan")} />
             </div>
 
             <div
@@ -112,7 +114,7 @@ export default function SubscriptionPage() {
                 );
               }}
             >
-              <Pills title="Update Payment Method" />
+              <Pills title={t("subscription.updatePaymentMethod")} />
             </div>
           </div>
         )}
@@ -126,12 +128,14 @@ export default function SubscriptionPage() {
               <div className="flex items-center gap-3">
                 <IoShieldCheckmarkOutline className="text-2xl text-green-500" />
                 <div>
-                  <h3 className="text-lg font-semibold text-white">Pro User</h3>
+                  <h3 className="text-lg font-semibold text-white">
+                    {t("subscription.proUser")}
+                  </h3>
                   <p className="text-sm text-gray-400">
                     {profileData?.subscriptionPlan === "monthly"
-                      ? "Monthly"
-                      : "Yearly"}{" "}
-                    Subscription
+                      ? t("subscription.monthly")
+                      : t("subscription.yearly")}{" "}
+                    {t("subscription.subscriptionLabel")}
                   </p>
                 </div>
               </div>
@@ -146,29 +150,33 @@ export default function SubscriptionPage() {
           {/* Subscription Details */}
           <div className="border border-borderColor rounded-lg overflow-hidden ">
             <div className="flex justify-between items-center p-4 border-b border-borderColor">
-              <span className="text-gray-400">Plan</span>
+              <span className="text-gray-400">{t("subscription.plan")}</span>
               <span className="text-white font-medium capitalize">
                 {profileData?.subscriptionPlan}
               </span>
             </div>
 
             <div className="flex justify-between items-center p-4 border-b border-borderColor">
-              <span className="text-gray-400">Amount</span>
+              <span className="text-gray-400">{t("subscription.amount")}</span>
               <span className="text-white font-medium">
                 ${profileData?.subscriptionPlan === "monthly" ? "10" : "100"} /{" "}
-                {profileData?.subscriptionPlan === "monthly" ? "month" : "year"}
+                {profileData?.subscriptionPlan === "monthly"
+                  ? t("subscription.month")
+                  : t("subscription.year")}
               </span>
             </div>
 
             <div className="flex justify-between items-center p-4 border-b border-borderColor">
-              <span className="text-gray-400">Status</span>
+              <span className="text-gray-400">{t("subscription.status")}</span>
               <span className="text-white font-medium capitalize">
                 {profileData?.subscriptionStatus}
               </span>
             </div>
 
             <div className="flex justify-between items-center p-4">
-              <span className="text-gray-400">Next Billing</span>
+              <span className="text-gray-400">
+                {t("subscription.nextBilling")}
+              </span>
               <span className="text-white font-medium">
                 {new Date(
                   profileData?.subscriptionExpiry + "T00:00:00",
@@ -188,7 +196,9 @@ export default function SubscriptionPage() {
           xsm:px-4"
         >
           <div className="flex items-center justify-between mb-2">
-            <h2 className="text-xl font-semibold">Subscription Plan</h2>
+            <h2 className="text-xl font-semibold">
+              {t("subscription.subscriptionPlan")}
+            </h2>
             <div className="flex gap-2  rounded-lg p-1">
               <button
                 type="button"
@@ -202,7 +212,7 @@ export default function SubscriptionPage() {
                     : "text-gray-400 hover:text-white hover:bg-secondary"
                 }`}
               >
-                Monthly
+                {t("subscription.monthly")}
               </button>
 
               <button
@@ -217,7 +227,7 @@ export default function SubscriptionPage() {
                     : "text-gray-400 hover:text-white hover:bg-secondary"
                 }`}
               >
-                Yearly
+                {t("subscription.yearly")}
               </button>
             </div>
           </div>
@@ -227,13 +237,15 @@ export default function SubscriptionPage() {
             <div>
               <span className="text-1xl font-bold flex  items-baseline gap-1">
                 {plan
-                  ? "Upgrade to Professional for $90/year"
-                  : "Upgrade to Professional for $10/month"}
+                  ? t("subscription.upgradeYearly")
+                  : t("subscription.upgradeMonthly")}
               </span>
             </div>
             <div className="flex justify-end items-baseline gap-1">
               <span className="text-4xl font-bold">${plan ? "100" : "10"}</span>
-              <span className="text-gray-400">/ {plan ? "year" : "month"}</span>
+              <span className="text-gray-400">
+                {t("subscription." + (plan ? "perYear" : "perMonth"))}
+              </span>
             </div>
           </div>
         </div>
