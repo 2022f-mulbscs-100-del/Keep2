@@ -6,8 +6,10 @@ import ResetPasswordBlock from "./ResetPasswordBlock";
 import MFABlock from "./MFABlock";
 import { useUser } from "../../../Context/UserContext";
 import PassKeyBlock from "./PassKeyBlock";
+import { useTranslation } from "react-i18next";
 
 const Security = () => {
+  const { t } = useTranslation();
   const [showBlock, setShowBlock] = useState<string[] | null>([
     "two-factor-authentication",
   ]);
@@ -24,7 +26,7 @@ const Security = () => {
         md:p-10
     xsm:p-4"
     >
-      <SettingHeader title="Security Settings" />
+      <SettingHeader title={t("security.securitySettingsTitle")} />
       <div className="flex justify-end mb-5 gap-4 flex-wrap">
         <div
           onClick={() => {
@@ -35,7 +37,7 @@ const Security = () => {
             );
           }}
         >
-          <Pills title="Reset password" />
+          <Pills title={t("security.resetPassword")} />
         </div>
 
         <div
@@ -47,7 +49,7 @@ const Security = () => {
             );
           }}
         >
-          <Pills title="Two-Factor Authentication" />
+          <Pills title={t("security.twoFactorAuthentication")} />
         </div>
         <div
           onClick={() => {
@@ -58,7 +60,7 @@ const Security = () => {
             );
           }}
         >
-          <Pills title="TOTP" />
+          <Pills title={t("security.totp")} />
         </div>
         <div
           onClick={() => {
@@ -69,7 +71,7 @@ const Security = () => {
             );
           }}
         >
-          <Pills title="Pass-key" />
+          <Pills title={t("security.passkey")} />
         </div>
       </div>
       {showBlock!.includes("reset-password") && <ResetPasswordBlock />}

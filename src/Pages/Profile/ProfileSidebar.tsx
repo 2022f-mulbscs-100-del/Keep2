@@ -10,56 +10,58 @@ import {
   FaUserCog,
 } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const ProfileSidebar = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const settingLayout = [
     {
       id: 1,
-      title: "Personal Info",
+      title: t("settings.personalInfo"),
       path: "/setting/personal-info",
       icons: <FaIdCard />,
     },
     {
       id: 2,
-      title: "User Preferences",
+      title: t("settings.userPreferences"),
       path: "/setting/user-preferences",
       icons: <FaUserCog />,
     },
     {
       id: 3,
-      title: "Subscription",
+      title: t("settings.subscriptionMenu"),
       path: "/setting/subscription",
       icons: <FaCreditCard />,
     },
     {
       id: 4,
-      title: "Security",
+      title: t("settings.securityMenu"),
       path: "/setting/security",
       icons: <FaShieldAlt />,
     },
     {
       id: 5,
-      title: "API Keys",
+      title: t("settings.apiKeysMenu"),
       path: "/setting/api-keys",
       icons: <FaKey />,
     },
     {
       id: 6,
-      title: "Appearance",
+      title: t("settings.appearance"),
       path: "/setting/appearance",
       icons: <FaPalette />,
     },
     {
       id: 7,
-      title: "Logout",
+      title: t("settings.logoutMenu"),
       path: "/setting/logout",
       icons: <FaSignOutAlt />,
     },
     {
       id: 8,
-      title: "Delete Account",
+      title: t("settings.deleteAccountMenu"),
       path: "/setting/delete-account",
       icons: <FaTrashAlt />,
     },

@@ -3,6 +3,7 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../Context/AuthContext";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 import TurnstileWidget from "../../component/turnstile/Turnstile";
 import axios from "axios";
 import { Logger } from "../../utils/Logger";
@@ -12,6 +13,7 @@ import { FcGoogle } from "react-icons/fc";
 import { LiaGithub } from "react-icons/lia";
 
 function SignUp() {
+  const { t } = useTranslation();
   const {
     SignUpHandler,
     isLoading,
@@ -66,8 +68,7 @@ function SignUp() {
   useEffect(() => {
     if (stage === "verifyEmail") {
       if (signUpStage === "success") {
-        toast.success("Signup successful");
-        navigate("/");
+        toast.success(t("success.signupSuccessful"));
       }
     }
   }, [signUpStage]);
@@ -86,11 +87,11 @@ function SignUp() {
 
   const SignUpHandleFunction = async () => {
     if (!token) {
-      toast.error("complete the captcha");
+      toast.error(t("errors.completeCaptcha"));
       return;
     }
     if (!turnstileVerified) {
-      toast.error("captcha verification failed");
+      toast.error(t("errors.captchaVerificationFailed"));
       return;
     }
     if (
@@ -99,11 +100,11 @@ function SignUp() {
       signUpForm.password === "" &&
       signUpForm.confirmPassword === ""
     ) {
-      toast.error("Fill all the fields");
+      toast.error(t("errors.fillAllFields"));
       return;
     }
     if (signUpForm.password !== signUpForm.confirmPassword) {
-      toast.error("password must be same");
+      toast.error(t("errors.passwordMustBeSame"));
       return;
     }
     const signupFormData = {
@@ -113,7 +114,7 @@ function SignUp() {
     };
 
     if (!token) {
-      toast.error("Please complete the CAPTCHA");
+      toast.error(t("errors.pleaseCompleteCaptcha"));
       return;
     }
 
@@ -122,7 +123,7 @@ function SignUp() {
       setStage("verifyEmail");
     } catch (error) {
       Logger("Error during signup:", error);
-      toast.error("Signup failed. Please try again.");
+      toast.error(t("errors.signupFailed"));
     }
   };
 
@@ -131,16 +132,16 @@ function SignUp() {
   ) => {
     e.preventDefault();
     if (SignUpCode === "") {
-      toast.error("Enter the 2FA code");
+      toast.error(t("errors.enter2FACode"));
       return;
     }
 
     try {
       await SignUpConfirmation(signUpForm.email, SignUpCode);
-      toast.success("Email verified successfully");
+      toast.success(t("success.emailVerifiedSuccessfully"));
       navigate("/");
     } catch (error) {
-      toast.error("Invalid verification code. Please try again.");
+      toast.error(t("errors.invalidVerificationCode"));
       Logger("Error during email verification:", error);
     }
   };
@@ -155,12 +156,12 @@ function SignUp() {
         })
         .then(() => {
           setTurnstileVerified(true);
-          toast.success("CAPTCHA verified successfully");
+          toast.success(t("success.captchaVerifiedSuccessfully"));
         })
         .catch((error) => {
           Logger("CAPTCHA verification failed:", error);
           setTurnstileVerified(false);
-          toast.error("CAPTCHA verification failed");
+          toast.error(t("errors.captchaVerificationFailed2"));
         });
     }
   };
@@ -190,86 +191,85 @@ function SignUp() {
             <form onSubmit={SignUpHandleFunction}>
               <div className="">
                 <div className="flex flex-col items-center mb-4">
-                  <h1 className="font-bold text-heading2">Sign Up</h1>
-                  <p className="text-body2">to continue to Keeper</p>
+                  <h1 className="font-bold text-heading2">
+                    {t("auth.signUp")}
+                  </h1>
+                  <p className="text-body2">{t("auth.toContinue")}</p>
+                </div>
+                <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
+                  <input
+                    ref={inputRef}
+                    className="outline-none w-full text-body2"
+                    type="text"
+                    placeholder={t("auth.name")}
+                    name="name"
+                    value={signUpForm.name}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
+                  <input
+                    className="outline-none w-full text-body2"
+                    type="text"
+                    placeholder="Email"
+                    name="email"
+                    value={signUpForm.email}
+                    onChange={handleChange}
+                  />
                 </div>
 
-                <div className="flex flex-col gap-4 ">
-                  <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
-                    <input
-                      ref={inputRef}
-                      className="outline-none w-full text-body2"
-                      type="text"
-                      placeholder="Name"
-                      name="name"
-                      value={signUpForm.name}
-                      onChange={handleChange}
-                    />
-                  </div>
-                  <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
+                <div>
+                  <div className="flex items-center gap-4  px-4 min-w-[400px]  py-2 rounded-[8px] bg-transparent border border-borderColor ">
                     <input
                       className="outline-none w-full text-body2"
-                      type="text"
-                      placeholder="Email"
-                      name="email"
-                      value={signUpForm.email}
+                      type={`${showPassword ? "text" : "password"}`}
+                      placeholder={t("auth.password")}
+                      name="password"
+                      value={signUpForm.password}
                       onChange={handleChange}
                     />
+
+                    {!showPassword ? (
+                      <FaRegEyeSlash
+                        className="cursor-pointer"
+                        onClick={() => handlePasswordToggle(1)}
+                      />
+                    ) : (
+                      <FaRegEye
+                        className="cursor-pointer"
+                        onClick={() => handlePasswordToggle(1)}
+                      />
+                    )}
                   </div>
+                  <div className="flex items-center gap-4  px-4 min-w-[400px]  py-2 rounded-[8px] bg-transparent border border-borderColor mt-4">
+                    <input
+                      className="outline-none w-full text-body2"
+                      type={`${showConfirmPassword ? "text" : "password"}`}
+                      placeholder={t("auth.confirmPassword")}
+                      name="confirmPassword"
+                      value={signUpForm.confirmPassword}
+                      onChange={handleChange}
+                    />
 
-                  <div>
-                    <div className="flex items-center gap-4  px-4 min-w-[400px]  py-2 rounded-[8px] bg-transparent border border-borderColor ">
-                      <input
-                        className="outline-none w-full text-body2"
-                        type={`${showPassword ? "text" : "password"}`}
-                        placeholder="Password"
-                        name="password"
-                        value={signUpForm.password}
-                        onChange={handleChange}
+                    {!showConfirmPassword ? (
+                      <FaRegEyeSlash
+                        className="cursor-pointer"
+                        onClick={() => handlePasswordToggle(2)}
                       />
-
-                      {!showPassword ? (
-                        <FaRegEyeSlash
-                          className="cursor-pointer"
-                          onClick={() => handlePasswordToggle(1)}
-                        />
-                      ) : (
-                        <FaRegEye
-                          className="cursor-pointer"
-                          onClick={() => handlePasswordToggle(1)}
-                        />
-                      )}
-                    </div>
-                    <div className="flex items-center gap-4  px-4 min-w-[400px]  py-2 rounded-[8px] bg-transparent border border-borderColor mt-4">
-                      <input
-                        className="outline-none w-full text-body2"
-                        type={`${showConfirmPassword ? "text" : "password"}`}
-                        placeholder="Confirm Password"
-                        name="confirmPassword"
-                        value={signUpForm.confirmPassword}
-                        onChange={handleChange}
+                    ) : (
+                      <FaRegEye
+                        className="cursor-pointer"
+                        onClick={() => handlePasswordToggle(2)}
                       />
-
-                      {!showConfirmPassword ? (
-                        <FaRegEyeSlash
-                          className="cursor-pointer"
-                          onClick={() => handlePasswordToggle(2)}
-                        />
-                      ) : (
-                        <FaRegEye
-                          className="cursor-pointer"
-                          onClick={() => handlePasswordToggle(2)}
-                        />
-                      )}
-                    </div>
-                    <div
-                      className="text-[12px] ml-2 mt-2 cursor-pointer"
-                      onClick={() => {
-                        navigate("/login");
-                      }}
-                    >
-                      Already have account?
-                    </div>
+                    )}
+                  </div>
+                  <div
+                    className="text-[12px] ml-2 mt-2 cursor-pointer"
+                    onClick={() => {
+                      navigate("/login");
+                    }}
+                  >
+                    {t("auth.alreadyHaveAccount")}
                   </div>
                 </div>
                 <div className="mt-2 ">
@@ -277,7 +277,7 @@ function SignUp() {
                 </div>
 
                 <PrimaryButton
-                  title={isLoading ? "Loading..." : "SignUp"}
+                  title={isLoading ? t("auth.loading") : t("auth.signUp")}
                   onClick={SignUpHandleFunction}
                   isLoading={isLoading}
                 />
@@ -287,18 +287,20 @@ function SignUp() {
           <div className="w-[400px] mx-auto ">
             <div className="flex items-center justify-center gap-4">
               <div className="border border-t w-[100px] opacity-50" />
-              <div className="text-center text-body2 ">Or continue with</div>
+              <div className="text-center text-body2 ">
+                {t("auth.orContinueWith")}
+              </div>
               <div className="border border-t w-[100px] opacity-50" />
             </div>
             <div className="flex flex-col ">
               <SocialLoginButton
-                title={"Login with Google"}
+                title={t("auth.loginWithGoogle")}
                 url={`${import.meta.env.VITE_API_BASE_URL}/api/auth/google`}
                 provider="GoogleLogin"
                 icon={<FcGoogle />}
               />
               <SocialLoginButton
-                title={"Login with Github"}
+                title={t("auth.loginWithGitHub")}
                 url={`${import.meta.env.VITE_API_BASE_URL}/api/auth/github`}
                 provider="GithubLogin"
                 icon={<LiaGithub />}
@@ -314,11 +316,9 @@ function SignUp() {
             <div className="">
               <div className="flex flex-col items-center mb-4">
                 <h1 className="font-bold text-subheading2">
-                  Email Verification
+                  {t("auth.emailVerification")}
                 </h1>
-                <p className="text-body2">
-                  Enter the verification code sent to your email to continue
-                </p>
+                <p className="text-body2">{t("auth.enterVerificationCode")}</p>
               </div>
               <div className="flex flex-col gap-4 ">
                 <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
@@ -326,7 +326,7 @@ function SignUp() {
                     ref={inputRef}
                     className="outline-none w-full text-body2"
                     type="number"
-                    placeholder="Enter Security Code"
+                    placeholder={t("auth.enterVerificationCode")}
                     name="SignUpCode"
                     value={SignUpCode}
                     onChange={(e) => setSignUpCode(e.target.value)}
@@ -335,7 +335,7 @@ function SignUp() {
               </div>
 
               <PrimaryButton
-                title={isLoading ? "Loading..." : "Verify"}
+                title={isLoading ? t("auth.loading") : t("auth.verify")}
                 isLoading={isLoading}
               />
             </div>

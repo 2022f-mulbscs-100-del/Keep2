@@ -3,10 +3,12 @@ import { useEffect, useRef, useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 import { Logger } from "../../utils/Logger";
 import PrimaryButton from "../../component/Buttons/PrimaryButton";
 
 function ForgetPassword() {
+  const { t } = useTranslation();
   const [stage, setStage] = useState("codeToEmail");
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -56,7 +58,7 @@ function ForgetPassword() {
       })
       .then(() => {
         setIsLoading(false);
-        toast.success("Code sent to your email");
+        toast.success(t("success.codeSent"));
         setStage("codeConfirmation");
       })
       .catch((error) => {
@@ -70,7 +72,7 @@ function ForgetPassword() {
       return;
     }
     if (password !== confirmPassword) {
-      toast.error("Password and Confirm Password must be same");
+      toast.error(t("errors.passwordMustBeSame"));
       return;
     }
     setIsLoading(true);
@@ -83,7 +85,7 @@ function ForgetPassword() {
       })
       .then(() => {
         setIsLoading(false);
-        toast.success("Password reset successfully");
+        toast.success(t("success.passwordResetSuccessfully"));
         setTimeout(() => {
           navigate("/");
         }, 1000);
@@ -102,10 +104,8 @@ function ForgetPassword() {
         <div className="flex justify-center items-center h-full mt-10">
           <div className="">
             <div className="flex flex-col items-center mb-4">
-              <h1 className="font-bold text-2xl">Forget Password</h1>
-              <p className="opacity-50">
-                Enter your email we will send code to reset password
-              </p>
+              <h1 className="font-bold text-2xl">{t("auth.forgetPassword")}</h1>
+              <p className="opacity-50">{t("auth.enterYourEmail")}</p>
             </div>
 
             <div className="flex flex-col gap-4 ">
@@ -114,7 +114,7 @@ function ForgetPassword() {
                   ref={inputRef}
                   className="outline-none w-full"
                   type="text"
-                  placeholder="Email"
+                  placeholder={t("auth.email")}
                   onChange={(e) => {
                     setEmail(e.target.value);
                   }}
@@ -124,7 +124,7 @@ function ForgetPassword() {
             </div>
 
             <PrimaryButton
-              title={isLoading ? "Loading..." : "Send Code"}
+              title={isLoading ? t("auth.loading") : t("auth.sendCode")}
               onClick={forgetPassword}
               isLoading={isLoading}
             />
@@ -135,8 +135,10 @@ function ForgetPassword() {
         <div className="flex justify-center items-center h-full mt-10">
           <div className="">
             <div className="flex flex-col items-center mb-4">
-              <h1 className="font-bold text-subheading2">Forget Password</h1>
-              <p className="text-body2">Check your email for code</p>
+              <h1 className="font-bold text-subheading2">
+                {t("auth.forgetPassword")}
+              </h1>
+              <p className="text-body2">{t("auth.checkYourEmail")}</p>
             </div>
 
             <div className="flex flex-col gap-4 ">
@@ -145,7 +147,7 @@ function ForgetPassword() {
                   ref={inputRef}
                   className="outline-none w-full text-body2"
                   type="text"
-                  placeholder="Enter the code"
+                  placeholder={t("auth.enterTheCode")}
                   value={code}
                   onChange={(e) => setCode(e.target.value)}
                 />
@@ -153,7 +155,7 @@ function ForgetPassword() {
             </div>
 
             <PrimaryButton
-              title={isLoading ? "Loading..." : "Continue"}
+              title={isLoading ? t("auth.loading") : "Continue"}
               onClick={codeCheck}
               isLoading={isLoading}
             />
@@ -165,8 +167,10 @@ function ForgetPassword() {
         <div className="flex justify-center items-center h-full mt-10">
           <div className="">
             <div className="flex flex-col items-center mb-4">
-              <h1 className="font-bold text-subheading2">Forget Password</h1>
-              <p className="text-body2">Check your email for code</p>
+              <h1 className="font-bold text-subheading2">
+                {t("auth.forgetPassword")}
+              </h1>
+              <p className="text-body2">{t("auth.checkYourEmail")}</p>
             </div>
 
             <div className="flex flex-col gap-4 ">
@@ -175,7 +179,7 @@ function ForgetPassword() {
                   ref={inputRef}
                   className="outline-none w-full text-body2"
                   type={`${showPassword ? "text" : "password"}`}
-                  placeholder="Enter your new password"
+                  placeholder={t("auth.enterNewPassword")}
                   onChange={(e) => setPassword(e.target.value)}
                   value={password}
                 />
@@ -195,7 +199,7 @@ function ForgetPassword() {
                 <input
                   className="outline-none w-full text-body2"
                   type={`${showConfirmPassword ? "text" : "password"}`}
-                  placeholder="Conifrm your password"
+                  placeholder={t("auth.confirmYourPassword")}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   value={confirmPassword}
                 />
@@ -214,7 +218,7 @@ function ForgetPassword() {
             </div>
 
             <PrimaryButton
-              title={isLoading ? "Loading..." : "Continue"}
+              title={isLoading ? t("auth.loading") : "Continue"}
               onClick={resetPassword}
               isLoading={isLoading}
             />

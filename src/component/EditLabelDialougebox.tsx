@@ -2,6 +2,7 @@ import { FaPlus } from "react-icons/fa6";
 import { MdEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import { MdOutlineDone } from "react-icons/md";
+import { useTranslation } from "react-i18next";
 import { useEditLaber } from "../Context/editLabelContext";
 import { useRef, useState } from "react";
 import { useTheme } from "../Context/themeSwitcherContext";
@@ -15,6 +16,7 @@ const Dialougebox = ({
 }: {
   setisActive: React.Dispatch<React.SetStateAction<number | null>>;
 }) => {
+  const { t } = useTranslation();
   const [focus, setFocus] = useState(false);
   const [input, setInput] = useState("");
   const [labelFocus, setLabelFocus] = useState(false);
@@ -30,7 +32,7 @@ const Dialougebox = ({
 
   const InputHandler = async () => {
     if (input.trim() === "") {
-      toast.error("Label cannot be empty");
+      toast.error(t("modals.labels.cannotBeEmpty"));
       return;
     }
     ref.current?.focus();
@@ -54,10 +56,12 @@ const Dialougebox = ({
         colorCode: "#ffffff",
       })
       .then(() => {
-        toast.success("Label created successfully");
+        toast.success(t("modals.labels.createdSuccess"));
       })
       .catch((error) => {
-        toast.error(error.response?.data?.message || "Failed to create label");
+        toast.error(
+          error.response?.data?.message || t("modals.labels.failedCreate"),
+        );
       });
   };
 
@@ -65,12 +69,12 @@ const Dialougebox = ({
     try {
       await axiosClient.delete(`/deleteLabelCategories/${id}`);
       setLabel((prev) => prev.filter((item) => item.id !== id));
-      toast.success("Label deleted successfully");
+      toast.success(t("modals.labels.deletedSuccess"));
     } catch (error: unknown) {
       const message = axios.isAxiosError<{ message?: string }>(error)
         ? error.response?.data?.message
         : undefined;
-      toast.error(message || "Failed to delete label");
+      toast.error(message || t("modals.labels.failedDelete"));
     }
   };
 
@@ -82,7 +86,7 @@ const Dialougebox = ({
         >
           <div className="p-4 pt-0 border-b-2 border-borderColor">
             <div className="py-2">
-              <h1>Edit Labels</h1>
+              <h1>{t("modals.labels.editLabels")}</h1>
             </div>
 
             {/* input field */}
@@ -105,7 +109,7 @@ const Dialougebox = ({
                   className="py-1 w-full border-b border-transparent focus:border-b focus:border-borderColor outline-none "
                   type="text"
                   value={input}
-                  placeholder="Create new label"
+                  placeholder={t("modals.labels.createNew")}
                   onChange={HandleChange}
                   onFocus={() => setFocus(true)}
                   onBlur={() => setTimeout(() => setFocus(false), 100)}
@@ -139,7 +143,7 @@ const Dialougebox = ({
                       key={item.id}
                       defaultValue={item.categoryName}
                       disabled={item.isDisabled}
-                      placeholder="Create new label"
+                      placeholder={t("modals.labels.createNew")}
                       onBlur={() => {
                         setLabelFocus(false);
                         setLabel((prev) => {
@@ -196,7 +200,7 @@ const Dialougebox = ({
           {/* footer */}
           <div className=" flex justify-end items-center ">
             <PrimaryButton
-              title={"Done"}
+              title={t("modals.labels.done")}
               onClick={() => {
                 // InputHandler();
                 setisActive(4);

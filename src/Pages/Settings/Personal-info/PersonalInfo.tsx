@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { IoCallOutline, IoMailOutline, IoPersonOutline } from "react-icons/io5";
 import Pills from "../../../component/Pills/Pill";
 import axiosClient from "../../../api/axiosClient";
@@ -8,6 +9,7 @@ import PersonalInfoLoader from "./PersonalInfoLoader";
 import { Logger } from "../../../utils/Logger";
 
 const PersonalInfo = () => {
+  const { t } = useTranslation();
   const [profileData, setProfileData] = useState({
     name: "",
     email: "",
@@ -69,7 +71,7 @@ const PersonalInfo = () => {
     xsm:p-4
     "
     >
-      <SettingHeader title="Account Settings" />
+      <SettingHeader title={t("account.accountSettings")} />
 
       <div
         className="flex justify-end"
@@ -77,18 +79,20 @@ const PersonalInfo = () => {
           setShowSecondaryEmailField(true);
         }}
       >
-        <Pills title="Set Secondary Email" />
+        <Pills title={t("account.setSecondaryEmail")} />
       </div>
 
       <div className="flex flex-col gap-4 max-w-md mx-auto">
         <div>
-          <label className="block text-body font-medium mb-1">Name</label>
+          <label className="block text-body font-medium mb-1">
+            {t("account.name")}
+          </label>
           <div className="flex items-center gap-4 px-4 py-2 rounded-[8px] bg-transparent border border-borderColor">
             <IoPersonOutline className="text-gray-400" />
             <input
               className="outline-none w-full bg-transparent text-body2"
               type="text"
-              placeholder="Enter your name"
+              placeholder={t("account.nameInputPlaceholder")}
               value={profileData.name}
               name="name"
               onChange={HandleChange}
@@ -97,7 +101,9 @@ const PersonalInfo = () => {
         </div>
 
         <div>
-          <label className="block text-body font-medium mb-1">Email</label>
+          <label className="block text-body font-medium mb-1">
+            {t("account.email")}
+          </label>
           <div
             className={`flex items-center gap-4 px-4 py-2 rounded-[8px] bg-transparent border border-borderColor `}
           >
@@ -105,7 +111,7 @@ const PersonalInfo = () => {
             <input
               className="outline-none w-full bg-transparent text-body2"
               type="email"
-              placeholder="Enter your email"
+              placeholder={t("account.emailInputPlaceholder")}
               name="email"
               value={profileData.email}
               onChange={HandleChange}
@@ -117,14 +123,14 @@ const PersonalInfo = () => {
         {showSecondaryEmailField && (
           <div>
             <label className="block text-body font-medium mb-1">
-              Secondary Email
+              {t("account.secondaryEmail")}
             </label>
             <div className="flex items-center gap-4 px-4 py-2 rounded-[8px] bg-transparent border border-borderColor">
               <IoMailOutline className="text-gray-400" />
               <input
                 className="outline-none w-full bg-transparent text-body2"
                 type="email"
-                placeholder="Enter your email"
+                placeholder={t("account.emailInputPlaceholder")}
                 name="secondaryEmail"
                 value={profileData.secondaryEmail}
                 onChange={HandleChange}
@@ -134,13 +140,15 @@ const PersonalInfo = () => {
         )}
 
         <div>
-          <label className="block text-body font-medium mb-1. ">Phone</label>
+          <label className="block text-body font-medium mb-1 . ">
+            {t("account.phone")}
+          </label>
           <div className="flex items-center gap-4 px-4 py-2 rounded-[8px] bg-transparent border border-borderColor">
             <IoCallOutline className="text-gray-400" />
             <input
               className="outline-none w-full bg-transparent text-body2"
               type="tel"
-              placeholder="Enter your phone number"
+              placeholder={t("account.phoneInputPlaceholder")}
               value={profileData.phone}
               name="phone"
               onChange={HandleChange}
@@ -149,7 +157,7 @@ const PersonalInfo = () => {
         </div>
 
         <PrimaryButton
-          title={isLoading ? "Loading..." : "Save Changes"}
+          title={isLoading ? t("account.loading") : t("account.saveChanges")}
           onClick={updateProfileData}
           isLoading={isLoading}
         />

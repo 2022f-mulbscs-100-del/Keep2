@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { PiCodesandboxLogo } from "react-icons/pi";
 import { toast } from "react-toastify";
 import axiosClient from "../api/axiosClient";
@@ -10,6 +11,7 @@ interface SandboxMoadlProps {
   onclose: () => void;
 }
 function SandboxMoadl({ onclose }: SandboxMoadlProps) {
+  const { t } = useTranslation();
   const [numNotes, setNumNotes] = useState<number>(0);
   const [archiveNotes, setArchiveNotes] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -20,12 +22,12 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
 
   const generateData = () => {
     if (numNotes === 0) {
-      toast.error("Please Enter the number of notes to generate");
+      toast.error(t("modals.sandbox.enterNumber"));
       return;
     }
 
     if (Number(archiveNotes) >= Number(numNotes)) {
-      toast.error("Archive notes should be less than total notes");
+      toast.error(t("modals.sandbox.archiveLessThanTotal"));
       return;
     }
     setIsLoading(true);
@@ -40,7 +42,7 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
         getNotes();
         setIsLoading(false);
         onclose();
-        toast.success("Sandbox data generated successfully");
+        toast.success(t("modals.sandbox.generatedSuccess"));
       })
       .catch((error) => {
         Logger("Error generating sandbox data:", error);
@@ -105,7 +107,11 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
           >
             <div>
               <PrimaryButton
-                title={isLoading ? "Loading..." : "Delete All notes"}
+                title={
+                  isLoading
+                    ? t("common.loading")
+                    : t("modals.sandbox.deleteAllNotes")
+                }
                 onClick={deletedData}
                 isLoading={isLoading}
               />
@@ -117,7 +123,7 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
           </div>
 
           <div className="flex flex-col gap-4 p-4">
-            <p className="text-sm">Enter number of notes want to generate!!</p>
+            <p className="text-sm">{t("modals.sandbox.enterNumNotes")}</p>
             <div className="flex items-center gap-4  p-1 rounded-[4px] bg-transparent border border-borderColor ">
               <input
                 className="outline-none w-full"
@@ -132,7 +138,7 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
             {numNotes > 0 && (
               <div>
                 <p className="text-sm">
-                  Enter number of notes you want to Archive
+                  {t("modals.sandbox.enterArchiveNotes")}
                 </p>
                 <div className="flex items-center gap-4  p-1 rounded-[4px] bg-transparent border border-borderColor ">
                   <input
@@ -171,7 +177,11 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
               </label>
             </div>
             <PrimaryButton
-              title={isLoading ? "Loading..." : "Generate Notes"}
+              title={
+                isLoading
+                  ? t("common.loading")
+                  : t("modals.sandbox.generateNotes")
+              }
               onClick={generateData}
               isLoading={isLoading}
             />

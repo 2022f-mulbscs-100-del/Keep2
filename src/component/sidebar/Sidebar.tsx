@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FaRegLightbulb } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { IoMdArchive } from "react-icons/io";
@@ -14,6 +15,7 @@ import { useScreenSize } from "../CustomHooks/useScreenSize";
 import { Tooltip } from "react-tooltip";
 
 const Sidebar = () => {
+  const { t } = useTranslation();
   // const pathname = useLocation().pathname;
   const { label } = useEditLaber();
   const { pathname } = useLocation();
@@ -48,38 +50,38 @@ const Sidebar = () => {
     {
       id: 1,
       icon: <FaRegLightbulb />,
-      title: "Notes",
+      title: t("navigation.notes"),
       path: "/",
     },
     {
       id: 2,
       icon: <FaBell />,
-      title: "Reminders",
+      title: t("navigation.reminders"),
       path: "/reminders",
     },
     ...labelSidebarItems,
     {
       id: 3,
       icon: <MdEdit />,
-      title: "Edit labels",
+      title: t("navigation.editLabels"),
       path: "#",
     },
     {
       id: 4,
       icon: <IoMdArchive />,
-      title: "Archive",
+      title: t("navigation.archive"),
       path: "/archieve",
     },
     {
       id: 5,
       icon: <MdDelete />,
-      title: "Bin",
+      title: t("navigation.bin"),
       path: "/bin",
     },
     {
       id: 6,
       icon: <CgMediaLive />,
-      title: "WebSocket Testing",
+      title: t("navigation.webSocketTesting"),
       path: "/WebSocket-Integration",
     },
   ];

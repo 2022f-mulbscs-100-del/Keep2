@@ -4,12 +4,14 @@ import SettingHeader from "../../../component/settingHeader/SettingHeader";
 import AutoLogoutBlock from "./AutoLogutBlock";
 import DateFormatBlock from "./DateFormatBlock";
 import { useUser } from "../../../Context/UserContext";
+import { useTranslation } from "react-i18next";
 
 // type ShowBlockProps = {
 //   showBlock: string[];
 // };
 
 const UserPrefrence = () => {
+  const { t } = useTranslation();
   const { profileData } = useUser();
   const [showBlock, setShowBlock] = useState<string[] | null>([""]);
 
@@ -20,7 +22,7 @@ const UserPrefrence = () => {
        md:p-10
     xsm:p-4"
     >
-      <SettingHeader title="User Preference Settings" />
+      <SettingHeader title={t("userPreferences.userPreferenceSettings")} />
 
       <div className="flex justify-end mb-5 gap-4 flex-wrap">
         <div
@@ -32,7 +34,7 @@ const UserPrefrence = () => {
             );
           }}
         >
-          <Pills title="Auto logout settings" />
+          <Pills title={t("userPreferences.autoLogoutSettings")} />
         </div>
         <div
           onClick={() => {
@@ -43,7 +45,7 @@ const UserPrefrence = () => {
             );
           }}
         >
-          <Pills title="Date format settings" />
+          <Pills title={t("userPreferences.dateFormatSettings")} />
         </div>
       </div>
 

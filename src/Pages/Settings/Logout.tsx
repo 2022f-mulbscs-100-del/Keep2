@@ -5,8 +5,10 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Logger } from "../../utils/Logger";
 import PrimaryButton from "../../component/Buttons/PrimaryButton";
+import { useTranslation } from "react-i18next";
 
 const Logout = () => {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -43,7 +45,7 @@ const Logout = () => {
         md:p-10
     xsm:p-4"
     >
-      <SettingHeader title="Logout Settings" />
+      <SettingHeader title={t("settings.logoutSettings")} />
 
       <div className="mx-auto border border-borderColor rounded-[10px] p-6">
         <div className="flex items-center gap-4 mb-4">
@@ -57,7 +59,7 @@ const Logout = () => {
         </p>
 
         <PrimaryButton
-          title={isLoading ? "Logging out..." : "Logout"}
+          title={isLoading ? t("common.loggingOut") : t("common.logout")}
           onClick={handleLogout}
           isLoading={isLoading}
         />

@@ -10,6 +10,7 @@ import { Logger } from "../../utils/Logger";
 const Reminder = () => {
   const [reminderNotes, setReminderNotes] = useState<AssociationNoteType[]>([]);
   const { layout } = useNavbar();
+
   const [loading, setLoading] = useState<boolean>(true);
   useEffect(() => {
     setLoading(true);

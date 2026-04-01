@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { TiPinOutline } from "react-icons/ti";
 import { TiPin } from "react-icons/ti";
 import { FaImage } from "react-icons/fa";
@@ -16,6 +17,7 @@ import BackgroundPaletteModal from "../Note/BackgroundColorPaletteModal";
 import { useModal } from "../../Context/ModalProvider";
 
 export const NoteInput = () => {
+  const { t } = useTranslation();
   // Define initial state as a constant
   const INITIAL_NOTE_STATE: NoteType = {
     id: (Date.now() + Math.floor(Math.random() * 1000)) % 100000,
@@ -208,7 +210,7 @@ export const NoteInput = () => {
                 className="w-full outline-none "
                 type="text"
                 name="title"
-                placeholder="Take a note"
+                placeholder={t("input.noteInputPlaceholder")}
                 onChange={HandleNoteData}
                 value={NotesData.title}
                 onClick={() => {
@@ -243,7 +245,7 @@ export const NoteInput = () => {
                 autoComplete="off"
                 className="w-full outline-none "
                 type="text"
-                placeholder="Title"
+                placeholder={t("input.titlePlaceholder")}
                 name="title"
                 value={NotesData.title}
               />
