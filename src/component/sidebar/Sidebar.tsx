@@ -5,7 +5,7 @@ import { MdDelete } from "react-icons/md";
 import { IoMdArchive } from "react-icons/io";
 import { MdEdit } from "react-icons/md";
 import { FaBell } from "react-icons/fa";
-import { CgMediaLive } from "react-icons/cg";
+// import { CgMediaLive } from "react-icons/cg";
 import { TbLabelFilled } from "react-icons/tb";
 import { useEditLaber } from "../../Context/editLabelContext";
 import Dialougebox from "../EditLabelDialougebox";
@@ -78,12 +78,12 @@ const Sidebar = () => {
       title: t("navigation.bin"),
       path: "/bin",
     },
-    {
-      id: 6,
-      icon: <CgMediaLive />,
-      title: t("navigation.webSocketTesting"),
-      path: "/WebSocket-Integration",
-    },
+    // {
+    //   id: 6,
+    //   icon: <CgMediaLive />,
+    //   title: "WebSocket Testing",
+    //   path: "/WebSocket-Integration",
+    // },
   ];
 
   useEffect(() => {
