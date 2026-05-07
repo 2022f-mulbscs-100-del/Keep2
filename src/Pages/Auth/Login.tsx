@@ -246,7 +246,7 @@ function Login() {
                 </button>
               </div>
               <div className="flex flex-col gap-4 ">
-                <div className="flex items-center gap-4 min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
+                <div className="flex items-center gap-4 xsm:max-w-[300px]  sm:min-w-[400px]  px-4  py-2 rounded-[8px] bg-transparent border border-borderColor ">
                   <input
                     ref={inputRef}
                     className="outline-none w-full text-body2"
@@ -258,7 +258,7 @@ function Login() {
                 </div>
 
                 <div>
-                  <div className="flex items-center gap-4  px-4 min-w-[400px]  py-2 rounded-[8px] bg-transparent border border-borderColor ">
+                  <div className="flex items-center gap-4  px-4 xsm:max-w-[300px] sm:min-w-[400px]  py-2 rounded-[8px] bg-transparent border border-borderColor ">
                     <input
                       className="outline-none w-full text-body2"
                       type={`${showPassword ? "text" : "password"}`}
@@ -296,15 +296,15 @@ function Login() {
               />
             </div>
           </form>
-          <div className="w-[400px] mx-auto ">
+          <div className="xsm:w-full sm:w-[400px] mx-auto ">
             <div className="flex items-center justify-center gap-4">
-              <div className="border border-t w-[100px] opacity-50" />
+              <div className="border border-t xsm:w-[50px]  sm:w-[100px] opacity-50" />
               <div className="text-center text-body2 ">
                 {t("auth.orContinueWith")}
               </div>
-              <div className="border border-t w-[100px] opacity-50" />
+              <div className="border border-t xsm:w-[50px]  sm:w-[100px] opacity-50" />
             </div>
-            <div className="flex flex-col ">
+            <div className="flex flex-col xsm:justify-center xsm:items-center ">
               <SocialLoginButton
                 title={t("auth.loginWithGoogle")}
                 url={`${import.meta.env.VITE_API_BASE_URL}/api/auth/google${callbackRedirect ? `?redirect=${encodeURIComponent(callbackRedirect)}` : ""}`}

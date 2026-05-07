@@ -7,6 +7,7 @@ import MFABlock from "./MFABlock";
 import { useUser } from "../../../Context/UserContext";
 import PassKeyBlock from "./PassKeyBlock";
 import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
 
 const Security = () => {
   const { t } = useTranslation();
@@ -19,6 +20,8 @@ const Security = () => {
   const CAN_SHOW_MFA_BLOCK = profileData?.MfaEnabled;
   const CAN_SHOW_2FA_BLOCK = profileData?.isTwoFaEnabled;
   const CAN_SHOW_PASS_KEY_BLOCK = profileData?.passKeyEnabled;
+  const isActiveSubscriber = profileData?.subscriptionStatus === "active";
+  const canAccessPassKey = isActiveSubscriber || CAN_SHOW_PASS_KEY_BLOCK;
 
   return (
     <div
@@ -64,6 +67,12 @@ const Security = () => {
         </div>
         <div
           onClick={() => {
+            if (!canAccessPassKey) {
+              toast.info(
+                "Upgrade to Pro to use Passkey. Go to Settings > Subscription to upgrade.",
+              );
+              return;
+            }
             setShowBlock((prev) =>
               prev?.includes("Pass-key")
                 ? prev.filter((item) => item !== "Pass-key")
@@ -71,7 +80,7 @@ const Security = () => {
             );
           }}
         >
-          <Pills title={t("security.passkey")} />
+          <Pills title={t("security.passkey")} disabled={!canAccessPassKey} />
         </div>
       </div>
       {showBlock!.includes("reset-password") && <ResetPasswordBlock />}
@@ -80,9 +89,8 @@ const Security = () => {
         <TwoFABlock />
       )}
       {(showBlock!.includes("MFA") || CAN_SHOW_MFA_BLOCK) && <MFABlock />}
-      {(showBlock!.includes("Pass-key") || CAN_SHOW_PASS_KEY_BLOCK) && (
-        <PassKeyBlock />
-      )}
+      {(showBlock!.includes("Pass-key") || CAN_SHOW_PASS_KEY_BLOCK) &&
+        canAccessPassKey && <PassKeyBlock />}
     </div>
   );
 };

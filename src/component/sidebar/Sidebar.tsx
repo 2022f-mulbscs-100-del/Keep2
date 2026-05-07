@@ -13,12 +13,16 @@ import { Link, useLocation } from "react-router-dom";
 import { useSidebar } from "../../Context/sidebarContext";
 import { useScreenSize } from "../CustomHooks/useScreenSize";
 import { Tooltip } from "react-tooltip";
+import { useUser } from "../../Context/UserContext";
+import { toast } from "react-toastify";
 
 const Sidebar = () => {
   const { t } = useTranslation();
   // const pathname = useLocation().pathname;
   const { label } = useEditLaber();
   const { pathname } = useLocation();
+  const { profileData } = useUser();
+  const isActiveSubscriber = profileData?.subscriptionStatus === "active";
 
   const [isActive, setisActive] = useState<number | null>(null);
 
@@ -44,6 +48,7 @@ const Sidebar = () => {
       icon: <TbLabelFilled />,
       title: item.categoryName,
       path: `/editlabel/${encodeURIComponent(removeSpacing(item.categoryName))}`,
+      isPremium: false,
     }));
 
   const SideBarData = [
@@ -52,12 +57,14 @@ const Sidebar = () => {
       icon: <FaRegLightbulb />,
       title: t("navigation.notes"),
       path: "/",
+      isPremium: false,
     },
     {
       id: 2,
       icon: <FaBell />,
       title: t("navigation.reminders"),
       path: "/reminders",
+      isPremium: true,
     },
     ...labelSidebarItems,
     {
@@ -65,18 +72,21 @@ const Sidebar = () => {
       icon: <MdEdit />,
       title: t("navigation.editLabels"),
       path: "#",
+      isPremium: false,
     },
     {
       id: 4,
       icon: <IoMdArchive />,
       title: t("navigation.archive"),
       path: "/archieve",
+      isPremium: false,
     },
     {
       id: 5,
       icon: <MdDelete />,
       title: t("navigation.bin"),
       path: "/bin",
+      isPremium: false,
     },
     // {
     //   id: 6,
@@ -102,31 +112,45 @@ const Sidebar = () => {
                 `}
         >
           {SideBarData.map((item) => {
-            return (
-              <Link to={item.path} key={item.id}>
-                <li
-                  className={`py-4 h-[50px] ${isOpen ? `pl-4 ml-0 w-[250px] rounded-r-[25px]` : `pl-0  w-[50px] rounded-full md:ml-4`} flex     overflow-hidden   gap-4 hover:bg-secondary ${isActive && (pathname === item.path ? `bg-primary` : "hover:bg-secondary")} `}
-                  key={item.id}
-                  onClick={() => {
-                    HandleClick(item.id);
-                  }}
+            const isDisabled = item.isPremium && !isActiveSubscriber;
+            const SidebarItem = (
+              <li
+                className={`py-4 h-[50px] ${isOpen ? `pl-4 ml-0 w-[250px] rounded-r-[25px]` : `pl-0  w-[50px] rounded-full md:ml-4`} flex     overflow-hidden   gap-4 hover:bg-secondary ${isActive && (pathname === item.path ? `bg-primary` : "hover:bg-secondary")} ${isDisabled ? "opacity-50" : ""} `}
+                key={item.id}
+                onClick={() => {
+                  if (isDisabled) {
+                    toast.info(
+                      "Upgrade to Pro to use Reminders. Go to Settings > Subscription to upgrade.",
+                    );
+                    return;
+                  }
+                  HandleClick(item.id);
+                }}
+              >
+                <div
+                  data-tooltip-id={`tooltip-${item.id}`}
+                  data-tooltip-content={
+                    isDisabled ? "Upgrade to Pro to use Reminders" : item.title
+                  }
+                  className={`cursor-pointer pl-[17px] flex items-center  text-nowrap`}
                 >
+                  {item.icon}
+                </div>
+                {isOpen && (
                   <div
-                    data-tooltip-id={`tooltip-${item.id}`}
-                    data-tooltip-content={item.title}
-                    className={`cursor-pointer pl-[17px] flex items-center  text-nowrap`}
+                    className={`cursor-pointer  flex items-center  text-nowrap  `}
                   >
-                    {item.icon}
+                    <p className="text-body">{item.title}</p>
                   </div>
-                  {isOpen && (
-                    <div
-                      className={`cursor-pointer  flex items-center  text-nowrap  `}
-                    >
-                      <p className="text-body">{item.title}</p>
-                    </div>
-                  )}
-                  {!isOpen && <Tooltip id={`tooltip-${item.id}`} />}
-                </li>
+                )}
+                {!isOpen && <Tooltip id={`tooltip-${item.id}`} />}
+              </li>
+            );
+            return isDisabled ? (
+              <div key={item.id}>{SidebarItem}</div>
+            ) : (
+              <Link to={item.path} key={item.id}>
+                {SidebarItem}
               </Link>
             );
           })}

@@ -282,7 +282,8 @@
     "updatePaymentMethod": "ادائیگی کا طریقہ اپ ڈیٹ کریں",
     "generateNotes": "نوٹس تیار کریں",
     "generateNotesRandomPinned": "بے ترتیب سے پن شدہ نوٹس تیار کریں",
-    "generateNotesRandomImages": "بے ترتیب تصاویر کے ساتھ نوٹس تیار کریں"
+    "generateNotesRandomImages": "بے ترتیب تصاویر کے ساتھ نوٹس تیار کریں",
+    "subscribe": "رکنیت اختیار کریں"
   },
   "noData": {
     "notesWithReminders": "آنے والی یادوں والے نوٹس یہاں نظر آتے ہیں",

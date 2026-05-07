@@ -292,7 +292,8 @@
     "updatePaymentMethod": "Actualizar método de pago",
     "generateNotes": "Generar notas",
     "generateNotesRandomPinned": "Generar notas con pines aleatorios",
-    "generateNotesRandomImages": "Generar notas con imágenes aleatorias"
+    "generateNotesRandomImages": "Generar notas con imágenes aleatorias",
+    "subscribe": "Suscribirse"
   },
   "noData": {
     "notesWithReminders": "Aquí aparecen las notas con recordatorios próximos",
@@ -310,5 +311,6 @@
     "dateFormat": "Formato de fecha",
     "dateFormatDescription": "Elige cómo se muestran las fechas en la aplicación.",
     "dateFormatPattern": "DD/MM/AAAA"
+
   }
 }

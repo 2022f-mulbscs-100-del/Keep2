@@ -1,4 +1,5 @@
 import { useAuth } from "../../Context/AuthContext";
+import { Logger } from "../../utils/Logger";
 
 type GoogleLoginButtonProps = {
   title: string;
@@ -36,6 +37,11 @@ const SocialLoginButton = ({
       `width=${width},height=${height},top=${top},left=${left}`,
     );
 
+    if (!popup) {
+      Logger("Popup was blocked by browser");
+      return;
+    }
+
     const handleMessage = (event: MessageEvent<GoogleAuthMessage>) => {
       if (event.origin !== import.meta.env.VITE_API_BASE_URL) return;
 
@@ -64,7 +70,7 @@ const SocialLoginButton = ({
   return (
     <button
       type="button"
-      className="w-full hover:bg-secondary cursor-pointer flex justify-center items-center gap-4 p-2 mt-4 rounded-lg disabled:cursor-not-allowed disabled:opacity-60"
+      className="w-full hover:bg-secondary xsm:max-w-[300px] sm:min-w-[400px] cursor-pointer flex justify-center items-center gap-4 p-2 mt-4 rounded-lg disabled:cursor-not-allowed disabled:opacity-60"
       onClick={openPopup}
     >
       {icon}

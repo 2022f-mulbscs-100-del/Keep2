@@ -31,7 +31,10 @@ EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]
 
-
+#using nginx to serve static files
+#so that we can make the image smaller 
+#cause with it can't run we need a server 
+#to host it so we use nginx
 
 
 # cd ./keep-frontend

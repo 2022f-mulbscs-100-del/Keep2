@@ -12,6 +12,7 @@ import { useModal } from "../../Context/ModalProvider.js";
 import { BiSolidBellMinus } from "react-icons/bi";
 import { useNotesApi } from "../CustomHooks/useNotesApi.js";
 import type { NoteType } from "../../types/Note.types.js";
+import { useUser } from "../../Context/UserContext.js";
 type ActionIconsProps = {
   IsHover: boolean;
   id: number;
@@ -33,12 +34,14 @@ const ActionIcons = ({
 
   // Contexts
   const { setNotes, setDeletedNotes, setArchivedNotes } = useNote();
+  const { profileData } = useUser();
   const {
     setReminderModal,
     setNoteId,
     setBackgroundColorModal,
     setCollaboratorModal,
   } = useModal();
+  const isActiveSubscriber = profileData?.subscriptionStatus === "active";
 
   //Hooks
   const {
@@ -51,6 +54,12 @@ const ActionIcons = ({
   } = useNotesApi();
 
   const { pathname } = useLocation();
+
+  const handlePremiumFeatureClick = (featureName: string) => {
+    toast.info(
+      `Upgrade to Pro to use ${featureName}. Go to Settings > Subscription to upgrade.`,
+    );
+  };
 
   // Delete Note
   const deleteNote = async (id: number) => {
@@ -186,11 +195,20 @@ const ActionIcons = ({
       >
         {pathname != "/bin"
           ? IconsArray.map((item) => {
+              const isPremiumFeature = item.id === 3 || item.id === 7;
+              const isDisabled = isPremiumFeature && !isActiveSubscriber;
+              const featureName = item.id === 3 ? "Reminders" : "Collaborators";
               return (
                 <div
                   ref={item.id === 2 ? bgRef : null}
                   key={item.id}
+                  className={isDisabled ? "opacity-50 cursor-not-allowed" : ""}
                   onClick={(e) => {
+                    if (isDisabled) {
+                      e.stopPropagation();
+                      handlePremiumFeatureClick(featureName);
+                      return;
+                    }
                     setIsHover?.(true);
                     e.stopPropagation();
                     switch (item.id) {
@@ -227,7 +245,11 @@ const ActionIcons = ({
                   {hasReminder === true && item.id === 3 ? (
                     <div>
                       <IconStyling
-                        tooltip="Remove Reminder"
+                        tooltip={
+                          isDisabled
+                            ? "Upgrade to Pro to use Reminders"
+                            : "Remove Reminder"
+                        }
                         id={item.id}
                         icon={BiSolidBellMinus}
                       />
@@ -242,7 +264,11 @@ const ActionIcons = ({
                     </div>
                   ) : (
                     <IconStyling
-                      tooltip={item.tooltip}
+                      tooltip={
+                        isDisabled
+                          ? `Upgrade to Pro to use ${featureName}`
+                          : item.tooltip
+                      }
                       id={item.id}
                       icon={item.icon}
                     />

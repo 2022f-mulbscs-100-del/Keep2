@@ -292,7 +292,8 @@
     "updatePaymentMethod": "Update payment method",
     "generateNotes": "Generate Notes",
     "generateNotesRandomPinned": "Generate Notes with Random Pinned",
-    "generateNotesRandomImages": "Generate Notes with Random Images"
+    "generateNotesRandomImages": "Generate Notes with Random Images",
+    "subscribe":"Subscribe"
   },
   "noData": {
     "notesWithReminders": "Notes with upcoming reminders appear here",
