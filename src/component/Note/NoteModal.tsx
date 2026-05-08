@@ -198,7 +198,7 @@ export default function NoteModal() {
 
         <div className="">
           <ActionIcons
-            IsHover={true}
+            // IsHover={true}
             id={noteId}
             onClick={() => setSearchParams({})}
           />
