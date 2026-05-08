@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, useCallback } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import SelectIcon from "./SelectIcon";
 import NoteDescription from "./NoteDescription";
@@ -12,6 +12,7 @@ import NotePills from "../Pills/NotePills";
 import BackgroundPaletteModal from "./BackgroundColorPaletteModal";
 import { useModal } from "../../Context/ModalProvider";
 import { useNotesApi } from "../CustomHooks/useNotesApi";
+import { useSelectedNotes } from "../../Context/SelectedNotes";
 
 type NoteProps = {
   id: number;
@@ -25,88 +26,89 @@ type NoteProps = {
   BgColor?: string;
 };
 
-const Note = ({
-  title,
-  description,
-  NotePinned,
-  id,
-  image,
-  hasReminder,
-  list,
-  category,
-  BgColor,
-}: NoteProps) => {
-  const [LocalIsPinned, setLocalIsPinned] = useState(false);
-  const [IsHover, setIsHover] = useState<boolean>(false);
-  const NoteRef = useRef<HTMLDivElement>(null);
-  const [, setSearchParams] = useSearchParams();
-  const { fetchNotes, updateNote } = useNotesApi();
-  const { backgroundColorModal } = useModal();
+const Note = React.memo((props: NoteProps) => {
+  const {
+    title,
+    description,
+    NotePinned,
+    id,
+    image,
+    hasReminder,
+    list,
+    category,
+    BgColor,
+  } = props;
+
+  const [LocalIsPinned, setLocalIsPinned] = useState(NotePinned);
   const [color, setColor] = useState(BgColor || "");
 
+  const NoteRef = useRef<HTMLDivElement>(null);
+  const bgRef = useRef<HTMLDivElement | null>(null);
+
+  const [, setSearchParams] = useSearchParams();
+  const { updateNote } = useNotesApi();
+  const { backgroundColorModal } = useModal();
+  const { setSelectedNotes, selectedNotes } = useSelectedNotes();
+
+  // keep local pin in sync (IMPORTANT FIX)
   useEffect(() => {
     setLocalIsPinned(NotePinned);
   }, [NotePinned]);
 
-  // Handle hover state for showing icons
-  useEffect(() => {
-    const HandleHover = (e: MouseEvent) => {
-      const isThisNote = backgroundColorModal === id;
-
-      if (NoteRef.current && NoteRef.current.contains(e.target as Node)) {
-        setIsHover(true);
-      } else {
-        if (!isThisNote) {
-          setIsHover(false);
-        }
-      }
-    };
-    HandleHover(new MouseEvent("mouseover"));
-    document.addEventListener("mouseover", HandleHover);
-    return () => {
-      document.removeEventListener("mouseover", HandleHover);
-    };
-  }, [backgroundColorModal]);
-
-  // Handle pinning/unpinning the note
+  // pin toggle
   const handlePinned = useCallback(async () => {
     try {
+      const newValue = !LocalIsPinned;
+
       await updateNote(id, {
-        pinned: !LocalIsPinned,
+        pinned: newValue,
       });
-      setLocalIsPinned(!LocalIsPinned);
-      fetchNotes();
+
+      setLocalIsPinned(newValue);
     } catch (error) {
       console.error("Error updating pin status:", error);
     }
-  }, [id, LocalIsPinned, updateNote, fetchNotes]);
+  }, [id, LocalIsPinned, updateNote]);
 
-  // Handle background color change
+  // open note
   const handleClick = useCallback(() => {
     setSearchParams({ note: String(id) });
   }, [id, setSearchParams]);
-  const bgRef = useRef<HTMLDivElement | null>(null);
+
+  // select toggle
+  const toggleSelect = useCallback(() => {
+    setSelectedNotes((prev: number[]) =>
+      prev.includes(id)
+        ? prev.filter((noteId) => noteId !== id)
+        : [...prev, id],
+    );
+  }, [id, setSelectedNotes]);
+
+  const isSelected = selectedNotes.includes(id);
 
   return (
     <div className="relative">
       <div
         ref={NoteRef}
-        className={`relative w-full ${color}    shadow-md hover:shadow-xl transition-all transform duration-300 border rounded-lg border-borderColor break-words cursor-pointer overflow-hidden`}
+        className={`group relative w-full ${color} shadow-md hover:shadow-xl transition-all duration-300 border rounded-lg border-borderColor break-words cursor-pointer overflow-hidden`}
       >
-        {/* Select Icon for selecting the note */}
-        <div className="absolute top-0 left-0 z-10">
-          <SelectIcon IsHover={IsHover} />
+        {/* SELECT */}
+        <div className="absolute top-0 left-0 z-10" onClick={toggleSelect}>
+          <SelectIcon isSelected={isSelected} />
         </div>
 
-        {/* Pin Icon */}
-        <div className="absolute top-0 right-0 z-5">
+        {/* PIN */}
+        <div className="absolute top-0 right-0 z-10">
           <div
             data-tooltip-id={`pin-tooltip${id}`}
             data-tooltip-content={LocalIsPinned ? "Unpin note" : "Pin note"}
             onClick={handlePinned}
-            className={`rounded-full flex justify-center items-center cursor-pointer w-9 h-9 m-1 transition-opacity duration-200 ${
-              IsHover || LocalIsPinned ? "opacity-100" : "opacity-0"
-            } dark:hover:bg-secondary`}
+            className={`
+              rounded-full flex justify-center items-center cursor-pointer w-9 h-9 m-1
+              transition-opacity duration-200 opacity-0 group-hover:opacity-100
+              ${LocalIsPinned ? "opacity-100" : ""}
+              dark:hover:bg-secondary
+            `}
           >
             {LocalIsPinned ? (
               <TiPin className="w-5 h-5 text-gray-700 dark:text-gray-300" />
@@ -117,15 +119,11 @@ const Note = ({
           </div>
         </div>
 
-        {/* Images */}
+        {/* IMAGES */}
         {image && image.length > 0 && (
           <div
             className={`grid gap-1 ${
-              image.length === 1
-                ? "grid-cols-1"
-                : image.length === 2
-                  ? "grid-cols-2"
-                  : "grid-cols-2"
+              image.length === 1 ? "grid-cols-1" : "grid-cols-2"
             }`}
           >
             {image.map((item, index) => (
@@ -136,29 +134,29 @@ const Note = ({
                 }`}
                 src={item}
                 alt=""
+                loading="lazy"
               />
             ))}
           </div>
         )}
 
-        {/* Title and Description */}
+        {/* CONTENT */}
         <div className="p-4" onClick={handleClick}>
-          <NoteTitle title={title} IsHover={IsHover} />
+          <NoteTitle title={title} />
           <NoteDescription description={description} list={list} />
         </div>
-        <div className="p-4 pb-0 flex flex-wrap gap-2 ">
+
+        {/* PILLS */}
+        <div className="p-4 pb-0 flex flex-wrap gap-2">
           {category && <NotePills title={category} color="" />}
           {hasReminder && <NotePills title="Reminder Set" color="" />}
         </div>
-        {/* Action Icons */}
-        <ActionIcons
-          bgRef={bgRef}
-          IsHover={IsHover}
-          setIsHover={setIsHover}
-          id={id}
-          hasReminder={hasReminder}
-        />
+
+        {/* ACTIONS */}
+        <ActionIcons bgRef={bgRef} id={id} hasReminder={hasReminder} />
       </div>
+
+      {/* MODAL */}
       {backgroundColorModal === id && (
         <BackgroundPaletteModal
           noteID={id}
@@ -168,6 +166,6 @@ const Note = ({
       )}
     </div>
   );
-};
+});
 
 export default Note;

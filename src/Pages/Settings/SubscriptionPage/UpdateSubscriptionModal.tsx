@@ -4,7 +4,6 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import Placeholder from "../../../component/Placeholder/Placeholder";
 import UpdateForm from "./UpdateForm";
-import { FaArrowLeftLong } from "react-icons/fa6";
 
 type updateSubscriptionModalProps = {
   isOpen: boolean;
@@ -114,25 +113,21 @@ const UpdateSubscriptionModal = ({
   if (!clientSecret && loading) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div className="absolute inset-0 bg-black/50 bg-opacity-50 transition-opacity" />
-        <div className="m-auto w-full md:p-10 xsm:p-4 bg-black">
+        <div
+          className="absolute inset-0 bg-black/50 transition-opacity"
+          onClick={onClose}
+        />
+        <div
+          className="relative z-10 w-full max-w-xl bg-black border border-borderColor rounded-[10px] md:p-10 xsm:p-6"
+          onClick={(e) => e.stopPropagation()}
+        >
           <div
             className="flex items-center mb-4
                                      transition-all duration-300
                                      
                                      "
           >
-            <div className="">
-              <FaArrowLeftLong
-                className=" cursor-pointer hover:bg-secondary p-2 rounded-lg
-                                         sm:size-10
-                                         xsm:size-8
-                                         "
-                onClick={() => {
-                  onClose();
-                }}
-              />
-            </div>
+            <div className=""></div>
 
             <div className="sm:flex-1   ">
               <h1 className="sm:text-3xl xs:text-[24px] font-bold text-nowrap text-center">
@@ -150,9 +145,15 @@ const UpdateSubscriptionModal = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/50 bg-opacity-50 transition-opacity" />
+      <div
+        className="absolute inset-0 bg-black/50 transition-opacity"
+        onClick={onClose}
+      />
 
-      <div className="relative z-10 bg-black p-6 rounded-lg w-full ">
+      <div
+        className="relative z-10 w-full max-w-xl bg-black border border-borderColor rounded-[10px] md:p-10 xsm:p-6"
+        onClick={(e) => e.stopPropagation()}
+      >
         <Elements
           stripe={stripePromise}
           //eslint-disable-next-line

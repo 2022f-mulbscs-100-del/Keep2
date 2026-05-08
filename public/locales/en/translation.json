@@ -158,7 +158,7 @@
   },
   "subscription": {
     "subscriptionTitle": "Subscription",
-    "changeSubscriptionPlan": "Change Subscription Plan",
+    "changeSubscriptionPlan": "Cancel Subscription",
     "updatePaymentMethod": "Update Payment Method",
     "proUser": "Pro User",
     "monthly": "Monthly",
@@ -178,7 +178,15 @@
     "failedToUpdatePayment": "Failed to update payment method on server.",
     "failedToLoadPaymentForm": "Failed to load payment form",
     "switchingToMonthlyNotSupported": "Switching to Monthly plan is not supported at the moment.",
-    "changeSubscription": "Change Subscription"
+    "changeSubscription": "Change Subscription",
+    "changeSubscriptionDescription": "You can change your subscription plan or cancel your subscription here.",
+    "cancelSubscriptionTitle": "Cancel Subscription",
+    "cancelSubscriptionDescription": "Are you sure you want to cancel your subscription? This action cannot be undone.",
+    "cardNumber": "Card Number",
+    "brand": "Brand",
+    "expiration": "Expiration",
+    "type": "Type",
+    "country": "Country"
   },
   "settings": {
     "autoLogoutTimeUpdated": "Auto logout time updated to {{time}} minutes",
@@ -289,6 +297,8 @@
     "emptyBin": "Empty Bin",
     "binEmpty": "Bin empty successfully",
     "cancelSubscription": "Cancel Subscription",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
     "updatePaymentMethod": "Update payment method",
     "generateNotes": "Generate Notes",
     "generateNotesRandomPinned": "Generate Notes with Random Pinned",

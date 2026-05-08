@@ -9,6 +9,7 @@ import Loader from "../../component/Note/Loader/Loader";
 import axiosClient from "../../api/axiosClient";
 import { Logger } from "../../utils/Logger";
 import { FilterByDateAndTime } from "../../utils/FilterByDateAndTime";
+import { Tooltip } from "react-tooltip";
 
 export default function Home() {
   // Local state
@@ -64,6 +65,7 @@ export default function Home() {
     md:p-4
     xsm:p-2"
       >
+        <Tooltip className="z-10" id="global-tooltip" place="top" />
         <FilterButton filters={filters} setFilters={setFilters} />
       </div>
       <div className="p-4">

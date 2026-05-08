@@ -13,10 +13,8 @@ interface SandboxMoadlProps {
 function SandboxMoadl({ onclose }: SandboxMoadlProps) {
   const { t } = useTranslation();
   const [numNotes, setNumNotes] = useState<number>(0);
-  const [archiveNotes, setArchiveNotes] = useState<number>(0);
-  const [isLoading, setIsLoading] = useState(false);
-  const [useRandomData, setUseRandomData] = useState(false);
-  const [useRandomImages, setUseRandomImages] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
   const clickRef = useRef<HTMLDivElement>(null);
   const { getNotes } = useNotesApi();
 
@@ -26,42 +24,35 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
       return;
     }
 
-    if (Number(archiveNotes) >= Number(numNotes)) {
-      toast.error(t("modals.sandbox.archiveLessThanTotal"));
-      return;
-    }
-    setIsLoading(true);
+    setIsGenerating(true);
     axiosClient
       .post(`${import.meta.env.VITE_API_BASE_URL}/api/generateSandbox`, {
         numNotes,
-        useRandomData,
-        useRandomImages,
-        archiveNotes,
       })
       .then(() => {
         getNotes();
-        setIsLoading(false);
+        setIsGenerating(false);
         onclose();
         toast.success(t("modals.sandbox.generatedSuccess"));
       })
       .catch((error) => {
         Logger("Error generating sandbox data:", error);
-        setIsLoading(false);
+        setIsGenerating(false);
       });
   };
 
   const deletedData = () => {
-    setIsLoading(true);
+    setIsDeleting(true);
     axiosClient
       .delete(`${import.meta.env.VITE_API_BASE_URL}/api/deleteSandbox`)
       .then(() => {
         getNotes();
-        setIsLoading(false);
+        setIsDeleting(false);
         onclose();
       })
       .catch((error) => {
         Logger("Error deleting sandbox data:", error);
-        setIsLoading(false);
+        setIsDeleting(false);
       });
   };
 
@@ -73,11 +64,6 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
       } else {
         setNumNotes(value);
       }
-    }
-
-    if (e.target.name === "archiveNotes") {
-      const value = parseInt(e.target.value);
-      setArchiveNotes(value);
     }
   };
 
@@ -108,15 +94,15 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
             <div>
               <PrimaryButton
                 title={
-                  isLoading
+                  isDeleting
                     ? t("common.loading")
                     : t("modals.sandbox.deleteAllNotes")
                 }
                 onClick={deletedData}
-                isLoading={isLoading}
+                isLoading={isDeleting}
               />
             </div>
-            X
+            <span onClick={onclose}>X</span>
           </div>
           <div className="flex justify-center items-center ">
             <PiCodesandboxLogo className="size-15" />
@@ -133,57 +119,17 @@ function SandboxMoadl({ onclose }: SandboxMoadlProps) {
                 value={numNotes}
                 max={100}
                 onChange={handleInputChange}
+                onClick={(e) => e.stopPropagation()}
               />
-            </div>
-            {numNotes > 0 && (
-              <div>
-                <p className="text-sm">
-                  {t("modals.sandbox.enterArchiveNotes")}
-                </p>
-                <div className="flex items-center gap-4  p-1 rounded-[4px] bg-transparent border border-borderColor ">
-                  <input
-                    className="outline-none w-full"
-                    type="number"
-                    name="archiveNotes"
-                    placeholder=""
-                    value={archiveNotes}
-                    max={100}
-                    onChange={handleInputChange}
-                  />
-                </div>
-              </div>
-            )}
-
-            <div>
-              <label className="flex items-center gap-2 text-sm cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="w-4 h-4 cursor-pointer"
-                  checked={useRandomData}
-                  onChange={(e) => setUseRandomData(e.target.checked)}
-                />
-                Generate Notes with Random Pinned
-              </label>
-            </div>
-            <div>
-              <label className="flex items-center gap-2 text-sm cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="w-4 h-4 cursor-pointer"
-                  checked={useRandomImages}
-                  onChange={(e) => setUseRandomImages(e.target.checked)}
-                />
-                Generate Notes with Random Images
-              </label>
             </div>
             <PrimaryButton
               title={
-                isLoading
+                isGenerating
                   ? t("common.loading")
                   : t("modals.sandbox.generateNotes")
               }
               onClick={generateData}
-              isLoading={isLoading}
+              isLoading={isGenerating}
             />
           </div>
         </div>

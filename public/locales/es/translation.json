@@ -158,7 +158,7 @@
   },
   "subscription": {
     "subscriptionTitle": "Suscripción",
-    "changeSubscriptionPlan": "Cambiar plan de suscripción",
+    "changeSubscriptionPlan": "Cancelar suscripción",
     "updatePaymentMethod": "Actualizar método de pago",
     "proUser": "Usuario Pro",
     "monthly": "Mensual",
@@ -178,7 +178,15 @@
     "failedToUpdatePayment": "Error al actualizar método de pago en el servidor.",
     "failedToLoadPaymentForm": "Error al cargar el formulario de pago",
     "switchingToMonthlyNotSupported": "Cambiar al plan mensual no es compatible en este momento.",
-    "changeSubscription": "Cambiar suscripción"
+    "changeSubscription": "Cambiar suscripción",
+    "changeSubscriptionDescription": "Puedes cambiar tu plan de suscripción o cancelar tu suscripción aquí.",
+    "cancelSubscriptionTitle": "Cancelar suscripción",
+    "cancelSubscriptionDescription": "¿Estás seguro de que quieres cancelar tu suscripción? Esta acción no se puede deshacer.",
+    "cardNumber": "Número de tarjeta",
+    "brand": "Marca",
+    "expiration": "Vencimiento",
+    "type": "Tipo",
+    "country": "País"
   },
   "settings": {
     "autoLogoutTimeUpdated": "Tiempo de cierre automático actualizado a {{time}} minutos",
@@ -289,6 +297,8 @@
     "emptyBin": "Vaciar papelera",
     "binEmpty": "Papelera vaciada exitosamente",
     "cancelSubscription": "Cancelar suscripción",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
     "updatePaymentMethod": "Actualizar método de pago",
     "generateNotes": "Generar notas",
     "generateNotesRandomPinned": "Generar notas con pines aleatorios",

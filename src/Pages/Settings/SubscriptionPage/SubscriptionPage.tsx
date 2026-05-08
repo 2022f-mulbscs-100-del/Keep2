@@ -278,10 +278,7 @@ export default function SubscriptionPage() {
       )}
 
       {showBlock?.includes("subscription-plan") && (
-        <ChangeSubscriptionPlan
-          paymentMethod={paymentMethod}
-          ACTIVE_SUBSCRIPTION={ACTIVE_SUBSCRIPTION}
-        />
+        <ChangeSubscriptionPlan ACTIVE_SUBSCRIPTION={ACTIVE_SUBSCRIPTION} />
       )}
     </>
   );

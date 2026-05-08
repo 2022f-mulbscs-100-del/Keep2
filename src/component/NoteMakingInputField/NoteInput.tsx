@@ -2,9 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { TiPinOutline } from "react-icons/ti";
 import { TiPin } from "react-icons/ti";
-import { FaImage } from "react-icons/fa";
+// import { FaImage } from "react-icons/fa";
 import IconStyling from "../IconStyling";
-import { CiViewList } from "react-icons/ci";
+// import { CiViewList } from "react-icons/ci";
 import { InputList } from "./InputList";
 import IconsArray from "../../../public/Data";
 import { useNote } from "../../Context/noteContext";
@@ -95,6 +95,10 @@ export const NoteInput = () => {
   // Handle click outside to save note and reset state
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
+      if (inputRef.current && inputRef.current.contains(e.target as Node)) {
+        return;
+      }
+
       if (
         NotesData.title === "" &&
         NotesData.description === "" &&
@@ -108,24 +112,23 @@ export const NoteInput = () => {
         setBackgroundColorModal(null);
         return;
       }
-      if (inputRef.current && !inputRef.current.contains(e.target as Node)) {
-        setNotes((prevNotes) => [
-          ...prevNotes,
-          {
-            ...NotesData,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          },
-        ]);
-        const stableData = { ...NotesData };
-        apiCall(stableData);
-        setInputClick(false);
-        setLocalIsPinned(false);
-        setListClick(false);
-        setListArray([]);
-        setNotesData(INITIAL_NOTE_STATE);
-        setBackgroundColorModal(null);
-      }
+
+      setNotes((prevNotes) => [
+        ...prevNotes,
+        {
+          ...NotesData,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+      ]);
+      const stableData = { ...NotesData };
+      apiCall(stableData);
+      setInputClick(false);
+      setLocalIsPinned(false);
+      setListClick(false);
+      setListArray([]);
+      setNotesData(INITIAL_NOTE_STATE);
+      setBackgroundColorModal(null);
     };
     document.addEventListener("mousedown", handleClickOutside);
 
@@ -225,10 +228,10 @@ export const NoteInput = () => {
                     setInputClick(true);
                   }}
                 >
-                  <IconStyling id={1} icon={CiViewList} />
+                  {/* <IconStyling id={1} icon={CiViewList} /> */}
                 </div>
 
-                <IconStyling id={2} icon={FaImage} />
+                {/* <IconStyling id={2} icon={FaImage} />    */}
               </div>
             </div>
           </div>

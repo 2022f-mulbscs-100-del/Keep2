@@ -148,7 +148,7 @@
   },
   "subscription": {
     "subscriptionTitle": "رکنیت",
-    "changeSubscriptionPlan": "رکنیت کا منصوبہ تبدیل کریں",
+    "changeSubscriptionPlan": "رکنیت منسوخ کریں",
     "updatePaymentMethod": "ادائیگی کی طریقہ اپڈیٹ کریں",
     "proUser": "پروفیشنل صارف",
     "monthly": "ماہانہ",
@@ -168,7 +168,15 @@
     "failedToUpdatePayment": "سرور پر ادائیگی کے طریقے کو اپ ڈیٹ کرنے میں ناکام۔",
     "failedToLoadPaymentForm": "ادائیگی کی شکل لوڈ کرنے میں ناکام",
     "switchingToMonthlyNotSupported": "ماہانہ منصوبے پر سوئچ کرنا ابھی معاون نہیں ہے۔",
-    "changeSubscription": "رکنیت تبدیل کریں"
+    "changeSubscription": "رکنیت تبدیل کریں",
+    "changeSubscriptionDescription": "آپ اپنا رکنیت کا منصوبہ تبدیل کر سکتے ہیں یا اپنا رکنیت یہاں منسوخ کر سکتے ہیں۔",
+    "cancelSubscriptionTitle": "رکنیت منسوخ کریں",
+    "cancelSubscriptionDescription": "کیا آپ واقعی اپنی رکنیت منسوخ کرنا چاہتے ہیں؟ اس عمل کو واپس نہیں کیا جا سکتا۔",
+    "cardNumber": "کارڈ نمبر",
+    "brand": "برانڈ",
+    "expiration": "میعاد ختم ہونے کی تاریخ",
+    "type": "قسم",
+    "country": "ملک"
   },
   "settings": {
     "autoLogoutTimeUpdated": "خودکار لاگ آؤٹ کی وقت {{time}} منٹ میں اپ ڈیٹ کیا گیا",
@@ -279,6 +287,8 @@
     "emptyBin": "ڈبہ خالی کریں",
     "binEmpty": "ڈبے کو کامیابی سے خالی کیا گیا",
     "cancelSubscription": "رکنیت منسوخ کریں",
+    "cancel": "منسوخ کریں",
+    "confirm": "تصدیق کریں",
     "updatePaymentMethod": "ادائیگی کا طریقہ اپ ڈیٹ کریں",
     "generateNotes": "نوٹس تیار کریں",
     "generateNotesRandomPinned": "بے ترتیب سے پن شدہ نوٹس تیار کریں",

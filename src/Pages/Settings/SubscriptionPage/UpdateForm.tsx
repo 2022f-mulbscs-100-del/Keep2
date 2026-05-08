@@ -6,7 +6,6 @@ import {
 import { useState } from "react";
 import { toast } from "react-toastify";
 import Placeholder from "../../../component/Placeholder/Placeholder";
-import { FaArrowLeftLong } from "react-icons/fa6";
 import axiosClient from "../../../api/axiosClient";
 import { Logger } from "../../../utils/Logger";
 import PrimaryButton from "../../../component/Buttons/PrimaryButton";
@@ -115,34 +114,21 @@ export default function UpdateForm({
           md:p-10
     xsm:p-4"
       >
-        <div className="absolute inset-0 bg-black/50 bg-opacity-50 transition-opacity" />
-        <div className="m-auto w-full md:p-10 xsm:p-4 bg-black">
-          <div
-            className="flex items-center mb-4
+        <div
+          className="flex items-center mb-4
                                      transition-all duration-300
                                      
                                      "
-          >
-            <div className="">
-              <FaArrowLeftLong
-                className=" cursor-pointer hover:bg-secondary p-2 rounded-lg
-                                         sm:size-10
-                                         xsm:size-8
-                                         "
-                onClick={() => {
-                  onClose();
-                }}
-              />
-            </div>
+        >
+          <div className=""></div>
 
-            <div className="sm:flex-1   ">
-              <h1 className="sm:text-3xl xs:text-[24px] font-bold text-nowrap text-center">
-                {t("buttons.updatePaymentMethod")}
-              </h1>
-            </div>
+          <div className="sm:flex-1   ">
+            <h1 className="sm:text-3xl xs:text-[24px] font-bold text-nowrap text-center">
+              {t("buttons.updatePaymentMethod")}
+            </h1>
           </div>
-          <Placeholder height="250px" borderRadius="8px" />
         </div>
+        <Placeholder height="250px" borderRadius="8px" />
       </div>
     );
   }
@@ -150,27 +136,17 @@ export default function UpdateForm({
   return (
     <>
       <div
-        className="m-auto w-full 
-                             md:p-10
-                             xsm:p-4"
+        className="m-auto w-full
+                   md:px-10 md:pb-6
+                   xsm:px-4 xsm:pb-4 bg-black"
       >
         <div
           className="flex items-center mb-4
                   transition-all duration-300
-                  
+                 
                   "
         >
-          <div className="">
-            <FaArrowLeftLong
-              className=" cursor-pointer hover:bg-secondary p-2 rounded-lg
-                      sm:size-10
-                      xsm:size-8
-                      "
-              onClick={() => {
-                onClose();
-              }}
-            />
-          </div>
+          <div className=""></div>
 
           <div className="sm:flex-1   ">
             <h1 className="sm:text-3xl xs:text-[24px] font-bold text-nowrap text-center">

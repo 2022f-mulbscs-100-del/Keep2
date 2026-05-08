@@ -1,4 +1,3 @@
-import { PiTextAUnderlineBold } from "react-icons/pi";
 import { IoIosColorPalette } from "react-icons/io";
 import { BiSolidBellPlus } from "react-icons/bi";
 import { IoMdArchive } from "react-icons/io";
@@ -8,11 +7,7 @@ import { MdDeleteSweep } from "react-icons/md";
 import { MdPersonAddAlt1 } from "react-icons/md";
 
 const IconsArray = [
-    {
-        id: 1,
-        tooltip: "Formatting options",
-        icon: PiTextAUnderlineBold
-    },
+
     {
         tooltip: "Background",
         id: 2,
