@@ -1,73 +1,129 @@
-# React + TypeScript + Vite
+# 🎨 Keeper — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> The client-side of Keep, a production-ready note-taking application. Built with React 19 and TypeScript, featuring a beautiful masonry layout, real-time updates, multi-language support, and a fully responsive design.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Tech Stack
 
-## React Compiler
+| Layer | Technology |
+|---|---|
+| Framework | React 19 + TypeScript |
+| Build Tool | Vite |
+| UI Library | Material UI (MUI) |
+| Styling | TailwindCSS |
+| Real-time | Socket.io Client |
+| Internationalization | i18next |
+| Error Tracking | Sentry |
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+---
 
-## Expanding the ESLint configuration
+## ✨ Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 🔐 Authentication Pages
+- Login with multiple auth methods (Email, Google, GitHub)
+- Signup with email verification flow
+- Forgot password & reset flow
+- MFA / 2FA setup and verification
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 📒 Note Pages
+- **Home** — all notes in a masonry grid layout
+- **Archive** — archived notes
+- **Bin** — soft-deleted notes (trash)
+- **Reminders** — notes with upcoming reminders
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### ⚙️ Settings Pages
+- Personal Info
+- Security (MFA, 2FA, Passkey, Password Reset)
+- API Keys management
+- Subscription management
+- User Preferences
+- Theme (Dark / Light)
+- Delete Account
+- Logout
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 🧩 Components
+- Masonry note card grid
+- Note editor modal
+- Label editor modal
+- Subscription modal
+- Sidebar navigation & top navbar
+- Language switcher
+- Live chat
+- Toast notifications & tooltips
+
+### 🌟 Other
+- Dark / Light theme toggle
+- Multi-language support (i18next)
+- Real-time note updates via Socket.io
+- Inactivity-based auto-logout
+- Sentry error tracking
+- Fully responsive design
+
+---
+
+## 🗂️ Project Structure
+
+```
+keep-frontend/
+├── src/
+│   ├── pages/            # Route-level page components
+│   ├── components/       # Reusable UI components
+│   ├── hooks/            # Custom React hooks
+│   ├── services/         # API call functions
+│   ├── locales/          # i18n translation files
+│   └── utils/            # Helpers & utilities
+├── .env.example
+├── index.html
+├── vite.config.ts
+├── package.json
+└── ...
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🛠️ Getting Started
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Prerequisites
+- Node.js 18+
+- Keep backend running (see [keep-backend](../keep-backend/README.md))
+
+### Installation
+
+```bash
+cd keep-frontend
+npm install
+cp .env.example .env
+npm run dev
 ```
+
+### Environment Variables
+
+```env
+# API
+VITE_API_URL=http://localhost:5000
+VITE_SOCKET_URL=http://localhost:5000
+
+# Error Tracking
+VITE_SENTRY_DSN=
+
+# Cloudflare Turnstile
+VITE_TURNSTILE_SITE_KEY=
+
+# OAuth (if handling redirect URLs on frontend)
+VITE_GOOGLE_CLIENT_ID=
+VITE_GITHUB_CLIENT_ID=
+```
+
+---
+
+## 🏗️ Build for Production
+
+```bash
+npm run build
+```
+
+Output is generated in the `dist/` folder, ready to be served as a static site.
+
+---
+
