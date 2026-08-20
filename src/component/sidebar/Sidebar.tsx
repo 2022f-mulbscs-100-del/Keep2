@@ -5,8 +5,8 @@ import { MdDelete } from "react-icons/md";
 import { IoMdArchive } from "react-icons/io";
 import { MdEdit } from "react-icons/md";
 import { FaBell } from "react-icons/fa";
-// import { CgMediaLive } from "react-icons/cg";
 import { TbLabelFilled } from "react-icons/tb";
+
 import { useEditLaber } from "../../Context/editLabelContext";
 import Dialougebox from "../EditLabelDialougebox";
 import { Link, useLocation } from "react-router-dom";
@@ -18,21 +18,34 @@ import { toast } from "react-toastify";
 
 const Sidebar = () => {
   const { t } = useTranslation();
-  // const pathname = useLocation().pathname;
+
   const { label } = useEditLaber();
   const { pathname } = useLocation();
   const { profileData } = useUser();
-  const isActiveSubscriber = profileData?.subscriptionStatus === "active";
+
+  const { size, isMobile, isTablet } = useScreenSize();
+  const { isOpen, setIsOpen } = useSidebar();
+
+  const isActiveSubscriber =
+    profileData?.subscriptionStatus === "active";
 
   const [isActive, setisActive] = useState<number | null>(null);
+
+  // Login / Signup pages
+  const isAuthPage =
+    pathname === "/login" ||
+    pathname === "/signup";
+
+
+  const shouldOverlaySidebar =
+    isMobile && isAuthPage;
 
   useEffect(() => {
     if (pathname === "/") {
       setisActive(1);
     }
-  }, []);
+  }, [pathname]);
 
-  const { size, isMobile, isTablet } = useScreenSize();
   const HandleClick = (id: number) => {
     setisActive(id);
   };
@@ -47,7 +60,9 @@ const Sidebar = () => {
       id: 110 + index,
       icon: <TbLabelFilled />,
       title: item.categoryName,
-      path: `/editlabel/${encodeURIComponent(removeSpacing(item.categoryName))}`,
+      path: `/editlabel/${encodeURIComponent(
+        removeSpacing(item.categoryName)
+      )}`,
       isPremium: false,
     }));
 
@@ -66,7 +81,9 @@ const Sidebar = () => {
       path: "/reminders",
       isPremium: true,
     },
+
     ...labelSidebarItems,
+
     {
       id: 3,
       icon: <MdEdit />,
@@ -88,125 +105,154 @@ const Sidebar = () => {
       path: "/bin",
       isPremium: false,
     },
-    // {
-    //   id: 6,
-    //   icon: <CgMediaLive />,
-    //   title: "WebSocket Testing",
-    //   path: "/WebSocket-Integration",
-    // },
   ];
 
   useEffect(() => {
     if (isMobile || isTablet) {
       setIsOpen(false);
     }
-  }, [size]);
+  }, [size, isMobile, isTablet, setIsOpen]);
 
-  const { isOpen, setIsOpen } = useSidebar();
   return (
     <>
-      <div className={`${isOpen ? "w-[250px]" : `w-fit`} cursor-pointer `}>
+      <div
+        className={`
+          ${isOpen ? "w-[250px]" : "w-fit"}
+          cursor-pointer
+
+          ${
+            shouldOverlaySidebar
+              ? "absolute top-21 h-full bg-black left-0 z-[9999]"
+              : "relative"
+          }
+        `}
+      >
         <ul
-          className={`py-4 
-                transition-all 
-                `}
+          className="
+            py-4
+            transition-all
+          "
         >
           {SideBarData.map((item) => {
-            const isDisabled = item.isPremium && !isActiveSubscriber;
+            const isDisabled =
+              item.isPremium && !isActiveSubscriber;
+
             const SidebarItem = (
               <li
-                className={`py-4 h-[50px] ${isOpen ? `pl-4 ml-0 w-[250px] rounded-r-[25px]` : `pl-0  w-[50px] rounded-full md:ml-4`} flex     overflow-hidden   gap-4 hover:bg-secondary ${isActive && (pathname === item.path ? `bg-primary` : "hover:bg-secondary")} ${isDisabled ? "opacity-50" : ""} `}
                 key={item.id}
+                className={`
+                  py-4
+                  h-[50px]
+
+                  ${
+                    isOpen
+                      ? "pl-4 ml-0 w-[250px] rounded-r-[25px]"
+                      : "pl-0 w-[50px] rounded-full md:ml-4"
+                  }
+
+                  flex
+                  overflow-hidden
+                  gap-4
+                  hover:bg-secondary
+
+                  ${
+                    isActive &&
+                    pathname === item.path
+                      ? "bg-primary"
+                      : "hover:bg-secondary"
+                  }
+
+                  ${isDisabled ? "opacity-50" : ""}
+                `}
                 onClick={() => {
                   if (isDisabled) {
                     toast.info(
-                      "Upgrade to Pro to use Reminders. Go to Settings > Subscription to upgrade.",
+                      "Upgrade to Pro to use Reminders. Go to Settings > Subscription to upgrade."
                     );
+
                     return;
                   }
+
                   HandleClick(item.id);
                 }}
               >
+                {/* ICON */}
                 <div
                   data-tooltip-id={`tooltip-${item.id}`}
                   data-tooltip-content={
-                    isDisabled ? "Upgrade to Pro to use Reminders" : item.title
+                    isDisabled
+                      ? "Upgrade to Pro to use Reminders"
+                      : item.title
                   }
-                  className={`cursor-pointer pl-[17px] flex items-center  text-nowrap`}
+                  className="
+                    cursor-pointer
+                    pl-[17px]
+                    flex
+                    items-center
+                    text-nowrap
+                  "
                 >
                   {item.icon}
                 </div>
+
+                {/* TITLE */}
                 {isOpen && (
                   <div
-                    className={`cursor-pointer  flex items-center  text-nowrap  `}
+                    className="
+                      cursor-pointer
+                      flex
+                      items-center
+                      text-nowrap
+                    "
                   >
-                    <p className="text-body">{item.title}</p>
+                    <p className="text-body">
+                      {item.title}
+                    </p>
                   </div>
                 )}
-                {!isOpen && <Tooltip id={`tooltip-${item.id}`} />}
+
+                {/* MOBILE TOOLTIP */}
+                {!isOpen && (
+                  <Tooltip id={`tooltip-${item.id}`} />
+                )}
               </li>
             );
-            return isDisabled ? (
-              <div key={item.id}>{SidebarItem}</div>
-            ) : (
-              <Link to={item.path} key={item.id}>
+
+            /*
+             * Premium item:
+             * Don't navigate when user isn't subscribed.
+             */
+            if (isDisabled) {
+              return (
+                <div key={item.id}>
+                  {SidebarItem}
+                </div>
+              );
+            }
+
+            /*
+             * Normal sidebar item.
+             */
+            return (
+              <Link
+                to={item.path}
+                key={item.id}
+              >
                 {SidebarItem}
               </Link>
             );
           })}
         </ul>
       </div>
-      {isActive === 3 && <Dialougebox setisActive={setisActive} />}
+
+      {/* Edit Labels Dialog */}
+      {isActive === 3 && (
+        <Dialougebox
+          setisActive={setisActive}
+        />
+      )}
     </>
   );
 };
 
 export default Sidebar;
-
-// const baseSidebarData = [
-//   {
-//     id: 1,
-//     icon: <FaRegLightbulb />,
-//     title: "Notes",
-//     path: "/",
-//   },
-//   {
-//     id: 2,
-//     icon: <FaBell />,
-//     title: "Reminders",
-//     path: "/reminders",
-//   },
-//   {
-//     id: 3,
-//     icon: <MdEdit />,
-//     title: "Edit labels",
-//     path: "#",
-//   },
-//   {
-//     id: 4,
-//     icon: <IoMdArchive />,
-//     title: "Archive",
-//     path: "/archieve",
-//   },
-//   {
-//     id: 5,
-//     icon: <MdDelete />,
-//     title: "Bin",
-//     path: "/bin",
-//   },
-// ];
-
-// const labelSidebarItems = label
-//   .filter(item => item.label.trim() !== "")
-//   .map((item, index) => ({
-//     id: 110 + index,
-//     icon: <TbLabelFilled />,
-//     title: item.label,
-//     path: `/editlabel/${encodeURIComponent(item.label)}`,
-//   }));
-
-// const SideBarData = [
-//   ...baseSidebarData.slice(0, 2),
-//   ...labelSidebarItems,
-//   ...baseSidebarData.slice(2),
-// ];

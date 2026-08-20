@@ -19,9 +19,8 @@ function Layout({ children }: { children: React.ReactNode }) {
           <Navbar />
         </div>
         <div className="flex ">
-          <div>
+         
             <Sidebar />
-          </div>
           <div
             className={`flex-1 ${pathname === "/login" || pathname === "/sign-up" || pathname === "/forget-password" ? "h-full" : "h-[calc(100vh-10vh)]"}  customScrollBar overflow-y-auto `}
           >
